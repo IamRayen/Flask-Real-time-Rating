@@ -1,0 +1,8 @@
+.env                  # environment variables with secrets
+__pycache__/          # Python cache files
+*.pyc                 # compiled Python files
+instance/             # Flask instance folder if used
+*.sqlite3             # local database files 
+venv/                 # virtual environment folder
+.env.*                # other env files
+*.log                 # log files
