@@ -1,5 +1,7 @@
 
 
+
+```plaintext
 ########################################################################################################
 ##################################     BACKEND STRUCTURE     ###########################################
 
@@ -10,7 +12,7 @@ backend/
 │   ├── config.py                      # Handles environment-based config
 │   ├── extensions.py
 │   └── ...
-│   |
+│   │
 │   ├── api/ 
 │   │   ├── routes/                    # Contains all Flask route blueprints
 │   │   │   ├── user_routes.py
@@ -45,6 +47,7 @@ backend/
 ├── requirements.txt                   # Python dependencies
 ├── .env                               # Environment variables (not committed)
 └── README.md
+```
 
 #############################################################################################################################
 ############################################## BACKEND MILESTONES ###########################################################
@@ -124,19 +127,6 @@ backend/
 - Set up CI/CD pipelines for automated testing and deployment
 - Add rate limiting to protect APIs
 - Create API documentation with OpenAPI or Flasgger
-- Consider an admin panel for manual data management
-
----
-
-## Suggested Timeline
-
-| Week | Focus Area                         |
-|-------|----------------------------------|
-| 1     | Project setup and Firebase setup |
-| 2     | Authentication                   |
-| 3     | REST API development             |
-| 4     | Socket.IO integration            |
-| 5     | Testing and error handling       |
-| 6     | Deployment and optimization      |
+- Create an admin panel for manual data management
 
 ---
