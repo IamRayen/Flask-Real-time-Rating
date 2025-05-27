@@ -17,6 +17,10 @@ function Login() {
     navigate("/register");
   };
 
+  const handleForgotPassword = () => {
+    navigate("/forgot-password");
+  };
+
   return (
     <div className="login-page">
       <div className="title">
@@ -48,6 +52,13 @@ function Login() {
       <button className="login" onClick={handleLogin}>
         Log in
       </button>
+
+      <div className="forgot-password-link">
+        <span onClick={handleForgotPassword}>
+          Forgot your password? Click here to recover it!
+        </span>
+      </div>
+
       <button className="register" onClick={handleRegister}>
         No account?
         <br />
