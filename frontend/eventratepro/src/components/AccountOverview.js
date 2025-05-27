@@ -1,15 +1,17 @@
 import React from "react";
+import { useNavigate } from "react-router-dom";
 import "./AccountOverview.css";
 
 function AccountOverview() {
+  const navigate = useNavigate();
+
   const handleAddReferees = () => {
     console.log("Add new Referees clicked");
     // Add functionality later
   };
 
   const handleViewQuestionnaire = () => {
-    console.log("View Questionnaire clicked");
-    // Add functionality later
+    navigate("/questionnaire");
   };
 
   const handleViewHistory = () => {
