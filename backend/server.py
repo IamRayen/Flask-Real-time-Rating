@@ -18,7 +18,7 @@ app = Flask("Python-Server")
 # End-points:
 @app.route('/hello',methods=['GET']) 
 def function_hello():
-    #db.collection('persons').add({"name":"John", "age": 40})   #Creates a Collection of Documents. Each Document has multiple Fields.
+    db.collection('persons').add({"name":"John", "age": 40})   #Creates a Collection of Documents. Each Document has multiple Fields.
     return "Hello World"
 
 @app.route('/bye',methods=['GET'])
