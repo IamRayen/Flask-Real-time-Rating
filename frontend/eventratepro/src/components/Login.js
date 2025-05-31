@@ -59,10 +59,9 @@ function Login() {
         </span>
       </div>
 
-      <button className="register" onClick={handleRegister}>
-        No account?
-        <br />
-        Register NOW!
+      <button className="login-register-btn" onClick={handleRegister}>
+        <span>No account?</span>
+        <span>Register NOW!</span>
       </button>
     </div>
   );

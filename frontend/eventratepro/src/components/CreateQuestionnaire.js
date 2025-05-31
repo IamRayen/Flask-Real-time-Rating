@@ -215,9 +215,11 @@ function CreateQuestionnaire() {
                 </div>
               ))}
 
-              <button className="add-option" onClick={handleAddOption}>
-                +
-              </button>
+              {options.length < 5 && (
+                <button className="add-option" onClick={handleAddOption}>
+                  +
+                </button>
+              )}
             </div>
 
             <div className="action-buttons">
