@@ -10,6 +10,7 @@ import Register from "./components/Register";
 import AccountOverview from "./components/AccountOverview";
 import ForgotPassword from "./components/ForgotPassword";
 import Questionnaire from "./components/Questionnaire";
+import CreateQuestionnaire from "./components/CreateQuestionnaire";
 
 function App() {
   return (
@@ -22,6 +23,10 @@ function App() {
           <Route path="/account-overview" element={<AccountOverview />} />
           <Route path="/forgot-password" element={<ForgotPassword />} />
           <Route path="/questionnaire" element={<Questionnaire />} />
+          <Route
+            path="/create-questionnaire"
+            element={<CreateQuestionnaire />}
+          />
         </Routes>
       </div>
     </Router>

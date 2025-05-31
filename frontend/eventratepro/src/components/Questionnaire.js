@@ -14,7 +14,7 @@ function Questionnaire() {
   };
 
   const handleCreateNewQuestionnaire = () => {
-    console.log("Create new questionnaire");
+    navigate("/create-questionnaire");
   };
 
   return (
