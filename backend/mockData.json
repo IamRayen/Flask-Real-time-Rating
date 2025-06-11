@@ -1,0 +1,127 @@
+{
+  "users": [
+    {
+      "userID": "user_123",
+      "email": "john.doe@example.com",
+      "username": "johndoe",
+      "passwordHash": "hashed_pw_abc123",
+      "isRegistered": true
+    },
+    {
+      "userID": "organizer_001",
+      "email": "alice@example.com",
+      "username": "aliceorg",
+      "passwordHash": "hashed_pw_xyz456",
+      "isRegistered": true,
+      "isOrganizer": true
+    },
+    {
+      "userID": "ref_001",
+      "email": "bob@example.com",
+      "username": "bobref",
+      "passwordHash": "hashed_pw_789def",
+      "isRegistered": true,
+      "isReferee": true
+    }
+  ],
+  "events": [
+    {
+      "eventID": "event_001",
+      "questionnaireID": "quest_001",
+      "organizerID": "organizer_001",
+      "itemList": ["item_001", "item_002"],
+      "refereeList": ["ref_001", "ref_002"],
+      "status": "open"
+    }
+  ],
+  "items": [
+    {
+      "itemID": "item_001",
+      "eventID": "event_001",
+      "title": "Poster: AI in Education",
+      "content": "A poster about using AI to personalize education.",
+      "qrCodeStoringPath": "/qrcodes/item_001.png"
+    },
+    {
+      "itemID": "item_002",
+      "eventID": "event_001",
+      "title": "Lecture: Future of Robotics",
+      "content": "Exploring advances in human-robot interaction.",
+      "qrCodeStoringPath": "/qrcodes/item_002.png"
+    }
+  ],
+  "votes": [
+    {
+      "voteID": "vote_001",
+      "itemID": "item_001",
+      "tickedOptionsList": [
+        {
+          "criteriaID": "crit_001",
+          "questionID": "q_001",
+          "selectedOption": "Good"
+        },
+        {
+          "criteriaID": "crit_002",
+          "questionID": "q_003",
+          "selectedOption": "Excellent"
+        }
+      ],
+      "role": "referee"
+    }
+  ],
+  "questionnaires": [
+    {
+      "questionnaireID": "quest_001",
+      "eventID": "event_001",
+      "criteriaList": ["crit_001", "crit_002"],
+      "visualizationType": "bar",
+      "isTemplate": false
+    }
+  ],
+  "criteria": [
+    {
+      "criteriaID": "crit_001",
+      "questionnaireID": "quest_001",
+      "title": "Clarity of Presentation",
+      "questionList": ["q_001", "q_002"]
+    },
+    {
+      "criteriaID": "crit_002",
+      "questionnaireID": "quest_001",
+      "title": "Visual Appeal",
+      "questionList": ["q_003"]
+    }
+  ],
+  "questions": [
+    {
+      "questionID": "q_001",
+      "criteriaID": "crit_001",
+      "title": "How clear was the presentation?",
+      "optionList": [
+        { "label": "Poor", "points": 1 },
+        { "label": "Average", "points": 3 },
+        { "label": "Good", "points": 5 }
+      ]
+    },
+    {
+      "questionID": "q_002",
+      "criteriaID": "crit_001",
+      "title": "Was the structure logical?",
+      "optionList": [
+        { "label": "No", "points": 0 },
+        { "label": "Somewhat", "points": 2 },
+        { "label": "Yes", "points": 4 }
+      ]
+    },
+    {
+      "questionID": "q_003",
+      "criteriaID": "crit_002",
+      "title": "How appealing were the visuals?",
+      "optionList": [
+        { "label": "Unappealing", "points": 1 },
+        { "label": "Decent", "points": 3 },
+        { "label": "Excellent", "points": 5 }
+      ]
+    }
+  ]
+}
