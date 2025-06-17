@@ -31,26 +31,32 @@ function Login() {
     <div className="login-page">
       <Header icon="ERP"/>
 
-      <div className="personalinfor">
-        <p>Email Address</p>
+      <form className="personalinfor" onSubmit={(e) => {
+  e.preventDefault(); // prevents react from reloading page
+  handleLogin(); //allows ENTER to submit without clicking button
+}}>
+        <label htmlFor="email">Email Address</label>
         <input
+          id="email"
           className="email"
           type="email"
           value={email}
           onChange={(e) => setEmail(e.target.value)}
         />
-        <p>Password</p>
+        <label htmlFor="pass">Password</label>
         <input
+          id="pass"
           className="u-text"
           type="password"
           value={password}
           onChange={(e) => setPassword(e.target.value)}
         />
-      </div>
-
-      <button className="login" onClick={handleLogin}>
+        <button className="login" type="submit">
         Log in
       </button>
+      </form>
+
+      
 
       <div className="forgot-password-link">
         <span onClick={handleForgotPassword}>
