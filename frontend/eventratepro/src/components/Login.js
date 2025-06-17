@@ -1,14 +1,20 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import "./Login.css";
+import { useAuthContext } from "../context/AuthContext";
+import Header from "./Subcomponent/Header";
 
 function Login() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const navigate = useNavigate();
+  const {setUser}=useAuthContext();
 
   const handleLogin = () => {
     // Navigate to account overview
+    //TODO: used for testing :  testcases{null,notnull}: Null:block redirect
+    // after implementing backend API , use setUser to update user login status
+    setUser(email===""? null:{id:1,mail:email});  
     navigate("/account-overview");
   };
 
@@ -23,14 +29,7 @@ function Login() {
 
   return (
     <div className="login-page">
-      <div className="title">
-        <div className="ip">
-          <div className="icon">ERP</div>
-        </div>
-        <div className="wn">
-          <h1>EventRatePro</h1>
-        </div>
-      </div>
+      <Header icon="ERP"/>
 
       <div className="personalinfor">
         <p>Email Address</p>
