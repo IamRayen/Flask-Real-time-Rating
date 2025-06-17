@@ -1,4 +1,4 @@
-import { createContext, useContext } from "react";
+import { createContext, useContext,useState } from "react";
 
 
 //AuthContext is undefined at the start 
@@ -27,8 +27,9 @@ return context;
 // these variables are initialised to null = "not logged in yet"
 export function AuthProvider({children}){
     const [User,setUser]=useState(null);
+    return(
     <AuthContext.Provider value={{User,setUser}}>
         {children}
     </AuthContext.Provider>
-       
+    );
 }
