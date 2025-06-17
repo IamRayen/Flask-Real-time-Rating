@@ -1,6 +1,7 @@
 import React from "react";
 import { useNavigate } from "react-router-dom";
 import "./AccountOverview.css";
+import Header from "./sub-component/Header";
 
 function AccountOverview() {
   const navigate = useNavigate();
@@ -26,14 +27,7 @@ function AccountOverview() {
 
   return (
     <div className="account-overview-page">
-      <div className="title">
-        <div className="ip">
-          <div className="icon">ERP</div>
-        </div>
-        <div className="wn">
-          <h1>EventRatePro</h1>
-        </div>
-      </div>
+      <Header icon="ERP"/>
 
       <div className="accinfor">
         <div className="pp">

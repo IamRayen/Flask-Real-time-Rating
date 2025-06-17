@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import "./ForgotPassword.css";
+import Header from "./sub-component/Header";
 
 function ForgotPassword() {
   const [email, setEmail] = useState("");
@@ -12,17 +13,10 @@ function ForgotPassword() {
   const handleGetSecurityCode = () => {};
 
   const handleResetPassword = () => {};
-
+//📋🔍
   return (
     <div className="forgot-password-page">
-      <div className="title">
-        <div className="ip">
-          <div className="icon">📋🔍</div>
-        </div>
-        <div className="wn">
-          <h1>EventRate Pro</h1>
-        </div>
-      </div>
+      <Header icon="🔍" />
 
       <div className="forgot-password-form">
         <p>Registered Email</p>

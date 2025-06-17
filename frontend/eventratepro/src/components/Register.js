@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import "./Register.css";
+import Header from "./sub-component/Header";
 
 function Register() {
   const [email, setEmail] = useState("");
@@ -16,14 +17,7 @@ function Register() {
 
   return (
     <div className="register-page">
-      <div className="title">
-        <div className="ip">
-          <div className="icon">ERP</div>
-        </div>
-        <div className="wn">
-          <h1>EventRatePro</h1>
-        </div>
-      </div>
+      <Header icon="ERP"/>
 
       <div className="reginfor">
         <p>Email Address</p>
