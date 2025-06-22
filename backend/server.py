@@ -15,17 +15,7 @@ db=firestore.client()
 
 app = Flask("Python-Server")
 
-# End-points:
-@app.route('/hello',methods=['GET']) 
-def function_hello():
-    db.collection('persons').add({"name":"John", "age": 40})   #Creates a Collection of Documents. Each Document has multiple Fields.
-    return "Hello World"
-
-@app.route('/bye',methods=['GET'])
-def function_bye():
-    return "Bye Bye"
-
-# API endpoint to add an event
+# API to add an event
 @app.route('/events/add', methods=['POST'])
 def add_event():
     try:
