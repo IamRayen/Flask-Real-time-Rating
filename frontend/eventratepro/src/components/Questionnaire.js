@@ -1,6 +1,9 @@
 import React from "react";
-import { useNavigate } from "react-router-dom";
+import {useEffect} from "react";
+import { useNavigate} from "react-router-dom";
 import "./Questionnaire.css";
+import Header from "./sub-component/Header";
+import TemplateQuestionaire from "./sub-component/TemplateCard";
 
 function Questionnaire() {
   const navigate = useNavigate();
@@ -10,6 +13,7 @@ function Questionnaire() {
   };
 
   const handleDeleteQuestionnaire = (questionnaireNumber) => {
+    //TODO: implement questionaire deletion logic
     console.log(`Delete questionnaire ${questionnaireNumber}`);
   };
 
@@ -17,57 +21,45 @@ function Questionnaire() {
     navigate("/create-questionnaire");
   };
 
+  const loadTemplates=()=>{
+    //TODO: calls API to recieve all organizer'S templates
+    console.log("Templates loaded")
+  };
+  useEffect(()=>{
+    loadTemplates();
+    return console.log("Template loaded")
+  },[])
+
   return (
     <div className="questionnaire-page">
       <div className="back-arrow" onClick={handleBackClick}>
         ←
       </div>
 
-      <div className="title">
-        <div className="icon">📋🔍</div>
-        <h1>EventRate Pro</h1>
-      </div>
+      <Header icon="📋" />
 
       <div className="questionnaires-container">
-        <div className="questionnaire-card">
-          <div
-            className="delete-x"
-            onClick={() => handleDeleteQuestionnaire(1)}
-          >
-            ×
-          </div>
-          <div className="questionnaire-icon">📋</div>
-          <h3>Questionnaire 1</h3>
-        </div>
 
-        <div className="questionnaire-card">
-          <div
-            className="delete-x"
-            onClick={() => handleDeleteQuestionnaire(2)}
-          >
-            ×
-          </div>
-          <div className="questionnaire-icon">📊</div>
-          <h3>Questionnaire 2</h3>
-        </div>
+        <TemplateQuestionaire name="Questionaire 1"
+        id={1}
+        onDelete={handleDeleteQuestionnaire}/>
 
-        <div className="questionnaire-card">
-          <div
-            className="delete-x"
-            onClick={() => handleDeleteQuestionnaire(3)}
-          >
-            ×
-          </div>
-          <div className="questionnaire-icon">✅</div>
-          <h3>Questionnaire 3</h3>
-        </div>
+        <TemplateQuestionaire name="Questionaire 2"
+          id={2}
+          onDelete={handleDeleteQuestionnaire}/>
+
+        
+        <TemplateQuestionaire name="Questionaire 3"
+        id={3}
+         onDelete={handleDeleteQuestionnaire}/>  
+       
       </div>
 
       <button
         className="create-new-button"
         onClick={handleCreateNewQuestionnaire}
       >
-        + create new questionnaire
+         New Questionaire
       </button>
     </div>
   );
