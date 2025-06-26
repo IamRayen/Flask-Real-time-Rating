@@ -1,5 +1,4 @@
-import React from "react";
-import {useEffect} from "react";
+import React, { useState, useEffect } from "react";
 import { useNavigate} from "react-router-dom";
 import "./Questionnaire.css";
 import Header from "./sub-component/Header";
@@ -7,6 +6,7 @@ import TemplateQuestionaire from "./sub-component/TemplateCard";
 
 function Questionnaire() {
   const navigate = useNavigate();
+  const [Templates,setTemplates]=useState([]);
 
   const handleBackClick = () => {
     navigate("/account-overview");
@@ -25,10 +25,55 @@ function Questionnaire() {
     //TODO: calls API to recieve all organizer'S templates
     console.log("Templates loaded")
   };
+
+  //function that automatically loads templates when Mounting component
   useEffect(()=>{
     loadTemplates();
     return console.log("Template loaded")
   },[])
+
+// Conditionally renders templates
+// case1 : no templates = loads default hardcoded code
+//Case 2: renders templates using their attributs +  subcomponent "TemplateCard"
+  const renderTemplates=()=>{
+    if(!Templates || Templates.length=== 0){
+      // case1
+      return (
+      <>
+
+        <TemplateQuestionaire 
+          name="Questionaire 1"
+          id={1}
+          onDelete={handleDeleteQuestionnaire}/>
+
+        <TemplateQuestionaire 
+          name="Questionaire 2"
+          id={2}
+          onDelete={handleDeleteQuestionnaire}/>
+
+        
+        <TemplateQuestionaire 
+          name="Questionaire 3"
+          id={3}
+          onDelete={handleDeleteQuestionnaire}/>  
+       
+      </>
+      );
+    }else{
+      //case 2
+      // applies arrow function on each element in the Templates array
+      //Arrow function transforms template into a TemplateQuestionaire 
+      // component with the needed attributes
+      // returns  JSX with all templates component transformed
+      
+      return Templates.map((template,index)=>(
+        <TemplateQuestionaire 
+        name={`Questionnaire ${index+1}`} 
+        id={template.questionnaireID} 
+        onDelete={handleDeleteQuestionnaire}/>
+      ));
+    }
+  };
 
   return (
     <div className="questionnaire-page">
@@ -37,24 +82,9 @@ function Questionnaire() {
       </div>
 
       <Header icon="📋" />
-
       <div className="questionnaires-container">
-
-        <TemplateQuestionaire name="Questionaire 1"
-        id={1}
-        onDelete={handleDeleteQuestionnaire}/>
-
-        <TemplateQuestionaire name="Questionaire 2"
-          id={2}
-          onDelete={handleDeleteQuestionnaire}/>
-
-        
-        <TemplateQuestionaire name="Questionaire 3"
-        id={3}
-         onDelete={handleDeleteQuestionnaire}/>  
-       
+        {renderTemplates()}
       </div>
-
       <button
         className="create-new-button"
         onClick={handleCreateNewQuestionnaire}
