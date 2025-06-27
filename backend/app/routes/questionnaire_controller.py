@@ -48,7 +48,7 @@ class Question:
 # --- APIs --- #
 
 
-# API: /getAllTemplates
+# API: /questionnaire/getAllTemplates
 # Frontend calls this API in order to retrieve all templates from Firestore (TODO - make it organizer-specific)
 @questionnaire_bp.route('/getAllTemplates', methods=['GET'])
 def getAllTemplates():
