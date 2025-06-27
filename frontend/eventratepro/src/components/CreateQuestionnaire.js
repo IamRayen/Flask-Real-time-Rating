@@ -99,8 +99,40 @@ function CreateQuestionnaire() {
     }
   };
 
+// when clicked on the button: "Save questionnaire"
   const handleSaveQuestionnaire = () => {
     console.log("Save questionnaire:", questions);
+
+     // data that is posted to the backend (all questions has their category information)
+     const daten = {
+      questionnaireID: crypto.randomUUID(),
+      eventID: crypto.randomUUID(),
+    	allQuestions: questions
+    };
+
+    // built-in browser API that allows HTTP requests (GET, POST)
+    // fetch = fetch data (GET) + send data (POST)
+    fetch('http://localhost:5000/questionnaire/save', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(daten),
+    })
+
+    // wait for the response from backend and parse the response as JSON
+    .then(res => res.json())
+
+    // once JSON is parsed, handle the response from the backend and go back to the questionnaire-overview
+    .then(response => {
+      console.log('Answer from Backend:', response);
+      navigate("/questionnaire");
+    })
+
+    // if something goes wrong, the error is handled here
+    .catch(error => {
+      console.error('Error when sending:', error);
+    });    
   };
 
   const handleCreateQRs = () => {
