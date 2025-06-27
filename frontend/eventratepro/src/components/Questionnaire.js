@@ -21,9 +21,27 @@ function Questionnaire() {
     navigate("/create-questionnaire");
   };
 
-  const loadTemplates=()=>{
+ const loadTemplates=()=>{
     //TODO: calls API to recieve all organizer'S templates
     console.log("Templates loaded")
+
+    // built-in browser API that allows HTTP requests (GET, POST)
+    // fetch = fetch data (GET) + send data (POST)
+    fetch('http://localhost:5000/questionnaire/getAllTemplates')
+
+    // wait for the response from backend and parse the response as JSON
+    .then(res => res.json())
+
+    // process the data (all templates from Firestore)
+    .then(data => {
+      console.log("All Questionnaires:", data);
+      //setAllQuestionnaires(data); // your state handler
+    })
+
+    // if something goes wrong, the error is handled here
+    .catch(err => {
+      console.error("Error loading templates:", err);
+    });
   };
 
   //function that automatically loads templates when Mounting component
