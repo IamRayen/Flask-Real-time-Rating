@@ -2,6 +2,14 @@ from flask import Blueprint, jsonify, request, json
 from app.firebase import db
 import uuid
 
+# blueprints allow the app to split routes into different files/modules
+# they can be imported in app.py (__init__)
+questionnaire_bp = Blueprint('questionnaire_bp', __name__,url_prefix='/questionnaire')
+
+
+# --- Classes --- #
+
+
 # questionnaire class (data model)
 class Questionnaire:
     def __init__(self, questionnaireID=None, criteria_list=None, visualization_type=None, is_template=None, event_id=None):
@@ -37,31 +45,81 @@ class Question:
         return f"<Question id={self.question_id}, title={self.title}>"
 
 
-# blueprints allow the app to split routes into different files/modules
-# they can be imported in app.py (__init__)
-questionnaire_bp = Blueprint('questionnaire_bp', __name__,url_prefix='/questionnaire')
+# --- APIs --- #
 
-# /questionnaire/save API.
-# Frontend calls this API in order to save the Questionnaire.
+
+# API: /getAllTemplates
+# Frontend calls this API in order to retrieve all templates from Firestore (TODO - make it organizer-specific)
+@questionnaire_bp.route('/getAllTemplates', methods=['GET'])
+def getAllTemplates():
+
+    # get all questionnaires that are templates (is_template == True)
+    template_list = []
+    template_docs = db.collection('questionnaires').where('is_template', '==', True).stream()
+
+    # iterate through all templates in Firestore and add
+    # them to the template_list
+    for template in template_docs:
+
+        # converts template (firebase-snapshot (not usable)) to a
+        # standard python template.to_dict() (dictionary (usable))
+        template_data = template.to_dict()
+        template_id = template.id
+        template_data['questionnaireID'] = template_id
+
+        # Get all criteria under this specific template
+        criteria_list = []
+        criteria_collection = db.collection('questionnaires').document(template_id).collection('criteria').stream()
+
+        # iterate through all criterias of this specific template and add
+        # them to the criteria_list
+        for criteria_document in criteria_collection:
+
+            # converts criteria_document (firebase-snapshot (not usable)) to a
+            # standard python criteria_document.to_dict() (dictionary (usable))
+            criteria_data = criteria_document.to_dict()
+            criteria_id = criteria_document.id
+            criteria_data['criteria_id'] = criteria_id
+
+            # get all questions under this specific criteria
+            question_list = []
+            questions_collection = db.collection('questionnaires').document(template_id).collection('criteria').document(
+                criteria_id).collection('questions').stream()
+
+            # iterate through all questions of this specific criteria and add
+            # them to the question_list
+            for question_document in questions_collection:
+                question_data = question_document.to_dict()
+                question_data['question_id'] = question_document.id
+                question_list.append(question_data)
+
+            criteria_data['question_list'] = question_list
+            criteria_list.append(criteria_data)
+
+        template_data['criteria_list'] = criteria_list
+        template_list.append(template_data)
+
+    # returns all templates that are stored in Firestore
+    return jsonify(template_list), 200
+
+
+# API: /questionnaire/save
+# Frontend calls this API in order to save the Questionnaire. (TODO - make it organizer specific)
 @questionnaire_bp.route('/save', methods=['POST'])
 def save_questionnaireAsTemplate():
 
     # read all data from the frontend
-    daten = request.get_json()
+    data = request.get_json()
 
-    # printing the data
-    # print("empfangene daten:", daten)
-    # print("AllQuestions: ", daten['allQuestions'])
-
-    allQuestions = daten['allQuestions']
-    questionnaireID = daten['questionnaireID']
-    eventID = daten['eventID']
+    allQuestions = data['allQuestions']
+    questionnaireID = data['questionnaireID']
+    eventID = data['eventID']
 
     # fills the Question-classes & Criteria-classes properly (data model)
     criteria_lookup = {}
     criteria_list = []
     questions = []
-    for question in daten['allQuestions']:
+    for question in data['allQuestions']:
         category = question.get('category')
 
         # add new criteria if its not already in the list
@@ -98,7 +156,7 @@ def save_questionnaireAsTemplate():
         questionnaireID = questionnaireID,
         criteria_list = criteria_list,
         visualization_type = None,
-        is_template = False,
+        is_template = True,
         event_id = eventID
     )
 
@@ -150,47 +208,5 @@ def save_questionnaireAsTemplate():
 
     print("Data is successfully stored in Firestore!")
 
-
     # send something back to the frontend
-    return jsonify({"status": "ok", "empfangen": daten})
-
-
-# adds a questionnaire to Firestore from Mockdata based on a specific event
-@questionnaire_bp.route('/addFromMockData', methods=['POST', 'GET'])
-def add_questionnaire():
-
-    # reads the whole mockData.json-file
-    with open('mockData.json', 'r') as file:
-        data = json.load(file)
-
-    # i choosed the first event here, but it can be any event that is given
-    first_event = data['events'][0]
-
-    # get the questionnaire of the specific event (1:1 relation)
-    questionnaire_id = first_event['questionnaireID']
-    allQuestionnaires = data['questionnaires']
-    specific_questionnaire = next((q for q in allQuestionnaires if q['questionnaireID'] == questionnaire_id), None)
-
-    # get all criteria from questionnaire
-    if specific_questionnaire:
-        criteria_ids = specific_questionnaire['criteriaList']
-        allCriteria = data['criteria']
-        allCriteriaFromQuestionnaire = [c for c in allCriteria if c['criteriaID'] in criteria_ids]
-
-        # get all questions from criteria
-        if allCriteriaFromQuestionnaire:
-            allQuestion_ids = []
-            for criteria in allCriteriaFromQuestionnaire:
-                allQuestion_ids.extend(criteria['questionList'])
-            if allQuestion_ids:
-                allQuestions = data['questions']
-                allQuestionsFromCriterias = [q for q in allQuestions if q['questionID'] in allQuestion_ids]
-
-    # till here, based upon a specific event, we loaded the questionnaire,
-    # the criteria of that specific questionnaire and all questions from that specific questionnaire.
-    # now, we have to store this information in Firestore
-
-
-
-    # returns the data as a http-response
-    return jsonify(allQuestionsFromCriterias)
+    return jsonify({"status": "ok", "stored data:": data})
