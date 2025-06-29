@@ -8,7 +8,6 @@ import {
 import Login from "./components/Login";
 import Register from "./components/Register";
 import AccountOverview from "./components/AccountOverview";
-import ForgotPassword from "./components/ForgotPassword";
 import Questionnaire from "./components/Questionnaire";
 import CreateQuestionnaire from "./components/CreateQuestionnaire";
 import LoginGuard from "./context/AuthGuard";
@@ -25,7 +24,6 @@ function App() {
           <Route path="/login" element={<Login />} />
           <Route path="/register" element={<Register />} />
           <Route path="/account-overview" element={<LoginGuard> <AccountOverview /> </LoginGuard>} />
-          <Route path="/forgot-password" element={<ForgotPassword />} />
           <Route path="/questionnaire" element={<Questionnaire />} />
           <Route
             path="/create-questionnaire"

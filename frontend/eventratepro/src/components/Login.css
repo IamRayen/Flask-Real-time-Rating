@@ -96,23 +96,6 @@
   background-color: rgb(118, 226, 235);
 }
 
-.forgot-password-link {
-  text-align: center;
-  margin-top: 20px;
-}
-
-.forgot-password-link span {
-  font-family: Inter;
-  font-size: 16px;
-  color: #0066cc;
-  cursor: pointer;
-  text-decoration: underline;
-}
-
-.forgot-password-link span:hover {
-  color: #004499;
-}
-
 .login-register-btn {
   margin: 30px auto 0;
   background-color: rgb(138, 246, 255);

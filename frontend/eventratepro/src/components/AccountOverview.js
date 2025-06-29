@@ -2,9 +2,11 @@ import React from "react";
 import { useNavigate } from "react-router-dom";
 import "./AccountOverview.css";
 import Header from "./sub-component/Header";
+import { useAuthContext } from "../context/AuthContext";
 
 function AccountOverview() {
   const navigate = useNavigate();
+  const { User, logout } = useAuthContext();
 
   const handleAddReferees = () => {
     console.log("Add new Referees clicked");
@@ -25,9 +27,25 @@ function AccountOverview() {
     // Add functionality later
   };
 
+  const handleLogout = async () => {
+    try {
+      await logout();
+      navigate("/login");
+    } catch (error) {
+      console.error("Error signing out:", error);
+    }
+  };
+
   return (
     <div className="account-overview-page">
       <Header icon="ERP"/>
+      
+      <div style={{display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '20px'}}>
+        <h2>Welcome, {User?.displayName || User?.email}</h2>
+        <button onClick={handleLogout} style={{padding: '10px 20px', backgroundColor: '#dc3545', color: 'white', border: 'none', borderRadius: '5px', cursor: 'pointer'}}>
+          Logout
+        </button>
+      </div>
 
       <div className="accinfor">
         <div className="pp">

@@ -1,5 +1,7 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { createUserWithEmailAndPassword, updateProfile } from "firebase/auth";
+import { auth } from "../firebase/config";
 import "./Register.css";
 import Header from "./sub-component/Header";
 
@@ -8,25 +10,45 @@ function Register() {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
+  const [error, setError] = useState("");
+  const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
   const isComplete = email && username && password && confirmPassword && password === confirmPassword;
 
-  const handleRegister = () => {
+  const handleRegister = async () => {
     if (password !== confirmPassword) {
-      alert("Passwords do not match!");
-      return;}
-      // TODO: Add  registration logic here (API call)
-    // Navigate to login page after registration
-    navigate("/login");
+      setError("Passwords do not match!");
+      return;
+    }
+
+    if (password.length < 6) {
+      setError("Password should be at least 6 characters");
+      return;
+    }
+
+    setLoading(true);
+    setError("");
+
+    try {
+      const userCredential = await createUserWithEmailAndPassword(auth, email, password);
+      await updateProfile(userCredential.user, {
+        displayName: username
+      });
+      navigate("/login");
+    } catch (error) {
+      setError(error.message);
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
     <div className="register-page">
       <Header icon="ERP"/>
 
-      <form className="reginfor"onSubmit={(e) => {
-  e.preventDefault(); // prevents react from unnecesarry reloading page
-  handleRegister(); //allows ENTER and Button to submit 
+      <form className="reginfor" onSubmit={(e) => {
+  e.preventDefault();
+  handleRegister();
 }}>
         <label htmlFor="email">Email Address</label>
         <input
@@ -35,6 +57,7 @@ function Register() {
           type="email"
           value={email}
           onChange={(e) => setEmail(e.target.value)}
+          required
         />
         <label htmlFor="username">Username</label>
         <input
@@ -43,6 +66,7 @@ function Register() {
           type="text"
           value={username}
           onChange={(e) => setUsername(e.target.value)}
+          required
         />
         <label htmlFor="pass">Password</label>
         <input
@@ -51,6 +75,7 @@ function Register() {
           type="password"
           value={password}
           onChange={(e) => setPassword(e.target.value)}
+          required
         />
         <label htmlFor="pass2">Confirm your password</label>
         <input
@@ -59,10 +84,12 @@ function Register() {
           type="password"
           value={confirmPassword}
           onChange={(e) => setConfirmPassword(e.target.value)}
+          required
         />
-         <button className="register" type="submit"disabled={!isComplete}>
-        Register
-      </button>
+        {error && <div style={{color: 'red', marginBottom: '10px'}}>{error}</div>}
+        <button className="register" type="submit" disabled={!isComplete || loading}>
+          {loading ? "Creating Account..." : "Register"}
+        </button>
       </form>
 
      
