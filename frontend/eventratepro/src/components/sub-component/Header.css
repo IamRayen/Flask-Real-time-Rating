@@ -1,0 +1,28 @@
+
+.Header-title {
+    margin-top: 80px;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+  }
+
+.hip {
+    display: grid;
+    justify-items: end;
+  }
+  
+  .hwn {
+    padding-top: 20px;
+  }
+
+.hicon {
+    width: 64px;
+    height: 64px;
+    background-color:#8af6ff ;  
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: Inter;
+    font-weight: bold;
+    font-size: 16px;
+}
