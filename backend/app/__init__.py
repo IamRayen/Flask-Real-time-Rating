@@ -11,7 +11,7 @@ def create_app():
     app.register_blueprint(event_bp)
 
     # handles questionnaires
-    from app.routes.questionnaire_controller import questionnaire_bp
-    app.register_blueprint(questionnaire_bp)
+    from app.routes.template_controller import template_bp
+    app.register_blueprint(template_bp)
 
     return app
