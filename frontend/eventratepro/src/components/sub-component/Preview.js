@@ -1,5 +1,5 @@
 function Preview(currentID,list){
-    const CurrentCriteria = criteriaList.find(c => c.criteriaID === currentID);
+    const CurrentCriteria = list.find(c => c.criteriaID === currentID);
     const questions=CurrentCriteria.questionList;
 
     return(
