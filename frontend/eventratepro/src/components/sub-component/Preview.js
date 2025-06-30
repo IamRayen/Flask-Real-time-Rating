@@ -1,5 +1,14 @@
-function Preview(currentID,list){
-    const CurrentCriteria = list.find(c => c.criteriaID === currentID);
+function Preview({currentID,list}){
+
+    console.log("Preview - currentID:", currentID);
+    console.log("Preview - currentID:", list);
+     
+    if (!Array.isArray(list) || list.length === 0) {
+        return <div>No criteria available yet</div>;
+      }
+    const CurrentCriteria = list.find(c => c.criteriaID === Number(currentID));
+
+
     const questions=CurrentCriteria.questionList;
 
     return(
