@@ -1,11 +1,9 @@
 import { useState } from "react";
 
 
-function CategorySideBar({list,current,signal,onAdd}){
+function CategorySideBar({list,current,onSelect,onAdd}){
 
-  const handleCategoryClick = (id) => {
-    signal(id);
-  };
+
     const renderCategories=()=>
        list.map((item)=>{
           return(  
@@ -14,7 +12,7 @@ function CategorySideBar({list,current,signal,onAdd}){
                 className={`category ${
                   current === item.criteriaID? "active" : ""
                 }`}
-                onClick={() => handleCategoryClick(item.criteriaID)}
+                onClick={() => onSelect(item.criteriaID)}
               >
                  {item.title}
               </div>);
