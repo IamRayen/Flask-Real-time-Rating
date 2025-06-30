@@ -112,8 +112,11 @@ function CreateQuestionnaire() {
         // assigns an available questionaire ID to the questionaire
         //assigns an event ID to the questionaire
         // parses the questionaire object for criteria{...questionlist{...options{...}}}  
-        console.log("Create QRs");
-      };
+        //console.log("Create QRs");
+        const qrID = "qr-id";
+    const qrURL = 'http://localhost:3000/qr/${qrID}';
+    navigate("/qr-code");
+  };
 
       return(
         <div className="create-questionnaire-page">
