@@ -12,6 +12,7 @@ import Questionnaire from "./components/Questionnaire";
 import CreateQuestionnaire from "./components/CreateQuestionnaire";
 import LoginGuard from "./context/AuthGuard";
 import { AuthProvider } from "./context/AuthContext";
+import QRCode from "./components/QRCode";
 
 function App() {
   return (
@@ -29,6 +30,7 @@ function App() {
             path="/create-questionnaire"
             element={<LoginGuard> <CreateQuestionnaire /> </LoginGuard>}
           />
+          <Route path="/qr-code" element={<QRCode />} />
         </Routes>
       </div>
       </AuthProvider>

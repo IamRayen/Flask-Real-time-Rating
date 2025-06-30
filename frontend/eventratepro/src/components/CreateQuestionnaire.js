@@ -136,7 +136,10 @@ function CreateQuestionnaire() {
   };
 
   const handleCreateQRs = () => {
-    console.log("Create QRs");
+    //console.log("Create QRs");
+    const qrID = "qr-id";
+    const qrURL = 'http://localhost:3000/qr/${qrID}';
+    navigate("/qr-code");
   };
 
   return (
