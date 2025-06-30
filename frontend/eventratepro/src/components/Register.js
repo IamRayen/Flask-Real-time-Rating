@@ -1,7 +1,8 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { createUserWithEmailAndPassword, updateProfile } from "firebase/auth";
-import { auth } from "../firebase/config";
+import { auth, db } from "../firebase/config";
+import { doc, setDoc } from "firebase/firestore";
 import "./Register.css";
 import Header from "./sub-component/Header";
 
@@ -31,9 +32,21 @@ function Register() {
 
     try {
       const userCredential = await createUserWithEmailAndPassword(auth, email, password);
+      const user = userCredential.user;
+
       await updateProfile(userCredential.user, {
         displayName: username
       });
+
+      // write user-data in Firestore
+      // TODO: differentiate organizer and Referee when register (right now, it's only organizer)
+      await setDoc(doc(db, "users", user.uid), {
+        uid: user.uid,
+        email: user.email,
+        username: username,
+        role: "organizer"
+      });
+      
       navigate("/login");
     } catch (error) {
       setError(error.message);
