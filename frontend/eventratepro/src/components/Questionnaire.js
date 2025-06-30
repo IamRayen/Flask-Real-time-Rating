@@ -3,8 +3,11 @@ import { useNavigate} from "react-router-dom";
 import "./Questionnaire.css";
 import Header from "./sub-component/Header";
 import TemplateQuestionaire from "./sub-component/TemplateCard";
+import { useAuthContext } from "../context/AuthContext";
 
 function Questionnaire() {
+  const { User } = useAuthContext();
+
   const navigate = useNavigate();
   const [Templates,setTemplates]=useState([]);
 
@@ -22,12 +25,17 @@ function Questionnaire() {
   };
 
  const loadTemplates=()=>{
+
+    if (!User?.uid) {
+      console.error("User ID not available");
+      return;
+    }
     //TODO: calls API to recieve all organizer'S templates
     console.log("Templates loaded")
 
     // built-in browser API that allows HTTP requests (GET, POST)
     // fetch = fetch data (GET) + send data (POST)
-    fetch('http://localhost:5000/questionnaire/getAllTemplates')
+    fetch(`http://localhost:5000/template/getAllTemplates?userID=${User?.uid}`)
 
     // wait for the response from backend and parse the response as JSON
     .then(res => res.json())
