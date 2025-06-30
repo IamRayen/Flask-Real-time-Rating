@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { useAuthContext } from "../context/AuthContext";
 import "./CreateQuestionnaire.css";
 import CategorySideBar from "./sub-component/CategorySideBar";
 import Preview from "./sub-component/Preview";
@@ -7,6 +8,7 @@ import FormBuilder from "./sub-component/FormBuilder";
 
 function CreateQuestionnaire() {
     const navigate = useNavigate();
+    const { User } = useAuthContext();
     const [Questionnaire,setQuestionnaire]=useState(null);
     const [criteriaList, setCriteriaList] = useState([{
         criteriaID: 1,
@@ -72,7 +74,36 @@ function CreateQuestionnaire() {
              });
         console.log("saved questionaire" );
           
-        
+        const daten = {
+          userID: User.uid,
+          questionnaireID: crypto.randomUUID(),
+          eventID: crypto.randomUUID(),
+          allQuestions: questions
+        };
+
+        // built-in browser API that allows HTTP requests (GET, POST)
+        // fetch = fetch data (GET) + send data (POST)
+        fetch('http://localhost:5000/template/save', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(daten),
+        })
+
+        // wait for the response from backend and parse the response as JSON
+        .then(res => res.json())
+
+        // once JSON is parsed, handle the response from the backend and go back to the questionnaire-overview
+        .then(response => {
+          console.log('Answer from Backend:', response);
+          navigate("/questionnaire");
+        })
+
+        // if something goes wrong, the error is handled here
+        .catch(error => {
+          console.error('Error when sending:', error);
+        });
         
       };
     
