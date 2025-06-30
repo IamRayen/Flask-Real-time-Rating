@@ -1,287 +1,126 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import "./CreateQuestionnaire.css";
+import CategorySideBar from "./sub-component/CategorySideBar";
+import Preview from "./sub-component/Preview";
+import FormBuilder from "./sub-component/FormBuilder";
 
 function CreateQuestionnaire() {
-  const navigate = useNavigate();
-  const [selectedCategory, setSelectedCategory] = useState("structure");
-  const [questionText, setQuestionText] = useState("");
-  const [options, setOptions] = useState([
-    { text: "Option 1", points: 1 },
-    { text: "Option 2", points: 2 },
-    { text: "Option 3", points: 3 },
-  ]);
-  const [questions, setQuestions] = useState([
-    {
-      id: 1,
-      text: "Is this poster well structured?",
-      category: "structure",
-      options: [
-        { text: "Not at all", points: 1 },
-        { text: "No", points: 2 },
-        { text: "Good", points: 3 },
-        { text: "Very good", points: 4 },
-        { text: "Super", points: 5 },
-      ],
-    },
-    {
-      id: 2,
-      text: "Is the structure easy to understand?",
-      category: "structure",
-      options: [
-        { text: "Not at all", points: 1 },
-        { text: "No", points: 2 },
-        { text: "Good", points: 3 },
-        { text: "Very good", points: 4 },
-        { text: "Super", points: 5 },
-      ],
-    },
-    {
-      id: 3,
-      text: "Is the structure creative?",
-      category: "structure",
-      options: [
-        { text: "Not at all", points: 1 },
-        { text: "No", points: 2 },
-        { text: "Good", points: 3 },
-        { text: "Very good", points: 4 },
-        { text: "Super", points: 5 },
-      ],
-    },
-  ]);
+    const navigate = useNavigate();
+    const [Questionnaire,setQuestionnaire]=useState(null);
+    const [criteriaList, setCriteriaList] = useState([{
+        criteriaID: 1,
+        questionnaireID: null,
+        title: "Structure",
+        questionList: [],
+      },]);
 
-  const handleBackClick = () => {
-    navigate("/questionnaire");
-  };
-
-  const handleCategoryClick = (category) => {
-    setSelectedCategory(category);
-  };
-
-  const handleAddOption = () => {
-    setOptions([
-      ...options,
-      { text: `Option ${options.length + 1}`, points: options.length + 1 },
-    ]);
-  };
-
-  const handleRemoveOption = (index) => {
-    if (options.length > 1) {
-      setOptions(options.filter((_, i) => i !== index));
-    }
-  };
-
-  const handleOptionChange = (index, field, value) => {
-    const newOptions = [...options];
-    newOptions[index][field] = value;
-    setOptions(newOptions);
-  };
-
-  const handleDeleteQuestion = () => {
-    setQuestionText("");
-    setOptions([
-      { text: "Option 1", points: 1 },
-      { text: "Option 2", points: 2 },
-      { text: "Option 3", points: 3 },
-    ]);
-  };
-
-  const handleAddToList = () => {
-    if (questionText.trim()) {
-      const newQuestion = {
-        id: questions.length + 1,
-        text: questionText,
-        category: selectedCategory,
-        options: [...options],
-      };
-      setQuestions([...questions, newQuestion]);
-      handleDeleteQuestion();
-    }
-  };
-
-// when clicked on the button: "Save questionnaire"
-  const handleSaveQuestionnaire = () => {
-    console.log("Save questionnaire:", questions);
-
-     // data that is posted to the backend (all questions has their category information)
-     const daten = {
-      questionnaireID: crypto.randomUUID(),
-      eventID: crypto.randomUUID(),
-    	allQuestions: questions
+    const [selectedCategory, setSelectedCategory] = useState(1);
+   //Tag: Function related to building the questionaire
+   //allows creatinga new criteria
+    const addCriteria = (name) => {
+        const newCriteria = {
+          criteriaID: criteriaList.length+ 1,
+          questionnaireID: null,
+          title: name,
+          questionList: [],
+        };
+        setCriteriaList(prev => [...prev, newCriteria]);
     };
+        // This functions navigate  copies previous list inside updated
+        //copies the needed criteria
+        // adds the question to the questionlist of the copy
+        // uses the modified criteria copy to update criterialist
+        //why use copy and not change the actual object ?
+        //react checks if the reference to the object has changed to
+        // know if it should re-render.
+        // so by making a copy to replace the original, we enforce rerendering
+        // using .map helps  avoiding this process (next function)
+        const addQuestionToCriteria = (question, criteriaID = selectedCategory) => {
+            setCriteriaList(prev => {
+              const index = prev.findIndex(c => c.criteriaID === criteriaID);
+              if (index === -1) return prev;
+          
+              const updated = [...prev];
+              updated[index] = { ...updated[index] };
+              updated[index].questionList = [...updated[index].questionList, question];
+              return updated;
+            });
+          };
+          
+      
+      const handleBackClick = () => {
+        navigate("/questionnaire");
+      };
+      //changes which category(criteria) is selected
+      // triggers change in preview
+      const handleCategoryClick = (categoryID) => {
+        setSelectedCategory(categoryID);
+      };
 
-    // built-in browser API that allows HTTP requests (GET, POST)
-    // fetch = fetch data (GET) + send data (POST)
-    fetch('http://localhost:5000/questionnaire/save', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify(daten),
-    })
+      const handleSaveQuestionnaire = () => {
+        console.log("saving questionaire" );
+        //assigns the current Criteria list to questionaire
+        // marks questionaire as template
+        setQuestionnaire(
+            {
+                questionnaireID: null, //to be assigned by backend
+                eventID: null,  // to be assigned by backend
+                criteriaList:criteriaList,
+                visualizationType: "bar",
+                isTemplate: true
+             });
+        console.log("saved questionaire" );
+          
+        
+        
+      };
+    
+      const handleCreateQRs = () => {
+        //TODO: API Call Task:
+        // assigns an available questionaire ID to the questionaire
+        //assigns an event ID to the questionaire
+        // parses the questionaire object for criteria{...questionlist{...options{...}}}  
+        console.log("Create QRs");
+      };
 
-    // wait for the response from backend and parse the response as JSON
-    .then(res => res.json())
-
-    // once JSON is parsed, handle the response from the backend and go back to the questionnaire-overview
-    .then(response => {
-      console.log('Answer from Backend:', response);
-      navigate("/questionnaire");
-    })
-
-    // if something goes wrong, the error is handled here
-    .catch(error => {
-      console.error('Error when sending:', error);
-    });    
-  };
-
-  const handleCreateQRs = () => {
-    console.log("Create QRs");
-  };
-
-  return (
-    <div className="create-questionnaire-page">
-      <div className="back-arrow" onClick={handleBackClick}>
-        ←
-      </div>
-
-      <div className="main-content">
-        <div className="left-section">
-          <h2>Preview of Questionnaire</h2>
-
-          <div className="categories-and-preview">
-            <div className="categories">
-              <div
-                className={`category ${
-                  selectedCategory === "structure" ? "active" : ""
-                }`}
-                onClick={() => handleCategoryClick("structure")}
-              >
-                structure
-              </div>
-              <div
-                className={`category ${
-                  selectedCategory === "content" ? "active" : ""
-                }`}
-                onClick={() => handleCategoryClick("content")}
-              >
-                content
-              </div>
-              <div
-                className={`category ${
-                  selectedCategory === "creativity" ? "active" : ""
-                }`}
-                onClick={() => handleCategoryClick("creativity")}
-              >
-                creativity
-              </div>
+      return(
+        <div className="create-questionnaire-page">
+            <div className="back-arrow" onClick={handleBackClick}>
+             ←
             </div>
-
-            <div className="preview-section">
-              <div className="preview-header">
-                <div className="logo">📋🔍</div>
-                <span>EventRate Pro</span>
-              </div>
-
-              <div className="preview-category">{selectedCategory}</div>
-
-              <div className="questions-preview">
-                {questions
-                  .filter((q) => q.category === selectedCategory)
-                  .map((question, index) => (
-                    <div key={question.id} className="question-preview">
-                      <h4>
-                        Q{index + 1}: {question.text}
-                      </h4>
-                      <div className="options-preview">
-                        {question.options.map((option, optIndex) => (
-                          <div key={optIndex} className="option-preview">
-                            <input type="radio" name={`q${question.id}`} />
-                            <span>{option.text}</span>
-                          </div>
-                        ))}
-                      </div>
+            <div className="main-content">
+                <div className="left-section">
+                    <h2>Preview of Questionnaire</h2>
+                    <div className="categories-and-preview">
+                        <div className="categories">
+                            <CategorySideBar 
+                            list={criteriaList} 
+                            current={selectedCategory}
+                            onSelect={handleCategoryClick}
+                            onAdd={addCriteria}/>
+                        </div>
+                        <div className="preview-section">
+                            <Preview currentID={selectedCategory} list={criteriaList}/>
+                        </div>
                     </div>
-                  ))}
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <div className="right-section">
-          <div className="form-section">
-            <h3>Visualization type</h3>
-            <div className="visualization-icons">
-              <span className="chart-icon">📊</span>
-              <span className="pie-icon">🥧</span>
-            </div>
-
-            <h3>Questions</h3>
-            <input
-              type="text"
-              placeholder="add your question here..."
-              value={questionText}
-              onChange={(e) => setQuestionText(e.target.value)}
-              className="question-input"
-            />
-
-            <h3>Options</h3>
-            <div className="options-section">
-              {options.map((option, index) => (
-                <div key={index} className="option-row">
-                  <input
-                    type="text"
-                    value={option.text}
-                    onChange={(e) =>
-                      handleOptionChange(index, "text", e.target.value)
-                    }
-                    className="option-input"
-                  />
-                  <span className="points">({option.points} points)</span>
-                  <button
-                    className="remove-option"
-                    onClick={() => handleRemoveOption(index)}
-                  >
-                    ×
-                  </button>
                 </div>
-              ))}
-
-              {options.length < 5 && (
-                <button className="add-option" onClick={handleAddOption}>
-                  +
-                </button>
-              )}
+                <div className="right-section">
+                    <FormBuilder 
+                    form={criteriaList}
+                    current={selectedCategory}
+                    onAdd={addQuestionToCriteria}/>
+                    <div className="save-section">
+                    <button
+                        className="save-questionnaire"
+                        onClick={handleSaveQuestionnaire}>
+                     Save questionnaire
+                    </button>
+                    </div>
+                </div>
             </div>
 
-            <div className="action-buttons">
-              <button
-                className="delete-question"
-                onClick={handleDeleteQuestion}
-              >
-                Delete the question
-              </button>
-              <button className="add-to-list" onClick={handleAddToList}>
-                Add to the list
-              </button>
-            </div>
-          </div>
-
-          <div className="save-section">
-            <button
-              className="save-questionnaire"
-              onClick={handleSaveQuestionnaire}
-            >
-              Save questionnaire
-            </button>
-            <button className="create-qrs" onClick={handleCreateQRs}>
-              Create QRs
-            </button>
-          </div>
         </div>
-      </div>
-    </div>
-  );
+      );
 }
-
 export default CreateQuestionnaire;
