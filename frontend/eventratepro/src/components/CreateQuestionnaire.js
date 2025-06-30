@@ -8,12 +8,42 @@ import FormBuilder from "./sub-component/FormBuilder";
 function CreateQuestionnaire() {
     const navigate = useNavigate();
     const [Questionnaire,setQuestionnaire]=useState(null);
-    const [criteriaList, setCriteriaList] = useState([{
+    const [criteriaList, setCriteriaList] = useState([
+      {
         criteriaID: 1,
         questionnaireID: null,
         title: "Structure",
-        questionList: [],
-      },]);
+        questionList: [
+          {
+            questionID: 1,
+            title: "Is the introduction clearly structured?",
+            optionList: [
+              { optionID: 1, label: "Yes", points: 5 },
+              { optionID: 2, label: "Partially", points: 3 },
+              { optionID: 3, label: "No", points: 0 }
+            ]
+          },
+          {
+            questionID: 2,
+            title: "Is the conclusion well summarized?",
+            optionList: [
+              { optionID: 1, label: "Excellent", points: 5 },
+              { optionID: 2, label: "Adequate", points: 3 },
+              { optionID: 3, label: "Poor", points: 1 }
+            ]
+          },
+          {
+            questionID: 3,
+            title: "Does the presentation follow a logical flow?",
+            optionList: [
+              { optionID: 1, label: "Yes", points: 5 },
+              { optionID: 2, label: "Somewhat", points: 2 },
+              { optionID: 3, label: "Not at all", points: 0 }
+            ]
+          }
+        ]
+      }
+    ]);
 
     const [selectedCategory, setSelectedCategory] = useState(1);
    //Tag: Function related to building the questionaire
@@ -54,9 +84,7 @@ function CreateQuestionnaire() {
       };
       //changes which category(criteria) is selected
       // triggers change in preview
-      const handleCategoryClick = (categoryID) => {
-        setSelectedCategory(categoryID);
-      };
+     
 
       const handleSaveQuestionnaire = () => {
         console.log("saving questionaire" );
@@ -97,7 +125,7 @@ function CreateQuestionnaire() {
                             <CategorySideBar 
                             list={criteriaList} 
                             current={selectedCategory}
-                            onSelect={handleCategoryClick}
+                            signal={setSelectedCategory}
                             onAdd={addCriteria}/>
                         </div>
                         <div className="preview-section">
