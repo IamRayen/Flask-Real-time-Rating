@@ -8,11 +8,6 @@ function AccountOverview() {
   const navigate = useNavigate();
   const { User, logout } = useAuthContext();
 
-  const handleAddReferees = () => {
-    console.log("Add new Referees clicked");
-    // Add functionality later
-  };
-
   const handleViewQuestionnaire = () => {
     navigate("/questionnaire");
   };
@@ -38,23 +33,33 @@ function AccountOverview() {
 
   return (
     <div className="account-overview-page">
-      <Header icon="ERP"/>
-      
-      <div style={{display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '20px'}}>
+      <Header icon="ERP" />
+
+      <div
+        style={{
+          display: "flex",
+          justifyContent: "space-between",
+          alignItems: "center",
+          padding: "20px",
+        }}
+      >
         <h2>Welcome, {User?.displayName || User?.email}</h2>
-        <button onClick={handleLogout} style={{padding: '10px 20px', backgroundColor: '#dc3545', color: 'white', border: 'none', borderRadius: '5px', cursor: 'pointer'}}>
+        <button
+          onClick={handleLogout}
+          style={{
+            padding: "10px 20px",
+            backgroundColor: "#dc3545",
+            color: "white",
+            border: "none",
+            borderRadius: "5px",
+            cursor: "pointer",
+          }}
+        >
           Logout
         </button>
       </div>
 
       <div className="accinfor">
-        <div className="pp">
-          <div className="profile-icon">👤</div>
-        </div>
-        <div className="pt">
-          <p onClick={handleAddReferees}>add new Referees</p>
-        </div>
-
         <div className="qp">
           <div className="questionnaire-icon">📋</div>
         </div>
