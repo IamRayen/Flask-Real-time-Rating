@@ -1,0 +1,164 @@
+.eventdetails-main {
+  min-height: 100vh;
+  background: linear-gradient(to bottom, #fff, #c6f6fa);
+  padding: 0;
+  position: relative;
+}
+.eventdetails-back {
+  position: absolute;
+  top: 24px;
+  left: 24px;
+  font-size: 32px;
+  cursor: pointer;
+}
+.eventdetails-header {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-top: 40px;
+}
+.eventdetails-logo {
+  font-size: 64px;
+  margin-bottom: 8px;
+}
+.eventdetails-title {
+  font-size: 36px;
+  font-weight: 600;
+}
+.eventdetails-content {
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  margin-top: 32px;
+}
+.eventdetails-left {
+  margin-right: 80px;
+}
+.eventdetails-poster-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 32px;
+  margin-bottom: 32px;
+}
+.eventdetails-poster-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  position: relative;
+}
+.eventdetails-poster-title {
+  font-size: 20px;
+  margin-bottom: 8px;
+}
+.eventdetails-qr-mock {
+  width: 100px;
+  height: 100px;
+  background: #fff;
+  border: 2px solid #000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 32px;
+}
+.eventdetails-remove {
+  position: absolute;
+  top: 0;
+  right: 0;
+  font-size: 20px;
+  cursor: pointer;
+}
+.eventdetails-add-poster {
+  display: flex;
+  justify-content: center;
+  font-size: 56px;
+  font-weight: 700;
+  cursor: pointer;
+}
+.eventdetails-right {
+  min-width: 350px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  position: relative;
+}
+.eventdetails-right-relative {
+  position: relative;
+}
+.eventdetails-referee-list-box {
+  width: 260px;
+  height: 48px;
+  background: #d3d3d3;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 24px;
+  font-weight: 500;
+  margin-bottom: 16px;
+}
+.eventdetails-referee-form {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 8px;
+}
+.eventdetails-referee-input {
+  padding: 8px 12px;
+  border-radius: 8px;
+  border: 1px solid #bdbdbd;
+  font-size: 16px;
+  width: 170px;
+}
+.eventdetails-referee-add-btn {
+  background: #4dd0fa;
+  color: #000;
+  font-size: 16px;
+  padding: 8px 16px;
+  border-radius: 8px;
+  border: none;
+  cursor: pointer;
+  font-weight: 500;
+}
+.eventdetails-referee-emails {
+  list-style: none;
+  padding: 0;
+  margin: 0 0 24px 0;
+  width: 260px;
+  min-height: 24px;
+}
+.eventdetails-referee-emails li {
+  background: #fff;
+  border-radius: 6px;
+  padding: 4px 10px;
+  margin-bottom: 4px;
+  font-size: 16px;
+  border: 1px solid #e0e0e0;
+}
+.eventdetails-bottom-buttons {
+  display: flex;
+  gap: 24px;
+  position: fixed;
+  bottom: 48px;
+  right: 80px;
+}
+.eventdetails-bottom-buttons-fixed {
+  display: flex;
+  gap: 24px;
+  position: fixed;
+  bottom: 48px;
+  right: 80px;
+}
+.eventdetails-export-btn, .eventdetails-proceed-btn {
+  background: #4dd0fa;
+  color: #000;
+  font-size: 20px;
+  padding: 16px 40px;
+  border-radius: 12px;
+  border: none;
+  box-shadow: 2px 4px 6px #b2ebf2;
+  cursor: pointer;
+  font-weight: 500;
+  transition: background 0.2s;
+}
+.eventdetails-export-btn:hover, .eventdetails-proceed-btn:hover {
+  background: #00bcd4;
+} 
