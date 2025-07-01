@@ -105,7 +105,7 @@ function CreateQuestionnaire() {
         
       };
     
-      const handleCreateQRs = () => {
+      const handleSetupEvent = () => {
         //TODO: API Call Task:
         // assigns an available questionaire ID to the questionaire
         //assigns an event ID to the questionaire
@@ -113,7 +113,7 @@ function CreateQuestionnaire() {
         //console.log("Create QRs");
         const qrID = "qr-id";
     const qrURL = 'http://localhost:3000/qr/${qrID}';
-    navigate("/qr-code");
+    navigate("/event-details");
   };
 
       return(
@@ -147,6 +147,11 @@ function CreateQuestionnaire() {
                         className="save-questionnaire"
                         onClick={handleSaveQuestionnaire}>
                      Save questionnaire
+                    </button>
+                    <button
+                        className="save-questionnaire"
+                        onClick={handleSetupEvent}>
+                      Setup event
                     </button>
                     </div>
                 </div>
