@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 
-function RefereeQR(){
+function EventDetails(){
     const navigate= useNavigate();
     const [Posters,setPosters]=useState([]);
     const [Referee,setReferee]=useState("");
@@ -80,4 +80,4 @@ return(
     </div>
 );
 }
-export default RefereeQR;
+export default EventDetails;
