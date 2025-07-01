@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { signInWithEmailAndPassword } from "firebase/auth";
 import { auth } from "../firebase/config";
@@ -13,6 +13,13 @@ function Login() {
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
   const { User } = useAuthContext();
+
+  // Redirect to home if user is already logged in
+  useEffect(() => {
+    if (User) {
+      navigate("/account-overview");
+    }
+  }, [User, navigate]);
 
   const handleLogin = async () => {
     if (!email || !password) {
@@ -40,12 +47,15 @@ function Login() {
 
   return (
     <div className="login-page">
-      <Header icon="ERP"/>
+      <Header icon="ERP" />
 
-      <form className="personalinfor" onSubmit={(e) => {
-  e.preventDefault();
-  handleLogin();
-}}>
+      <form
+        className="personalinfor"
+        onSubmit={(e) => {
+          e.preventDefault();
+          handleLogin();
+        }}
+      >
         <label htmlFor="email">Email Address</label>
         <input
           id="email"
@@ -64,7 +74,9 @@ function Login() {
           onChange={(e) => setPassword(e.target.value)}
           required
         />
-        {error && <div style={{color: 'red', marginBottom: '10px'}}>{error}</div>}
+        {error && (
+          <div style={{ color: "red", marginBottom: "10px" }}>{error}</div>
+        )}
         <button className="login" type="submit" disabled={loading}>
           {loading ? "Logging in..." : "Log in"}
         </button>
