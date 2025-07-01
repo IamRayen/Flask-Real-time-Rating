@@ -10,6 +10,7 @@ import Register from "./components/Register";
 import AccountOverview from "./components/AccountOverview";
 import Questionnaire from "./components/Questionnaire";
 import CreateQuestionnaire from "./components/CreateQuestionnaire";
+import Dashboard from "./components/Dashboard";
 import LoginGuard from "./context/AuthGuard";
 import { AuthProvider } from "./context/AuthContext";
 import QRCode from "./components/QRCode";
@@ -19,22 +20,35 @@ function App() {
   return (
     <Router>
       <AuthProvider>
-      <div className="App">
-        
-        <Routes>
-          <Route path="/" element={<Navigate to="/login" replace />} />
-          <Route path="/login" element={<Login />} />
-          <Route path="/register" element={<Register />} />
-          <Route path="/account-overview" element={<LoginGuard> <AccountOverview /> </LoginGuard>} />
-          <Route path="/questionnaire" element={<Questionnaire />} />
-          <Route
-            path="/create-questionnaire"
-            element={<LoginGuard> <CreateQuestionnaire /> </LoginGuard>}
-          />
-          <Route path="/qr-code" element={<QRCode />} />
-          <Route path="/event-details" element={< EventDetails/>} />
-        </Routes>
-      </div>
+        <div className="App">
+          <Routes>
+            <Route path="/" element={<Navigate to="/login" replace />} />
+            <Route path="/login" element={<Login />} />
+            <Route path="/register" element={<Register />} />
+            <Route
+              path="/account-overview"
+              element={
+                <LoginGuard>
+                  {" "}
+                  <AccountOverview />{" "}
+                </LoginGuard>
+              }
+            />
+            <Route path="/questionnaire" element={<Questionnaire />} />
+            <Route
+              path="/create-questionnaire"
+              element={
+                <LoginGuard>
+                  {" "}
+                  <CreateQuestionnaire />{" "}
+                </LoginGuard>
+              }
+            />
+            <Route path="/qr-code" element={<QRCode />} />
+            <Route path="/event-details" element={<EventDetails />} />
+            <Route path="/dashboard" element={<Dashboard />} />
+          </Routes>
+        </div>
       </AuthProvider>
     </Router>
   );

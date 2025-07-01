@@ -18,8 +18,7 @@ function AccountOverview() {
   };
 
   const handleViewDashboard = () => {
-    console.log("View Dashboard clicked");
-    // Add functionality later
+    navigate("/dashboard");
   };
 
   const handleLogout = async () => {
