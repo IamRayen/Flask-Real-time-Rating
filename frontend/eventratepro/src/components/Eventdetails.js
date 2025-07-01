@@ -24,6 +24,18 @@ function EventDetails() {
       setRefereeList([...RefereeList, refereeEmail.trim()]);
       setRefereeEmail("");
     }
+    console.log(refereeEmail);
+    
+    // API in order to check the given referee-EMail so that it is a valid refere in Firestore
+    fetch(`http://localhost:5000/event/addRefereeToList?email=${refereeEmail}`)
+    .then(res => res.json())
+    .then(data => {
+      if (data.status === "success") {
+        console.log("Valid referee:", data.referee);
+      } else {
+        console.error("Validation failed:", data.message);
+      }
+    });
   };
 
   const showPosterQRs = () => {
