@@ -74,11 +74,9 @@ function CreateQuestionnaire() {
              });
         console.log("saved questionaire" );
           
-         /*const daten = {
+         const daten = {
           userID: User.uid,
-          questionnaireID: crypto.randomUUID(),
-          eventID: crypto.randomUUID(),
-          allQuestions: questions
+          Questionaire:Questionnaire
         };
 
         // built-in browser API that allows HTTP requests (GET, POST)
@@ -103,7 +101,7 @@ function CreateQuestionnaire() {
         // if something goes wrong, the error is handled here
         .catch(error => {
           console.error('Error when sending:', error);
-        });*/
+        });
         
       };
     
