@@ -47,6 +47,45 @@ class Question:
 # --- APIs --- #
 
 
+
+# API: /event/addRefereeToList
+# Frontend calls this API in order to check if the provided
+# referee is a real referee in Firestore
+@event_bp.route('/addRefereeToList', methods=['GET'])
+def addRefereeToList():
+    email = request.args.get('email')
+
+    if not email:
+        return jsonify({"error": "Missing email parameter"}), 400
+
+    try:
+        users_ref = db.collection('users')
+        query = users_ref.where('email', '==', email).limit(1).stream()
+
+        user_doc = next(query, None)
+
+        if not user_doc:
+            return jsonify({"status": "not_found", "message": "User not found"}), 404
+
+        user_data = user_doc.to_dict()
+
+        if user_data.get('role') != 'referee':
+            return jsonify({"status": "invalid_role", "message": "User is not a referee"}), 403
+
+        return jsonify({
+            "status": "success",
+            "referee": {
+                "userID": user_doc.id,
+                "email": user_data['email'],
+                "name": user_data.get('name', ''),
+            }
+        }), 200
+
+    except Exception as e:
+        print(f"Error validating referee: {e}")
+        return jsonify({"status": "error", "message": str(e)}), 500
+
+
 # API: /event/save
 # Frontend calls this API in order to store the event in Firestore
 @event_bp.route('/save', methods=['POST'])
