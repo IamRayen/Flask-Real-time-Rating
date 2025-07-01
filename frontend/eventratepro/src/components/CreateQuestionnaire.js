@@ -72,12 +72,13 @@ function CreateQuestionnaire() {
                 visualizationType: "bar",
                 isTemplate: true
              });
-        console.log("saved questionaire" );
-          
-         const daten = {
+        
+        const daten = {
           userID: User.uid,
-          Questionaire:Questionnaire
+          Questionnaire:Questionnaire
         };
+
+        console.log(daten);
 
         // built-in browser API that allows HTTP requests (GET, POST)
         // fetch = fetch data (GET) + send data (POST)
@@ -95,7 +96,8 @@ function CreateQuestionnaire() {
         // once JSON is parsed, handle the response from the backend and go back to the questionnaire-overview
         .then(response => {
           console.log('Answer from Backend:', response);
-          navigate("/questionnaire");
+          console.log("saved questionaire" );
+          //navigate("/questionnaire");
         })
 
         // if something goes wrong, the error is handled here
