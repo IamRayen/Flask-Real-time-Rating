@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { QRCodeCanvas } from "qrcode.react";
 import "./Eventdetails.css";
 
 function EventDetails() {
@@ -9,12 +10,13 @@ function EventDetails() {
   const [RefereeList, setRefereeList] = useState([]);
   const [refereeEmail, setRefereeEmail] = useState("");
 
-  const handleReferee = () => {
-    const username = "";
-    //TODO:API call to check existense of Referee
-    // Returns referee Username if email is used
-    // ASSIgn return to username;
-    if (username) setRefereeList([...RefereeList, username]);
+  const handleReferee = async () => {
+    const username = await getUsernameByEmail(Referee);
+    if (username) {
+      setRefereeList([...RefereeList, username])
+      } else {
+        alert("Referee not found");
+      }
     setReferee("");
   };
 
@@ -60,6 +62,15 @@ function EventDetails() {
     }
     //create QR code for Poster
   };
+
+  // remove QR code of a poster
+  const handleRemovePoster = (idToRemove) => {
+    const updatedPosters = Posters.filter(
+      (poster) => poster.PosterID !== idToRemove
+    );
+    setPosters(updatedPosters);
+  }
+
   // returns items of a list as referee Usernames
   const displayList = () => {
     return RefereeList.map((username, index) => (
@@ -95,19 +106,24 @@ function EventDetails() {
         {/* Left Section: Posters */}
         <div className="eventdetails-left">
           <div className="eventdetails-poster-grid">
-            {mockPosters.map((poster) => (
+            {Posters.map((poster) => {
+              console.log('http://localhost:3000/questionnaire//${poster.PosterID}');
+              return (
               <div key={poster.PosterID} className="eventdetails-poster-item">
                 <div className="eventdetails-poster-title">{poster.Title}</div>
                 <div className="eventdetails-qr-mock">
-                  <span role="img" aria-label="qr">
-                    #
-                  </span>
+                  <QRCodeCanvas
+                    value={`http://localhost:3000/questionnaire//${poster.PosterID}`}
+                    size={90}
+                    style={{backgroundColor: "white"}}
+                  />
                 </div>
-                <div className="eventdetails-remove">×</div>
+                <div className="eventdetails-remove" onClick={() => handleRemovePoster(poster.PosterID)}>×</div>
               </div>
-            ))}
+              );
+          })}
           </div>
-          <div className="eventdetails-add-poster">+</div>
+          <div className="eventdetails-add-poster" onClick={handleAddPoster}>+</div>
         </div>
         {/* Right Section: Referee and Buttons */}
         <div className="eventdetails-right eventdetails-right-relative">
