@@ -233,3 +233,27 @@ def update_event(event_id):
         return jsonify({"message": "Event updated successfully"}), 200
     except Exception as e:
         return jsonify({"error": str(e)}), 500
+
+@event_bp.route('/QRCodeSaveUrl', methods=['POST'])
+def save_qr_code_url():
+    
+    data = request.get_json()
+    event_id = data.get('eventID')
+    posters = data.get('posters', [])
+
+    if not event_id or not posters:
+        return jsonify({"status": "error", "message": "eventID and posters are required."}), 400
+
+    try:
+        
+        event_ref = db.collection('events').document(event_id)
+        for poster in posters:
+            poster_id = str(uuid.uuid4())
+            poster_data = {
+                "name": poster.get("name", ""),
+                "qrCodeUrl": poster.get("qrCodeUrl", "")
+            }
+            event_ref.collection('posters').document(poster_id).set(poster_data)
+        return jsonify({"status": "ok", "message": "Posters saved successfully"})
+    except Exception as e:
+        return jsonify({"status": "error", "message": str(e)}), 500
