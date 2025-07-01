@@ -74,7 +74,7 @@ function CreateQuestionnaire() {
              });
         console.log("saved questionaire" );
           
-        const daten = {
+         /*const daten = {
           userID: User.uid,
           questionnaireID: crypto.randomUUID(),
           eventID: crypto.randomUUID(),
@@ -103,7 +103,7 @@ function CreateQuestionnaire() {
         // if something goes wrong, the error is handled here
         .catch(error => {
           console.error('Error when sending:', error);
-        });
+        });*/
         
       };
     
