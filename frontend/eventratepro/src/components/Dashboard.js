@@ -1,5 +1,5 @@
 import React from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import {
   Chart as ChartJS,
   CategoryScale,
@@ -26,6 +26,7 @@ ChartJS.register(
 
 function Dashboard() {
   const navigate = useNavigate();
+  const { eventID } = useParams();
 
   const participantCount = 24;
 
@@ -123,6 +124,40 @@ function Dashboard() {
     },
   };
 
+  const handleBegin = async () => {
+  try {
+    const res = await fetch(`http://localhost:5000/dashboard/startEvent?eventID=${eventID}`, {
+      method: "POST",
+    });
+    const data = await res.json();
+    if (res.ok) {
+      alert("Event started successfully!");
+    } else {
+      alert("Failed to start event: " + data.error);
+    }
+  } catch (err) {
+    console.error("Error:", err);
+    alert("An error occurred while starting the event.");
+  }
+  };
+
+  const handleEnd = async () => {
+  try {
+    const res = await fetch(`http://localhost:5000/dashboard/endEvent?eventID=${eventID}`, {
+      method: "POST",
+    });
+    const data = await res.json();
+    if (res.ok) {
+      alert("Event has ended successfully!");
+    } else {
+      alert("Failed to end event: " + data.error);
+    }
+  } catch (err) {
+    console.error("Error:", err);
+    alert("An error occurred while ending the event.");
+  }
+  };
+
   return (
     <div className="dashboard-page">
       <div className="back-arrow" onClick={handleBackClick}>
@@ -141,8 +176,12 @@ function Dashboard() {
           </div>
 
           <div className="action-buttons">
-            <button className="action-btn begin-btn">Begin</button>
-            <button className="action-btn end-btn">End</button>
+            <button className="action-btn begin-btn" onClick={handleBegin}>
+              Begin
+            </button>
+            <button className="action-btn end-btn" onClick={handleEnd}>
+              End
+            </button>
             <button className="action-btn excel-btn">Excel</button>
           </div>
         </div>
