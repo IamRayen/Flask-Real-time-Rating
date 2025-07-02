@@ -18,4 +18,8 @@ def create_app():
     from app.routes.dashboard_controller import dashboard_bp
     app.register_blueprint(dashboard_bp)
 
+    # handles votes
+    from app.routes.vote_controller import vote_bp
+    app.register_blueprint(vote_bp)
+
     return app
