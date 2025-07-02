@@ -10,8 +10,12 @@ def create_app():
     from app.routes.event_controller import event_bp
     app.register_blueprint(event_bp)
 
-    # handles questionnaires
+    # handles templates
     from app.routes.template_controller import template_bp
     app.register_blueprint(template_bp)
+
+    # handles dashboard
+    from app.routes.dashboard_controller import dashboard_bp
+    app.register_blueprint(dashboard_bp)
 
     return app
