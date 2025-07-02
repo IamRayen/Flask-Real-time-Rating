@@ -10,6 +10,7 @@ import Register from "./components/Register";
 import AccountOverview from "./components/AccountOverview";
 import Questionnaire from "./components/Questionnaire";
 import CreateQuestionnaire from "./components/CreateQuestionnaire";
+import SelectionDashboard from "./components/SelectionDashboard";
 import Dashboard from "./components/Dashboard";
 import LoginGuard from "./context/AuthGuard";
 import { AuthProvider } from "./context/AuthContext";
@@ -46,7 +47,8 @@ function App() {
             />
             <Route path="/qr-code" element={<QRCode />} />
             <Route path="/event-details" element={<EventDetails />} />
-            <Route path="/dashboard" element={<Dashboard />} />
+            <Route path="/selection-dashboard" element={<SelectionDashboard />} />
+            <Route path="/dashboard/:eventID" element={<Dashboard />} />
           </Routes>
         </div>
       </AuthProvider>
