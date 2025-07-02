@@ -16,6 +16,7 @@ import LoginGuard from "./context/AuthGuard";
 import { AuthProvider } from "./context/AuthContext";
 import QRCode from "./components/QRCode";
 import EventDetails from "./components/Eventdetails";
+import Voting from "./components/Voting";
 
 function App() {
   return (
@@ -49,6 +50,7 @@ function App() {
             <Route path="/event-details" element={<EventDetails />} />
             <Route path="/selection-dashboard" element={<SelectionDashboard />} />
             <Route path="/dashboard/:eventID" element={<Dashboard />} />
+            <Route path="/:questionnaireID/:posterID" element={<Voting />} />
           </Routes>
         </div>
       </AuthProvider>
