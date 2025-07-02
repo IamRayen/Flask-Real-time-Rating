@@ -31,7 +31,6 @@ function SelectionDashboard() {
   }, [User]);
 
   const handleViewEvent = (eventID) => {
-    // You can extend this to go to a details page
     navigate(`/dashboard/${eventID}`);
   };
 
