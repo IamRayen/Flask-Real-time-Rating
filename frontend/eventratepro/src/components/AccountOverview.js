@@ -18,7 +18,8 @@ function AccountOverview() {
   };
 
   const handleViewDashboard = () => {
-    navigate("/dashboard");
+    navigate("/selection-dashboard")
+    //navigate("/dashboard");
   };
 
   const handleLogout = async () => {
