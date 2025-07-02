@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuthContext } from "../context/AuthContext";
 import "./CreateQuestionnaire.css";
@@ -10,9 +10,11 @@ function CreateQuestionnaire() {
     const navigate = useNavigate();
     const { User } = useAuthContext();
     const [Questionnaire,setQuestionnaire]=useState(null);
+    const questionnaireID = useRef(crypto.randomUUID());
+    const eventID = useRef(crypto.randomUUID());
     const [criteriaList, setCriteriaList] = useState([{
         criteriaID: 1,
-        questionnaireID: null,
+        questionnaireID: questionnaireID.current,
         title: "Structure",
         questionList: [],
       },]);
@@ -23,7 +25,7 @@ function CreateQuestionnaire() {
     const addCriteria = (name) => {
         const newCriteria = {
           criteriaID: criteriaList.length+ 1,
-          questionnaireID: null,
+          questionnaireID: questionnaireID.current,
           title: name,
           questionList: [],
         };
@@ -49,11 +51,11 @@ function CreateQuestionnaire() {
               return updated;
             });
           };
-          
-      
+
       const handleBackClick = () => {
         navigate("/questionnaire");
       };
+
       //changes which category(criteria) is selected
       // triggers change in preview
       const handleCategoryClick = (categoryID) => {
@@ -64,22 +66,19 @@ function CreateQuestionnaire() {
         console.log("saving questionaire" );
         //assigns the current Criteria list to questionaire
         // marks questionaire as template
-        setQuestionnaire(
-            {
-                questionnaireID: null, //to be assigned by backend
-                eventID: null,  // to be assigned by backend
-                criteriaList:criteriaList,
-                visualizationType: "bar",
-                isTemplate: true
-             });
-        
+        const questionnaireObj = {
+          questionnaireID: questionnaireID.current,
+          eventID: null,
+          criteriaList: criteriaList,
+          visualizationType: "bar",
+          isTemplate: true
+        };
+        setQuestionnaire(questionnaireObj);
         const daten = {
           userID: User.uid,
-          Questionnaire:Questionnaire
+          Questionnaire:questionnaireObj
         };
-
         console.log(daten);
-
         // built-in browser API that allows HTTP requests (GET, POST)
         // fetch = fetch data (GET) + send data (POST)
         fetch('http://localhost:5000/template/save', {
@@ -89,22 +88,18 @@ function CreateQuestionnaire() {
           },
           body: JSON.stringify(daten),
         })
-
         // wait for the response from backend and parse the response as JSON
         .then(res => res.json())
-
         // once JSON is parsed, handle the response from the backend and go back to the questionnaire-overview
         .then(response => {
           console.log('Answer from Backend:', response);
           console.log("saved questionaire" );
           //navigate("/questionnaire");
         })
-
         // if something goes wrong, the error is handled here
         .catch(error => {
           console.error('Error when sending:', error);
         });
-        
       };
     
       const handleSetupEvent = () => {
@@ -113,9 +108,19 @@ function CreateQuestionnaire() {
         //assigns an event ID to the questionaire
         // parses the questionaire object for criteria{...questionlist{...options{...}}}  
         //console.log("Create QRs");
-        const qrID = "qr-id";
-    const qrURL = 'http://localhost:3000/qr/${qrID}';
-    navigate("/event-details");
+        const questionnaireObj = {
+          questionnaireID: questionnaireID.current,
+          eventID: eventID.current,
+          criteriaList: criteriaList,
+          visualizationType: "bar",
+          isTemplate: false
+        };
+        setQuestionnaire(questionnaireObj);
+        const daten = {
+          userID: User.uid,
+          Questionnaire:questionnaireObj,
+        };
+        navigate("/event-details", { state: daten });
   };
 
       return(
