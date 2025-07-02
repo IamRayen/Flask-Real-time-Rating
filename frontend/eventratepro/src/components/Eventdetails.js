@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 import { QRCodeCanvas } from "qrcode.react";
 import "./Eventdetails.css";
 
@@ -10,34 +10,34 @@ function EventDetails() {
   const [RefereeList, setRefereeList] = useState([]);
   const [refereeEmail, setRefereeEmail] = useState("");
 
-  const handleReferee = async () => {
-    const username = await getUsernameByEmail(Referee);
-    if (username) {
-      setRefereeList([...RefereeList, username])
-      } else {
-        alert("Referee not found");
-      }
-    setReferee("");
-  };
+  const location = useLocation();
+  const daten = location.state;
+
+  console.log("Received questionnaire-data:", daten);
 
   const handleAddReferee = (e) => {
     e.preventDefault();
+
+    // checks if input is not empty or only whitespace (trim) and prevents the same email twice
     if (refereeEmail.trim() && !RefereeList.includes(refereeEmail.trim())) {
-      setRefereeList([...RefereeList, refereeEmail.trim()]);
-      setRefereeEmail("");
+
+      // API in order to check the given referee-EMail so that it is a valid refere in Firestore
+      fetch(`http://localhost:5000/event/addRefereeToList?email=${refereeEmail}`)
+      .then(res => res.json())
+      .then(data => {
+
+        // if the given referee is valid, insert it to the RefereeList
+        if (data.status === "success") {
+          console.log("Valid referee:", data.referee);
+          // add referee to the referee-list
+          setRefereeList([...RefereeList, refereeEmail.trim()]);
+        } else {
+          console.error("Validation failed:", data.message);
+        }
+        setRefereeEmail("");
+      });
     }
     console.log(refereeEmail);
-    
-    // API in order to check the given referee-EMail so that it is a valid refere in Firestore
-    fetch(`http://localhost:5000/event/addRefereeToList?email=${refereeEmail}`)
-    .then(res => res.json())
-    .then(data => {
-      if (data.status === "success") {
-        console.log("Valid referee:", data.referee);
-      } else {
-        console.error("Validation failed:", data.message);
-      }
-    });
   };
 
   const showPosterQRs = () => {
@@ -56,11 +56,12 @@ function EventDetails() {
       const newPoster = {
         PosterID: Posters.length,
         Title: name,
-        content: "no description",
+        content: `http://localhost:3000/${daten.Questionnaire.questionnaireID}/${Posters.length}`,
+        eventID: daten.Questionnaire.eventID
       };
       setPosters([...Posters, newPoster]);
+      console.log(Posters);
     }
-    //create QR code for Poster
   };
 
   // remove QR code of a poster
@@ -77,6 +78,52 @@ function EventDetails() {
       <li key={index}>{username}</li>
     ));
   };
+
+  const handleExportPDF = () => {
+    console.log(daten);
+    console.log(Posters);
+    console.log(RefereeList);
+
+    const event = {
+      eventID: daten.Questionnaire.eventID,
+      questionnaireID: daten.Questionnaire.questionnaireID,
+      itemList: Posters,
+      refereeList: RefereeList,
+      status: "pending",
+      organizerID: daten.userID
+    };
+
+    const storeEvent = {
+      event: event,
+      questionnaire: daten.Questionnaire
+    }
+
+    // built-in browser API that allows HTTP requests (GET, POST)
+      // fetch = fetch data (GET) + send data (POST)
+      fetch('http://localhost:5000/event/save', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(storeEvent),
+      })
+
+      // wait for the response from backend and parse the response as JSON
+      .then(res => res.json())
+
+      // once JSON is parsed, handle the response from the backend and go back to the questionnaire-overview
+      .then(response => {
+        console.log('Answer from Backend:', response);
+        console.log("saved questionaire" );
+        //navigate("/questionnaire");
+      })
+
+      // if something goes wrong, the error is handled here
+      .catch(error => {
+        console.error('Error when sending:', error);
+      });
+
+  }
 
   const toEvent = () => {
     navigate("/event");
@@ -156,7 +203,9 @@ function EventDetails() {
             <button className="eventdetails-proceed-btn">
               Proceed to Event
             </button>
-            <button className="eventdetails-export-btn">Export PDF</button>
+            <button className="eventdetails-export-btn" onClick={handleExportPDF}>
+              Export PDF
+            </button>
           </div>
         </div>
       </div>
