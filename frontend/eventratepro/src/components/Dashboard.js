@@ -158,6 +158,24 @@ function Dashboard() {
   }
   };
 
+  const getDashboardData = async () => {
+  try {
+    const res = await fetch(`http://localhost:5000/dashboard/getDashboardData?eventID=${eventID}`, {
+      method: "GET",
+    });
+    const data = await res.json();
+    if (res.ok) {
+      alert("Found data!");
+      console.log(data);
+    } else {
+      alert("failed to retreive data: " + data.error);
+    }
+  } catch (err) {
+    console.error("Error:", err);
+    alert("An error occurred while fetching data.");
+  }
+  };
+
   return (
     <div className="dashboard-page">
       <div className="back-arrow" onClick={handleBackClick}>
