@@ -1,6 +1,10 @@
-from flask import Blueprint,jsonify,request
+from flask import Blueprint,jsonify,request, send_file
 from app.firebase import db
 import uuid
+from fpdf import FPDF
+from io import BytesIO
+from datetime import datetime
+
 
 event_bp = Blueprint('event_bp', __name__,url_prefix='/event')
 
@@ -156,5 +160,126 @@ def save_qr_code_url():
             }
             event_ref.collection('posters').document(poster_id).set(poster_data)
         return jsonify({"status": "ok", "message": "Posters saved successfully"})
+    except Exception as e:
+        return jsonify({"status": "error", "message": str(e)}), 500
+
+@event_bp.route('/exportPDF/<string:event_id>', methods=['GET'])
+def generatePDFData(event_id):
+    """
+    We will use FPDF library to generate the PDF data.
+    Do in the Terminal to install library: pip install fpdf==1.7.2
+
+    PDF will contain:
+    - Event information
+    - Questionnaire details
+    - Poster QR codes
+    """
+    try:
+        # Get event data
+        event_ref = db.collection('events').document(event_id)
+        event_doc = event_ref.get()
+        
+        if not event_doc.exists:
+            return jsonify({"status": "error", "message": "Event not found"}), 404
+            
+        event_data = event_doc.to_dict()
+        
+        # Get questionnaire data
+        questionnaire_id = event_data.get('questionnaireID')
+        questionnaire_data = None
+        if questionnaire_id:
+            questionnaire_ref = db.collection('questionnaires').document(questionnaire_id)
+            questionnaire_doc = questionnaire_ref.get()
+            if questionnaire_doc.exists:
+                questionnaire_data = questionnaire_doc.to_dict()
+        
+        # Get posters data
+        posters = []
+        posters_ref = event_ref.collection('posters')
+        for poster_doc in posters_ref.stream():
+            posters.append(poster_doc.to_dict())
+        
+        # Generate PDF
+        pdf = FPDF()
+        pdf.add_page()
+        
+        # Title
+        pdf.set_font('Arial', 'B', 16)
+        pdf.cell(0, 10, 'EVENT REPORT', ln=True, align='C')
+        pdf.ln(10)
+        
+        # Event information will be written 
+        pdf.set_font('Arial', 'B', 14)
+        pdf.cell(0, 10, 'Event Information', ln=True)
+        pdf.ln(5)
+        
+        pdf.set_font('Arial', '', 10)
+        
+        # Event information will be written in a table format
+        event_info = [
+            ['Event ID:', event_data.get('eventID', 'N/A')],
+            ['Event Name:', event_data.get('eventName', 'N/A')],
+            ['Organizer ID:', event_data.get('organizerID', 'N/A')],
+            ['Status:', event_data.get('status', 'N/A')],
+            
+        ]
+        
+        
+        # Create table
+        col_width = [60, 120]
+        for row in event_info:
+            pdf.cell(col_width[0], 8, row[0], border=1)
+            pdf.cell(col_width[1], 8, row[1], border=1, ln=True)
+        
+        pdf.ln(10)
+        
+        # Questionnaire information will be written in a table format
+        if questionnaire_data:
+            pdf.set_font('Arial', 'B', 14)
+            pdf.cell(0, 10, 'Questionnaire Information', ln=True)
+            pdf.ln(5)
+            
+            pdf.set_font('Arial', '', 10)
+            pdf.cell(0, 8, f'Questionnaire ID: {questionnaire_data.get("questionnaireID", "N/A")}', ln=True)
+            pdf.cell(0, 8, f'Is Template: {"Yes" if questionnaire_data.get("is_template") else "No"}', ln=True)
+            pdf.ln(10)
+        
+        # Poster QR codes
+        if posters:
+            pdf.set_font('Arial', 'B', 14)
+            pdf.cell(0, 10, 'Poster QR Codes', ln=True)
+            pdf.ln(5)
+            
+            pdf.set_font('Arial', 'B', 10)
+            pdf.cell(70, 8, 'Poster Name', border=1)
+            pdf.cell(110, 8, 'QR Code URL', border=1, ln=True)
+            
+            pdf.set_font('Arial', '', 9)
+            for poster in posters:
+                name = poster.get('name', 'No Name')
+                url = poster.get('qrCodeUrl', 'No URL')
+                
+                # Shorten long URLs
+                if len(url) > 50:
+                    url = url[:47] + "..."
+                
+                pdf.cell(70, 8, name, border=1)
+                pdf.cell(110, 8, url, border=1, ln=True)
+        
+        # Write PDF to buffer
+        buffer = BytesIO()
+        pdf.output(buffer)
+        buffer.seek(0)
+        
+        # Create filename
+        filename = f"event_report_{event_id}_{datetime.now().strftime('%Y%m%d_%H%M%S')}.pdf"
+        
+        return send_file(
+            buffer,
+            as_attachment=True,
+            download_name=filename,
+            mimetype='application/pdf'
+        )
+        
     except Exception as e:
         return jsonify({"status": "error", "message": str(e)}), 500
