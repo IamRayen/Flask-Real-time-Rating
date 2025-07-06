@@ -14,7 +14,7 @@ function SelectionDashboard() {
     const fetchEvents = async () => {
       try {
         const res = await fetch(
-          `http://http://127.0.0.1:5000/dashboard/getAllPendingOrRunningEvents?userID=${User.uid}`
+          `http://127.0.0.1:5000/dashboard/getAllPendingOrRunningEvents?userID=${User.uid}`
         );
         const data = await res.json();
         setEvents(data);

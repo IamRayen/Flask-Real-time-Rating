@@ -132,7 +132,7 @@ function EventDetails() {
 
     // built-in browser API that allows HTTP requests (GET, POST)
     // fetch = fetch data (GET) + send data (POST)
-    fetch("http://http://127.0.0.1:5000/event/save", {
+    fetch("http://127.0.0.1:5000/event/save", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",

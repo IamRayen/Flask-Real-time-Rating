@@ -127,7 +127,7 @@ function Dashboard() {
   const handleBegin = async () => {
     try {
       const res = await fetch(
-        `http://http://127.0.0.1:5000/dashboard/startEvent?eventID=${eventID}`,
+        `http://127.0.0.1:5000/dashboard/startEvent?eventID=${eventID}`,
         {
           method: "POST",
         }
@@ -147,7 +147,7 @@ function Dashboard() {
   const handleEnd = async () => {
     try {
       const res = await fetch(
-        `http://http://127.0.0.1:5000/dashboard/endEvent?eventID=${eventID}`,
+        `http://127.0.0.1:5000/dashboard/endEvent?eventID=${eventID}`,
         {
           method: "POST",
         }
@@ -167,7 +167,7 @@ function Dashboard() {
   const getDashboardData = async () => {
     try {
       const res = await fetch(
-        `http://http://127.0.0.1:5000/dashboard/getDashboardData?eventID=${eventID}`,
+        `http://127.0.0.1:5000/dashboard/getDashboardData?eventID=${eventID}`,
         {
           method: "GET",
         }
