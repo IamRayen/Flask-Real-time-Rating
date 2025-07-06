@@ -14,7 +14,7 @@ function SelectionDashboard() {
     const fetchEvents = async () => {
       try {
         const res = await fetch(
-          `http://localhost:5000/dashboard/getAllPendingOrRunningEvents?userID=${User.uid}`
+          `http://http://127.0.0.1:5000/dashboard/getAllPendingOrRunningEvents?userID=${User.uid}`
         );
         const data = await res.json();
         setEvents(data);
@@ -42,28 +42,28 @@ function SelectionDashboard() {
 
         {loading ? (
           <p>Loading events...</p>
-          ) : events.length === 0 ? (
+        ) : events.length === 0 ? (
           <div>
             <p>No pending or running events found.</p>
             <button
               onClick={() => navigate("/dashboard/default")}
               className="go-to-dashboard-btn"
             >
-            Go to Dashboard anyway
+              Go to Dashboard anyway
             </button>
           </div>
-          ) : (
-        <ul className="event-list">
-          {events.map((event) => (
-            <li key={event.eventID} className="event-card">
-            <h3>{event.title || "Untitled Event"}</h3>
-            <p>Status: {event.status}</p>
-            <button onClick={() => handleViewEvent(event.eventID)}>
-              View Event
-            </button>
-            </li>
+        ) : (
+          <ul className="event-list">
+            {events.map((event) => (
+              <li key={event.eventID} className="event-card">
+                <h3>{event.title || "Untitled Event"}</h3>
+                <p>Status: {event.status}</p>
+                <button onClick={() => handleViewEvent(event.eventID)}>
+                  View Event
+                </button>
+              </li>
             ))}
-        </ul>
+          </ul>
         )}
       </div>
     </div>

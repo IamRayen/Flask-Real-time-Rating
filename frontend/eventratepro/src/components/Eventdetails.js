@@ -20,22 +20,22 @@ function EventDetails() {
 
     // checks if input is not empty or only whitespace (trim) and prevents the same email twice
     if (refereeEmail.trim() && !RefereeList.includes(refereeEmail.trim())) {
-
       // API in order to check the given referee-EMail so that it is a valid refere in Firestore
-      fetch(`http://localhost:5000/event/addRefereeToList?email=${refereeEmail}`)
-      .then(res => res.json())
-      .then(data => {
-
-        // if the given referee is valid, insert it to the RefereeList
-        if (data.status === "success") {
-          console.log("Valid referee:", data.referee);
-          // add referee to the referee-list
-          setRefereeList([...RefereeList, refereeEmail.trim()]);
-        } else {
-          console.error("Validation failed:", data.message);
-        }
-        setRefereeEmail("");
-      });
+      fetch(
+        `http://127.0.0.1:5000/event/addRefereeToList?email=${refereeEmail}`
+      )
+        .then((res) => res.json())
+        .then((data) => {
+          // if the given referee is valid, insert it to the RefereeList
+          if (data.status === "success") {
+            console.log("Valid referee:", data.referee);
+            // add referee to the referee-list
+            setRefereeList([...RefereeList, refereeEmail.trim()]);
+          } else {
+            console.error("Validation failed:", data.message);
+          }
+          setRefereeEmail("");
+        });
     }
     console.log(refereeEmail);
   };
@@ -57,7 +57,7 @@ function EventDetails() {
         PosterID: Posters.length,
         Title: name,
         content: `http://localhost:3000/${daten.Questionnaire.questionnaireID}/${Posters.length}`,
-        eventID: daten.Questionnaire.eventID
+        eventID: daten.Questionnaire.eventID,
       };
       setPosters([...Posters, newPoster]);
       console.log(Posters);
@@ -70,7 +70,7 @@ function EventDetails() {
       (poster) => poster.PosterID !== idToRemove
     );
     setPosters(updatedPosters);
-  }
+  };
 
   // returns items of a list as referee Usernames
   const displayList = () => {
@@ -90,40 +90,38 @@ function EventDetails() {
       itemList: Posters,
       refereeList: RefereeList,
       status: "pending",
-      organizerID: daten.userID
+      organizerID: daten.userID,
     };
 
     const storeEvent = {
       event: event,
-      questionnaire: daten.Questionnaire
-    }
+      questionnaire: daten.Questionnaire,
+    };
 
     // built-in browser API that allows HTTP requests (GET, POST)
-      // fetch = fetch data (GET) + send data (POST)
-      fetch('http://localhost:5000/event/save', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(storeEvent),
-      })
-
+    // fetch = fetch data (GET) + send data (POST)
+    fetch("http://http://127.0.0.1:5000/event/save", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(storeEvent),
+    })
       // wait for the response from backend and parse the response as JSON
-      .then(res => res.json())
+      .then((res) => res.json())
 
       // once JSON is parsed, handle the response from the backend and go back to the questionnaire-overview
-      .then(response => {
-        console.log('Answer from Backend:', response);
-        console.log("saved questionaire" );
+      .then((response) => {
+        console.log("Answer from Backend:", response);
+        console.log("saved questionaire");
         //navigate("/questionnaire");
       })
 
       // if something goes wrong, the error is handled here
-      .catch(error => {
-        console.error('Error when sending:', error);
+      .catch((error) => {
+        console.error("Error when sending:", error);
       });
-
-  }
+  };
 
   const toEvent = () => {
     navigate("/event");
@@ -154,23 +152,34 @@ function EventDetails() {
         <div className="eventdetails-left">
           <div className="eventdetails-poster-grid">
             {Posters.map((poster) => {
-              console.log('http://localhost:3000/questionnaire//${poster.PosterID}');
-              return (
-              <div key={poster.PosterID} className="eventdetails-poster-item">
-                <div className="eventdetails-poster-title">{poster.Title}</div>
-                <div className="eventdetails-qr-mock">
-                  <QRCodeCanvas
-                    value={`http://localhost:3000/questionnaire//${poster.PosterID}`}
-                    size={90}
-                    style={{backgroundColor: "white"}}
-                  />
-                </div>
-                <div className="eventdetails-remove" onClick={() => handleRemovePoster(poster.PosterID)}>×</div>
-              </div>
+              console.log(
+                "http://localhost:3000/questionnaire//${poster.PosterID}"
               );
-          })}
+              return (
+                <div key={poster.PosterID} className="eventdetails-poster-item">
+                  <div className="eventdetails-poster-title">
+                    {poster.Title}
+                  </div>
+                  <div className="eventdetails-qr-mock">
+                    <QRCodeCanvas
+                      value={`http://localhost:3000/questionnaire//${poster.PosterID}`}
+                      size={90}
+                      style={{ backgroundColor: "white" }}
+                    />
+                  </div>
+                  <div
+                    className="eventdetails-remove"
+                    onClick={() => handleRemovePoster(poster.PosterID)}
+                  >
+                    ×
+                  </div>
+                </div>
+              );
+            })}
           </div>
-          <div className="eventdetails-add-poster" onClick={handleAddPoster}>+</div>
+          <div className="eventdetails-add-poster" onClick={handleAddPoster}>
+            +
+          </div>
         </div>
         {/* Right Section: Referee and Buttons */}
         <div className="eventdetails-right eventdetails-right-relative">
@@ -203,7 +212,10 @@ function EventDetails() {
             <button className="eventdetails-proceed-btn">
               Proceed to Event
             </button>
-            <button className="eventdetails-export-btn" onClick={handleExportPDF}>
+            <button
+              className="eventdetails-export-btn"
+              onClick={handleExportPDF}
+            >
               Export PDF
             </button>
           </div>

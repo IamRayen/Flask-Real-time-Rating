@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { useNavigate} from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import "./Questionnaire.css";
 import Header from "./sub-component/Header";
 import TemplateQuestionaire from "./sub-component/TemplateCard";
@@ -9,7 +9,7 @@ function Questionnaire() {
   const { User } = useAuthContext();
 
   const navigate = useNavigate();
-  const [Templates,setTemplates]=useState([]);
+  const [Templates, setTemplates] = useState([]);
 
   const handleBackClick = () => {
     navigate("/account-overview");
@@ -24,79 +24,80 @@ function Questionnaire() {
     navigate("/create-questionnaire");
   };
 
- const loadTemplates=()=>{
-
+  const loadTemplates = () => {
     if (!User?.uid) {
       console.error("User ID not available");
       return;
     }
     //TODO: calls API to recieve all organizer'S templates
-    console.log("Templates loaded")
+    console.log("Templates loaded");
 
     // built-in browser API that allows HTTP requests (GET, POST)
     // fetch = fetch data (GET) + send data (POST)
-    fetch(`http://localhost:5000/template/getAllTemplates?userID=${User?.uid}`)
+    fetch(
+      `http://http://127.0.0.1:5000/template/getAllTemplates?userID=${User?.uid}`
+    )
+      // wait for the response from backend and parse the response as JSON
+      .then((res) => res.json())
 
-    // wait for the response from backend and parse the response as JSON
-    .then(res => res.json())
+      // process the data (all templates from Firestore)
+      .then((data) => {
+        console.log("All Questionnaires:", data);
+        //setAllQuestionnaires(data); // your state handler
+      })
 
-    // process the data (all templates from Firestore)
-    .then(data => {
-      console.log("All Questionnaires:", data);
-      //setAllQuestionnaires(data); // your state handler
-    })
-
-    // if something goes wrong, the error is handled here
-    .catch(err => {
-      console.error("Error loading templates:", err);
-    });
+      // if something goes wrong, the error is handled here
+      .catch((err) => {
+        console.error("Error loading templates:", err);
+      });
   };
 
   //function that automatically loads templates when Mounting component
-  useEffect(()=>{
+  useEffect(() => {
     loadTemplates();
-    return console.log("Template loaded")
-  },[])
+    return console.log("Template loaded");
+  }, []);
 
-// Conditionally renders templates
-// case1 : no templates = loads default hardcoded code
-//Case 2: renders templates using their attributs +  subcomponent "TemplateCard"
-  const renderTemplates=()=>{
-    if(!Templates || Templates.length=== 0){
+  // Conditionally renders templates
+  // case1 : no templates = loads default hardcoded code
+  //Case 2: renders templates using their attributs +  subcomponent "TemplateCard"
+  const renderTemplates = () => {
+    if (!Templates || Templates.length === 0) {
       // case1
       return (
-      <>
+        <>
+          <TemplateQuestionaire
+            name="Questionaire 1"
+            id={1}
+            onDelete={handleDeleteQuestionnaire}
+          />
 
-        <TemplateQuestionaire 
-          name="Questionaire 1"
-          id={1}
-          onDelete={handleDeleteQuestionnaire}/>
+          <TemplateQuestionaire
+            name="Questionaire 2"
+            id={2}
+            onDelete={handleDeleteQuestionnaire}
+          />
 
-        <TemplateQuestionaire 
-          name="Questionaire 2"
-          id={2}
-          onDelete={handleDeleteQuestionnaire}/>
-
-        
-        <TemplateQuestionaire 
-          name="Questionaire 3"
-          id={3}
-          onDelete={handleDeleteQuestionnaire}/>  
-       
-      </>
+          <TemplateQuestionaire
+            name="Questionaire 3"
+            id={3}
+            onDelete={handleDeleteQuestionnaire}
+          />
+        </>
       );
-    }else{
+    } else {
       //case 2
       // applies arrow function on each element in the Templates array
-      //Arrow function transforms template into a TemplateQuestionaire 
+      //Arrow function transforms template into a TemplateQuestionaire
       // component with the needed attributes
       // returns  JSX with all templates component transformed
-      
-      return Templates.map((template,index)=>(
-        <TemplateQuestionaire 
-        name={`Questionnaire ${index+1}`} 
-        id={template.questionnaireID} 
-        onDelete={handleDeleteQuestionnaire}/>
+
+      return Templates.map((template, index) => (
+        <TemplateQuestionaire
+          name={`Questionnaire ${index + 1}`}
+          id={template.questionnaireID}
+          onDelete={handleDeleteQuestionnaire}
+        />
       ));
     }
   };
@@ -108,14 +109,12 @@ function Questionnaire() {
       </div>
 
       <Header icon="📋" />
-      <div className="questionnaires-container">
-        {renderTemplates()}
-      </div>
+      <div className="questionnaires-container">{renderTemplates()}</div>
       <button
         className="create-new-button"
         onClick={handleCreateNewQuestionnaire}
       >
-         New Questionaire
+        New Questionaire
       </button>
     </div>
   );

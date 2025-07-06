@@ -125,55 +125,64 @@ function Dashboard() {
   };
 
   const handleBegin = async () => {
-  try {
-    const res = await fetch(`http://localhost:5000/dashboard/startEvent?eventID=${eventID}`, {
-      method: "POST",
-    });
-    const data = await res.json();
-    if (res.ok) {
-      alert("Event started successfully!");
-    } else {
-      alert("Failed to start event: " + data.error);
+    try {
+      const res = await fetch(
+        `http://http://127.0.0.1:5000/dashboard/startEvent?eventID=${eventID}`,
+        {
+          method: "POST",
+        }
+      );
+      const data = await res.json();
+      if (res.ok) {
+        alert("Event started successfully!");
+      } else {
+        alert("Failed to start event: " + data.error);
+      }
+    } catch (err) {
+      console.error("Error:", err);
+      alert("An error occurred while starting the event.");
     }
-  } catch (err) {
-    console.error("Error:", err);
-    alert("An error occurred while starting the event.");
-  }
   };
 
   const handleEnd = async () => {
-  try {
-    const res = await fetch(`http://localhost:5000/dashboard/endEvent?eventID=${eventID}`, {
-      method: "POST",
-    });
-    const data = await res.json();
-    if (res.ok) {
-      alert("Event has ended successfully!");
-    } else {
-      alert("Failed to end event: " + data.error);
+    try {
+      const res = await fetch(
+        `http://http://127.0.0.1:5000/dashboard/endEvent?eventID=${eventID}`,
+        {
+          method: "POST",
+        }
+      );
+      const data = await res.json();
+      if (res.ok) {
+        alert("Event has ended successfully!");
+      } else {
+        alert("Failed to end event: " + data.error);
+      }
+    } catch (err) {
+      console.error("Error:", err);
+      alert("An error occurred while ending the event.");
     }
-  } catch (err) {
-    console.error("Error:", err);
-    alert("An error occurred while ending the event.");
-  }
   };
 
   const getDashboardData = async () => {
-  try {
-    const res = await fetch(`http://localhost:5000/dashboard/getDashboardData?eventID=${eventID}`, {
-      method: "GET",
-    });
-    const data = await res.json();
-    if (res.ok) {
-      alert("Found data!");
-      console.log(data);
-    } else {
-      alert("failed to retreive data: " + data.error);
+    try {
+      const res = await fetch(
+        `http://http://127.0.0.1:5000/dashboard/getDashboardData?eventID=${eventID}`,
+        {
+          method: "GET",
+        }
+      );
+      const data = await res.json();
+      if (res.ok) {
+        alert("Found data!");
+        console.log(data);
+      } else {
+        alert("failed to retreive data: " + data.error);
+      }
+    } catch (err) {
+      console.error("Error:", err);
+      alert("An error occurred while fetching data.");
     }
-  } catch (err) {
-    console.error("Error:", err);
-    alert("An error occurred while fetching data.");
-  }
   };
 
   return (
