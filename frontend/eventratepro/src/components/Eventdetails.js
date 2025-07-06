@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import { QRCodeCanvas } from "qrcode.react";
 import "./Eventdetails.css";
@@ -9,35 +9,67 @@ function EventDetails() {
   const [Referee, setReferee] = useState("");
   const [RefereeList, setRefereeList] = useState([]);
   const [refereeEmail, setRefereeEmail] = useState("");
+  const [toast, setToast] = useState({ show: false, message: "", type: "" });
 
   const location = useLocation();
   const daten = location.state;
 
   console.log("Received questionnaire-data:", daten);
 
+  // Toast notification function
+  const showToast = (message, type = "error") => {
+    setToast({ show: true, message, type });
+  };
+
+  // Auto-hide toast after 4 seconds
+  useEffect(() => {
+    if (toast.show) {
+      const timer = setTimeout(() => {
+        setToast({ show: false, message: "", type: "" });
+      }, 4000);
+      return () => clearTimeout(timer);
+    }
+  }, [toast.show]);
+
   const handleAddReferee = (e) => {
     e.preventDefault();
 
-    // checks if input is not empty or only whitespace (trim) and prevents the same email twice
-    if (refereeEmail.trim() && !RefereeList.includes(refereeEmail.trim())) {
-      // API in order to check the given referee-EMail so that it is a valid refere in Firestore
-      fetch(
-        `http://127.0.0.1:5000/event/addRefereeToList?email=${refereeEmail}`
-      )
-        .then((res) => res.json())
-        .then((data) => {
-          // if the given referee is valid, insert it to the RefereeList
-          if (data.status === "success") {
-            console.log("Valid referee:", data.referee);
-            // add referee to the referee-list
-            setRefereeList([...RefereeList, refereeEmail.trim()]);
-          } else {
-            console.error("Validation failed:", data.message);
-          }
-          setRefereeEmail("");
-        });
+    // Check if email is empty
+    if (!refereeEmail.trim()) {
+      showToast("Please enter a referee email address");
+      return;
     }
-    console.log(refereeEmail);
+
+    // Check if email is already in the list
+    if (RefereeList.includes(refereeEmail.trim())) {
+      showToast("This referee email is already added to the list");
+      return;
+    }
+
+    // API call to check the given referee email
+    fetch(`http://127.0.0.1:5000/event/addRefereeToList?email=${refereeEmail}`)
+      .then((res) => res.json())
+      .then((data) => {
+        // if the given referee is valid, insert it to the RefereeList
+        if (data.status === "success") {
+          console.log("Valid referee:", data.referee);
+          // add referee to the referee-list
+          setRefereeList([...RefereeList, refereeEmail.trim()]);
+          showToast("Referee added successfully!", "success");
+        } else {
+          console.error("Validation failed:", data.message);
+          const errorMessage = data.message
+            ? data.message.replace(/User/g, "Referee")
+            : "Referee email not found in the system";
+          showToast(errorMessage, "error");
+        }
+        setRefereeEmail("");
+      })
+      .catch((error) => {
+        console.error("Error when adding referee:", error);
+        showToast("Failed to add referee. Please try again later.", "error");
+        setRefereeEmail("");
+      });
   };
 
   const showPosterQRs = () => {
@@ -137,6 +169,24 @@ function EventDetails() {
 
   return (
     <div className="eventdetails-main">
+      {/* Toast Notification */}
+      {toast.show && (
+        <div className={`toast-notification ${toast.type}`}>
+          <div className="toast-content">
+            <span className="toast-icon">
+              {toast.type === "success" ? "✓" : "⚠"}
+            </span>
+            <span className="toast-message">{toast.message}</span>
+            <button
+              className="toast-close"
+              onClick={() => setToast({ show: false, message: "", type: "" })}
+            >
+              ×
+            </button>
+          </div>
+        </div>
+      )}
+
       {/* Back Arrow */}
       <div className="eventdetails-back" onClick={() => navigate(-1)}>
         &#8592;
