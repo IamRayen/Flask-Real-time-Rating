@@ -234,7 +234,7 @@ function EventDetails() {
         {/* Right Section: Referee and Buttons */}
         <div className="eventdetails-right eventdetails-right-relative">
           {/* Referee List Box */}
-          <div className="eventdetails-referee-list-box">referee list</div>
+          <div className="eventdetails-referee-list-box">Referee List</div>
           {/* Referee Input */}
           <form
             className="eventdetails-referee-form"

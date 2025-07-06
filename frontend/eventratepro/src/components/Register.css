@@ -87,4 +87,90 @@
 
 .register:hover {
   background-color: rgb(118, 226, 235);
+}
+
+/* Role Selection Styles */
+.role-selection {
+  margin-top: 100px;
+  width: 600px;
+  margin-left: auto;
+  margin-right: auto;
+  text-align: center;
+  font-family: Inter;
+}
+
+.role-selection h2 {
+  font-size: 32px;
+  font-weight: bold;
+  color: #333;
+  margin-bottom: 20px;
+}
+
+.role-selection p {
+  font-size: 18px;
+  color: #666;
+  margin-bottom: 40px;
+}
+
+.role-buttons {
+  display: flex;
+  gap: 30px;
+  justify-content: center;
+  margin-bottom: 30px;
+}
+
+.role-button {
+  background: white;
+  border: 2px solid #ddd;
+  border-radius: 15px;
+  padding: 30px 25px;
+  width: 250px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  font-family: Inter;
+  text-align: center;
+}
+
+.role-button:hover {
+  border-color: rgb(138, 246, 255);
+  background-color: rgba(138, 246, 255, 0.1);
+  transform: translateY(-2px);
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+}
+
+.role-button:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+  transform: none;
+}
+
+.role-button h3 {
+  font-size: 24px;
+  font-weight: bold;
+  color: #333;
+  margin: 0 0 10px 0;
+}
+
+.role-button p {
+  font-size: 16px;
+  color: #666;
+  margin: 0;
+  font-weight: 400;
+}
+
+.role-button.organizer:hover {
+  border-color: #4CAF50;
+  background-color: rgba(76, 175, 80, 0.1);
+}
+
+.role-button.referee:hover {
+  border-color: #2196F3;
+  background-color: rgba(33, 150, 243, 0.1);
+}
+
+.loading-message {
+  font-family: Inter;
+  font-size: 16px;
+  color: #666;
+  font-style: italic;
 } 
