@@ -1,0 +1,348 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap');
+
+.pdf-export-page {
+  min-height: 100vh;
+  background: linear-gradient(to bottom, #fff, #c6f6fa);
+  padding: 0;
+  font-family: 'Inter', sans-serif;
+  position: relative;
+}
+
+.pdf-export-back {
+  position: absolute;
+  top: 24px;
+  left: 24px;
+  font-size: 32px;
+  color: #333;
+  cursor: pointer;
+  transition: color 0.3s ease;
+}
+
+.pdf-export-back:hover {
+  color: #0066cc;
+}
+
+.pdf-export-header {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-top: 40px;
+  margin-bottom: 32px;
+}
+
+.pdf-export-logo {
+  font-size: 64px;
+  margin-bottom: 8px;
+}
+
+.pdf-export-title {
+  font-size: 36px;
+  font-weight: 600;
+  color: #333;
+}
+
+.pdf-export-content {
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  margin-top: 32px;
+  gap: 80px;
+  max-width: 1200px;
+  margin-left: auto;
+  margin-right: auto;
+  padding: 20px;
+}
+
+.pdf-export-left {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  min-width: 400px;
+}
+
+.pdf-export-poster {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  padding: 20px;
+  background: white;
+  border-radius: 15px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+  transition: all 0.3s ease;
+  border: 1px solid #e0e0e0;
+}
+
+.pdf-export-poster:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 25px rgba(0, 0, 0, 0.15);
+}
+
+.pdf-export-qr-container {
+  width: 100px;
+  height: 100px;
+  background: #fff;
+  border: 2px solid #000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 8px;
+}
+
+.pdf-export-poster-title {
+  font-size: 20px;
+  font-weight: 600;
+  color: #333;
+  font-family: 'Inter', sans-serif;
+}
+
+.pdf-export-no-posters {
+  text-align: center;
+  color: #666;
+  font-style: italic;
+  padding: 40px;
+  background: white;
+  border-radius: 15px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+}
+
+.pdf-export-right {
+  min-width: 350px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 16px;
+}
+
+.pdf-export-referee-header {
+  width: 260px;
+  height: 48px;
+  background: #d3d3d3;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 0;
+}
+
+.pdf-export-referee-header h2 {
+  font-size: 24px;
+  font-weight: 500;
+  color: #333;
+  margin: 0;
+  font-family: 'Inter', sans-serif;
+}
+
+.pdf-export-referee-list {
+  width: 260px;
+  min-height: 200px;
+  background: white;
+  border-radius: 12px;
+  padding: 16px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+  margin-bottom: 24px;
+}
+
+.pdf-export-referee-item {
+  background: #fff;
+  border-radius: 6px;
+  padding: 8px 12px;
+  margin-bottom: 8px;
+  font-size: 16px;
+  color: #333;
+  border: 1px solid #e0e0e0;
+  font-family: 'Inter', sans-serif;
+  transition: all 0.2s ease;
+}
+
+.pdf-export-referee-item:hover {
+  background: #f5f5f5;
+  transform: translateX(2px);
+}
+
+.pdf-export-referee-item:last-child {
+  margin-bottom: 0;
+}
+
+.pdf-export-no-referees {
+  text-align: center;
+  color: #666;
+  font-style: italic;
+  padding: 40px 20px;
+  font-family: 'Inter', sans-serif;
+}
+
+.pdf-export-download-section {
+  display: flex;
+  justify-content: center;
+  margin-top: auto;
+  position: fixed;
+  bottom: 48px;
+  right: 80px;
+}
+
+.pdf-export-download-btn {
+  background: #4dd0fa;
+  color: #000;
+  border: none;
+  font-size: 20px;
+  padding: 16px 40px;
+  border-radius: 12px;
+  cursor: pointer;
+  font-weight: 500;
+  font-family: 'Inter', sans-serif;
+  box-shadow: 2px 4px 6px #b2ebf2;
+  transition: all 0.3s ease;
+  min-width: 200px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+}
+
+.pdf-export-download-btn:hover {
+  background: #00bcd4;
+  transform: translateY(-2px);
+  box-shadow: 4px 8px 12px #b2ebf2;
+}
+
+.pdf-export-download-btn:active {
+  transform: translateY(0px);
+}
+
+.pdf-export-download-btn:disabled {
+  opacity: 0.7;
+  cursor: not-allowed;
+  transform: none !important;
+}
+
+.pdf-export-download-btn.generating {
+  background: #a0a0a0;
+  color: #666;
+}
+
+.pdf-export-download-btn.generating:hover {
+  background: #a0a0a0;
+  transform: none;
+}
+
+.spinner {
+  display: inline-block;
+  width: 16px;
+  height: 16px;
+  border: 2px solid rgba(0, 0, 0, 0.3);
+  border-radius: 50%;
+  border-top: 2px solid #000;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+/* Responsive design */
+@media (max-width: 1024px) {
+  .pdf-export-content {
+    flex-direction: column;
+    gap: 30px;
+    align-items: center;
+    padding: 20px;
+  }
+  
+  .pdf-export-left {
+    min-width: 300px;
+    width: 100%;
+    max-width: 600px;
+  }
+  
+  .pdf-export-download-section {
+    position: relative;
+    bottom: auto;
+    right: auto;
+    margin-top: 20px;
+  }
+}
+
+@media (max-width: 768px) {
+  .pdf-export-page {
+    padding: 15px;
+  }
+  
+  .pdf-export-back {
+    top: 20px;
+    left: 20px;
+    font-size: 28px;
+  }
+  
+  .pdf-export-header {
+    margin-top: 60px;
+    margin-bottom: 20px;
+  }
+  
+  .pdf-export-logo {
+    font-size: 48px;
+  }
+  
+  .pdf-export-title {
+    font-size: 28px;
+  }
+  
+  .pdf-export-content {
+    padding: 15px;
+    gap: 20px;
+  }
+  
+  .pdf-export-poster {
+    flex-direction: column;
+    text-align: center;
+    padding: 15px;
+    gap: 15px;
+  }
+  
+  .pdf-export-poster-title {
+    font-size: 18px;
+  }
+  
+  .pdf-export-referee-header,
+  .pdf-export-referee-list {
+    width: 100%;
+    max-width: 300px;
+  }
+  
+  .pdf-export-referee-item {
+    padding: 12px 15px;
+    font-size: 14px;
+  }
+  
+  .pdf-export-download-btn {
+    padding: 15px 30px;
+    font-size: 18px;
+    min-width: 180px;
+  }
+}
+
+@media (max-width: 480px) {
+  .pdf-export-left {
+    min-width: 250px;
+  }
+  
+  .pdf-export-poster {
+    padding: 12px;
+  }
+  
+  .pdf-export-qr-container {
+    width: 80px;
+    height: 80px;
+  }
+  
+  .pdf-export-referee-list {
+    padding: 12px;
+  }
+  
+  .pdf-export-download-btn {
+    padding: 12px 25px;
+    font-size: 16px;
+    min-width: 160px;
+  }
+} 

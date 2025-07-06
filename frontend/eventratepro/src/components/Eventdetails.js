@@ -142,16 +142,34 @@ function EventDetails() {
       // wait for the response from backend and parse the response as JSON
       .then((res) => res.json())
 
-      // once JSON is parsed, handle the response from the backend and go back to the questionnaire-overview
+      // once JSON is parsed, handle the response from the backend and navigate to PDF export page
       .then((response) => {
         console.log("Answer from Backend:", response);
         console.log("saved questionaire");
-        //navigate("/questionnaire");
+
+        // Navigate to PDF export page with the necessary data
+        navigate("/pdf-export", {
+          state: {
+            posters: Posters,
+            refereeList: RefereeList,
+            eventData: event,
+            questionnaire: daten.Questionnaire,
+          },
+        });
       })
 
       // if something goes wrong, the error is handled here
       .catch((error) => {
         console.error("Error when sending:", error);
+        // Navigate to PDF export page even if save fails, so user can still view/download
+        navigate("/pdf-export", {
+          state: {
+            posters: Posters,
+            refereeList: RefereeList,
+            eventData: event,
+            questionnaire: daten.Questionnaire,
+          },
+        });
       });
   };
 
@@ -266,7 +284,7 @@ function EventDetails() {
               className="eventdetails-export-btn"
               onClick={handleExportPDF}
             >
-              Export PDF
+              Export to PDF
             </button>
           </div>
         </div>
