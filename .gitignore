@@ -1,0 +1,26 @@
+# macOS system files
+.DS_Store
+.AppleDouble
+.LSOverride
+
+# Icon file for folders
+Icon?
+
+# macOS metadata
+._*
+
+# Spotlight files
+.Spotlight-V100
+
+# Trash folder
+.Trashes
+
+# macOS tags
+*.DS_Store
+
+# Time Machine
+.TemporaryItems
+.fseventsd
+.com.apple.timemachine.donotpresent
+
+
