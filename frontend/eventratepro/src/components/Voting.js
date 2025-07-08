@@ -13,7 +13,7 @@ function Voting() {
     const fetchQuestionnaireAndEvent = async () => {
       try {
         const res = await fetch(
-          `http://127.0.0.1:5000/${questionnaireID}/${posterID}`
+          `http://eventrate-pro.de/${questionnaireID}/${posterID}`
         );
         if (!res.ok) throw new Error("Failed to fetch");
         const data = await res.json();
@@ -60,7 +60,7 @@ function Voting() {
     };
 
     try {
-      const res = await fetch("http://127.0.0.1:5000/submitVote", {
+      const res = await fetch("http://eventrate-pro.de/submitVote", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
