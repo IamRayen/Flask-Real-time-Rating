@@ -1,7 +1,7 @@
 from flask import Flask
 from flask_cors import CORS
-from app.sockets import register_sockets
-from extensions import socketio
+from .sockets import register_sockets
+from .extensions import socketio
 
 def create_app():
     app = Flask(__name__)
@@ -26,6 +26,7 @@ def create_app():
     
     
     # Register Socket.IO event handlers
+    socketio.init_app(app)
     register_sockets(socketio)
 
 

@@ -1,6 +1,6 @@
 from flask import Flask, request, jsonify
 from app import create_app
-from extensions import socketio
+from app.extensions import socketio
 
 
 app = create_app()
