@@ -15,7 +15,7 @@ function EventDetails() {
   const daten = location.state;
 
   console.log("Received questionnaire-data:", daten);
-
+  
   // Toast notification function
   const showToast = (message, type = "error") => {
     setToast({ show: true, message, type });
@@ -88,7 +88,7 @@ function EventDetails() {
       const newPoster = {
         PosterID: Posters.length,
         Title: name,
-        content: `http://localhost:3000/${daten.Questionnaire.questionnaireID}/${Posters.length}`,
+        content: `http://localhost:3000/choose-role/${daten.Questionnaire.questionnaireID}/${Posters.length}`,
         eventID: daten.Questionnaire.eventID,
       };
       setPosters([...Posters, newPoster]);
@@ -220,9 +220,6 @@ function EventDetails() {
         <div className="eventdetails-left">
           <div className="eventdetails-poster-grid">
             {Posters.map((poster) => {
-              console.log(
-                "http://localhost:3000/questionnaire//${poster.PosterID}"
-              );
               return (
                 <div key={poster.PosterID} className="eventdetails-poster-item">
                   <div className="eventdetails-poster-title">
@@ -230,7 +227,7 @@ function EventDetails() {
                   </div>
                   <div className="eventdetails-qr-mock">
                     <QRCodeCanvas
-                      value={`http://localhost:3000/questionnaire//${poster.PosterID}`}
+                      value={`http://localhost:3000/choose-role/${daten.Questionnaire.questionnaireID}/${Posters.length}`}
                       size={90}
                       style={{ backgroundColor: "white" }}
                     />
