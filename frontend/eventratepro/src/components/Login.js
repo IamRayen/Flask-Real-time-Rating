@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation  } from "react-router-dom";
 import { signInWithEmailAndPassword } from "firebase/auth";
 import { auth } from "../firebase/config";
 import "./Login.css";
@@ -14,12 +14,21 @@ function Login() {
   const navigate = useNavigate();
   const { User } = useAuthContext();
 
+  const location = useLocation();
+  const params = new URLSearchParams(location.search);
+  const next = params.get("next"); // where to go after login
+  const role = params.get("role");
+
   // Redirect to home if user is already logged in
   useEffect(() => {
-    if (User) {
+  if (User) {
+    if (next) {
+      navigate(`${next}?role=${role}`);
+    } else {
       navigate("/account-overview");
     }
-  }, [User, navigate]);
+  }
+  }, [User, navigate, next, role]);
 
   const handleLogin = async () => {
     if (!email || !password) {
@@ -32,7 +41,11 @@ function Login() {
 
     try {
       await signInWithEmailAndPassword(auth, email, password);
-      navigate("/account-overview");
+      if (next) {
+        navigate(`${next}?role=${role}`);
+      } else {
+        navigate("/account-overview");
+      }
     } catch (error) {
       setError(error.message);
     } finally {
