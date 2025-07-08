@@ -35,7 +35,7 @@ function Voting() {
             throw new Error("User not authenticated");
           }
 
-          const verifyRes = await fetch("http://127.0.0.1:5000/event/isRefereeOfEvent", {
+          const verifyRes = await fetch("http://eventrate-pro.de/event/isRefereeOfEvent", {
             method: "POST",
             headers: {
               "Content-Type": "application/json"
