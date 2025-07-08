@@ -34,7 +34,7 @@ function Questionnaire() {
 
     // built-in browser API that allows HTTP requests (GET, POST)
     // fetch = fetch data (GET) + send data (POST)
-    fetch(`http://127.0.0.1:5000/template/getAllTemplates?userID=${User?.uid}`)
+    fetch(`http://eventrate-pro.de/template/getAllTemplates?userID=${User?.uid}`)
       // wait for the response from backend and parse the response as JSON
       .then((res) => res.json())
 
