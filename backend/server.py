@@ -5,6 +5,6 @@ from extensions import socketio
 
 app = create_app()
 
-# Run the server
+# Run the server (Frontend :3000, Backend :5000)
 if __name__ == "__main__":
-    socketio.run(app, port=3000)
+    socketio.run(app, port=5000)
