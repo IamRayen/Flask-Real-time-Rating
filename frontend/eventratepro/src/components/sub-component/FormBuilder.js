@@ -1,9 +1,5 @@
 import { useState } from "react";
 
-
-
-
-
 function FormBuilder({form,current,onAdd}){
 
     const CurrentCriteria = form.find(f => f.criteriaID === current);
@@ -43,25 +39,28 @@ function FormBuilder({form,current,onAdd}){
       };
     
       const handleAddToList = () => {
+        if (!CurrentCriteria) {
+          alert("Please add and select a criteria before adding a question.");
+          return;
+        }
+
         // Filter out options with empty labels
-            const filledOptions = Options.filter(opt => opt.label.trim() !== "");
+        const filledOptions = Options.filter(opt => opt.label.trim() !== "");
 
         // Prevents question if title is empty or no filled options
-            if (!QuestionTitle.trim() || filledOptions.length === 0) return;
+        if (!QuestionTitle.trim() || filledOptions.length === 0) return;
 
-
-            const question={
-            questionID: CurrentCriteria.questionList.length,
-            criteriaID:current ,
-            title: QuestionTitle.trim(),
-            optionList: filledOptions}
-
-            onAdd(question);
-
-          handleDeleteQuestion();// Reset inputs after adding
+        const question = {
+          questionID: CurrentCriteria.questionList.length,
+          criteriaID: current,
+          title: QuestionTitle.trim(),
+          optionList: filledOptions,
         };
-      
 
+        onAdd(question);
+        handleDeleteQuestion(); // Reset inputs after adding
+      };
+      
     return(
         <div className="form-section">
             <h3>Visualization type</h3>
@@ -116,12 +115,14 @@ function FormBuilder({form,current,onAdd}){
               >
                 Delete the question
               </button>
-              <button className="add-to-list" onClick={handleAddToList}>
+              <button 
+                className="add-to-list" 
+                onClick={handleAddToList}
+                disabled={!CurrentCriteria}
+              >
                 Add to the list
               </button>
             </div>
-            
-
         </div>
     );
 }
