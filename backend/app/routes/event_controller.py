@@ -12,6 +12,41 @@ event_bp = Blueprint('event_bp', __name__,url_prefix='/event')
 # --- APIs --- #
 
 
+# API: /event/isRefereeOfEvent
+# Frontend calls this API on order to save the given event-data into Firestore
+@event_bp.route('/isRefereeOfEvent', methods=['POST'])
+def isRefereeOfEvent():
+    data = request.get_json()
+
+    event_id = data.get("eventID")
+    userEmail = data.get("userEmail")
+
+    if not event_id or not userEmail:
+        return jsonify({"error": "Missing eventID or email"}), 400
+
+    try:
+        # Get event document by eventID
+        event_ref = db.collection("events").document(event_id)
+        event_doc = event_ref.get()
+
+        if not event_doc.exists:
+            return jsonify({"error": "Event not found"}), 404
+
+        event_data = event_doc.to_dict()
+        referee_list = event_data.get("refereeList", [])
+
+        # Check if email (case-insensitive) is in the referee list
+        is_referee = any(
+            r.lower() == userEmail.lower() for r in referee_list
+        )
+
+        return jsonify({"isReferee": is_referee})
+
+    except Exception as e:
+        print("Error verifying referee:", e)
+        return jsonify({"error": "Internal server error"}), 500
+
+
 # API: /event/save
 # Frontend calls this API on order to save the given event-data into Firestore
 @event_bp.route('/save', methods=['POST'])
