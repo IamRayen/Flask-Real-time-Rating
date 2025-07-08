@@ -13,6 +13,8 @@ import ChartDataLabels from "chartjs-plugin-datalabels";
 import { Bar } from "react-chartjs-2";
 import Header from "./sub-component/Header";
 import "./Dashboard.css";
+import { useEffect, useState } from "react";
+import { socket } from "../socket";
 
 ChartJS.register(
   CategoryScale,
@@ -60,6 +62,7 @@ function Dashboard() {
       },
     ],
   };
+  
 
   const chartOptions = {
     responsive: true,
@@ -163,7 +166,7 @@ function Dashboard() {
       alert("An error occurred while ending the event.");
     }
   };
-
+  
   const getDashboardData = async () => {
     try {
       const res = await fetch(
@@ -184,6 +187,35 @@ function Dashboard() {
       alert("An error occurred while fetching data.");
     }
   };
+  
+
+
+  // This state will store the chart data (like votes) that will be updated in real-time.
+  const [charts, setCharts] = useState("");
+  //Listening for Votes
+  useEffect(() => {
+    // Connects to the Backend socketIO server. Here just to listen to incomming data.
+    socket.connect();
+
+    // Listen for the "submit_vote_realtime" event sent by the Flask server
+    socket.on("submit_vote_realtime", (voteData) => {
+      console.log("Real-time vote received:", voteData);
+
+      // Update state to reflect the real-time change
+      setCharts((prev) => {
+        const updated = [...prev];
+        // Apply your logic to update based on voteData
+        return updated;
+      });
+    });
+    
+    // Cleanup function that runs when the component is unmounted
+    // It removes the event listener to prevent memory leaks or duplicate events
+    return () => {
+      socket.off("submit_vote_realtime");
+    };
+  }, []);
+
 
   return (
     <div className="dashboard-page">
