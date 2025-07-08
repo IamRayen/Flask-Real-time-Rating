@@ -1,0 +1,176 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap');
+
+.register-page {
+  height: 100vh;
+  background: linear-gradient(180deg, rgb(255, 255, 255), rgb(184, 243, 248));
+}
+
+.register-page p {
+  font-family: Inter;
+  font-size: 20px;
+  font-weight: 500;
+}
+
+.title {
+  margin-top: 80px;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+}
+
+.ip {
+  display: grid;
+  justify-items: end;
+}
+
+.wn {
+  padding-top: 20px;
+}
+
+.register-page h1 {
+  font-family: Inter;
+  font-size: large;
+  font-weight: bold;
+}
+
+.icon {
+  width: 64px;
+  height: 64px;
+  background-color: #8af6ff;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: Inter;
+  font-weight: bold;
+  font-size: 16px;
+}
+
+.email,
+.n-text,
+.p-text,
+.c-text {
+  margin: auto;
+  width: 500px;
+  height: 40px;
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  font-family: Inter;
+  margin-bottom: 15px;
+}
+
+.reginfor {
+  margin-top: 100px;
+  width: 500px;
+  margin-left: auto;
+  margin-right: auto;
+  text-align: left;
+}
+
+.register {
+  display: block;
+  margin: auto;
+  margin-top: 70px;
+  background-color: rgb(138, 246, 255);
+  color: black;
+  width: 294px;
+  height: 49px;
+  border: none;
+  border-radius: 20px;
+  padding-top: 10px;
+  padding-bottom: 10px;
+  font-size: 20px;
+  font-weight: 600;
+  cursor: pointer;
+  font-family: Inter;
+}
+
+.register:hover {
+  background-color: rgb(118, 226, 235);
+}
+
+/* Role Selection Styles */
+.role-selection {
+  margin-top: 100px;
+  width: 600px;
+  margin-left: auto;
+  margin-right: auto;
+  text-align: center;
+  font-family: Inter;
+}
+
+.role-selection h2 {
+  font-size: 32px;
+  font-weight: bold;
+  color: #333;
+  margin-bottom: 20px;
+}
+
+.role-selection p {
+  font-size: 18px;
+  color: #666;
+  margin-bottom: 40px;
+}
+
+.role-buttons {
+  display: flex;
+  gap: 30px;
+  justify-content: center;
+  margin-bottom: 30px;
+}
+
+.role-button {
+  background: white;
+  border: 2px solid #ddd;
+  border-radius: 15px;
+  padding: 30px 25px;
+  width: 250px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  font-family: Inter;
+  text-align: center;
+}
+
+.role-button:hover {
+  border-color: rgb(138, 246, 255);
+  background-color: rgba(138, 246, 255, 0.1);
+  transform: translateY(-2px);
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+}
+
+.role-button:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+  transform: none;
+}
+
+.role-button h3 {
+  font-size: 24px;
+  font-weight: bold;
+  color: #333;
+  margin: 0 0 10px 0;
+}
+
+.role-button p {
+  font-size: 16px;
+  color: #666;
+  margin: 0;
+  font-weight: 400;
+}
+
+.role-button.organizer:hover {
+  border-color: #4CAF50;
+  background-color: rgba(76, 175, 80, 0.1);
+}
+
+.role-button.referee:hover {
+  border-color: #2196F3;
+  background-color: rgba(33, 150, 243, 0.1);
+}
+
+.loading-message {
+  font-family: Inter;
+  font-size: 16px;
+  color: #666;
+  font-style: italic;
+} 

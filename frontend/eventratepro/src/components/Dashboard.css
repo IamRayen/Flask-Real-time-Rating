@@ -1,0 +1,160 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap');
+
+.dashboard-page {
+  height: 100vh;
+  background: linear-gradient(180deg, rgb(255, 255, 255), rgb(184, 243, 248));
+  padding: 0;
+  margin: 0;
+  font-family: 'Inter', sans-serif;
+  position: relative;
+}
+
+.back-arrow {
+  position: absolute;
+  top: 20px;
+  left: 20px;
+  font-size: 24px;
+  font-weight: bold;
+  cursor: pointer;
+  color: #2C3E50;
+  z-index: 10;
+  padding: 10px;
+  border-radius: 50%;
+  transition: background-color 0.3s ease;
+}
+
+.back-arrow:hover {
+  background-color: rgba(138, 246, 255, 0.3);
+}
+
+.dashboard-content {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: calc(100vh - 120px);
+  padding: 20px;
+  overflow: hidden;
+}
+
+.dashboard-card {
+  background: white;
+  border-radius: 20px;
+  padding: 30px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+  width: 90%;
+  max-width: 900px;
+  height: 80vh;
+  max-height: 600px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  overflow: hidden;
+}
+
+.participant-count {
+  text-align: center;
+  margin-bottom: 30px;
+}
+
+.participant-count h2 {
+  font-size: 20px;
+  font-weight: 600;
+  color: #2C3E50;
+  letter-spacing: 1px;
+  margin: 0;
+  text-transform: uppercase;
+  font-family: 'Inter', sans-serif;
+}
+
+.chart-container {
+  flex: 1;
+  height: 350px;
+  margin: 15px 0;
+  position: relative;
+}
+
+.action-buttons {
+  display: flex;
+  justify-content: center;
+  gap: 15px;
+  margin-top: 20px;
+  flex-wrap: wrap;
+}
+
+.action-btn {
+  background: rgb(138, 246, 255);
+  border: none;
+  border-radius: 20px;
+  padding: 12px 25px;
+  font-size: 16px;
+  font-weight: 600;
+  color: black;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  min-width: 100px;
+  text-transform: capitalize;
+  font-family: 'Inter', sans-serif;
+}
+
+.action-btn:hover {
+  background: rgb(118, 226, 235);
+  transform: translateY(-1px);
+}
+
+.action-btn:active {
+  transform: translateY(0);
+}
+
+.begin-btn {
+  background: #7FDBDA;
+}
+
+.end-btn {
+  background: #7FDBDA;
+}
+
+.excel-btn {
+  background: #7FDBDA;
+}
+
+.back-btn {
+  background: #7FDBDA;
+}
+
+/* Responsive design */
+@media (max-width: 768px) {
+  .dashboard-card {
+    padding: 20px;
+    margin: 10px;
+    width: 95%;
+  }
+  
+  .participant-count h2 {
+    font-size: 18px;
+  }
+  
+  .chart-container {
+    height: 300px;
+  }
+  
+  .action-buttons {
+    gap: 10px;
+  }
+  
+  .action-btn {
+    padding: 12px 20px;
+    font-size: 16px;
+    min-width: 100px;
+  }
+}
+
+@media (max-width: 480px) {
+  .action-buttons {
+    flex-direction: column;
+    align-items: center;
+  }
+  
+  .action-btn {
+    width: 200px;
+  }
+} 

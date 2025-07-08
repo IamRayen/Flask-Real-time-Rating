@@ -1,0 +1,45 @@
+.dashboard-content {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.dashboard-title {
+  margin-bottom: 20px;  /* space between title and cards */
+  font-size: 1.8rem;
+  font-weight: bold;
+  text-align: center;
+}
+
+.event-list {
+  list-style-type: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 20px;
+  justify-content: center;  /* center cards horizontally */
+}
+
+.event-card {
+  background-color: #f5f5f5;
+  border-radius: 8px;
+  padding: 20px;
+  width: 250px; /* fixed width or adjust */
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  cursor: pointer;
+}
+
+.event-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+}
+
+.event-card h3 {
+  margin-top: 0;
+}
+
+.event-card p {
+  color: #555;
+}
