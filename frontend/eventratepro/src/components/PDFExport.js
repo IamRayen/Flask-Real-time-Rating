@@ -151,7 +151,7 @@ function PDFExport() {
       setIsGenerating(true);
 
       // First, try the backend API
-      const response = await fetch("http://127.0.0.1:5000/export/pdf", {
+      const response = await fetch("http://eventrate-pro.de/export/pdf", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
