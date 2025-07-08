@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
+import { useParams, useLocation } from "react-router-dom";
+import { auth } from "../firebase/config";
 import "./Voting.css";
 import { socket } from "../socket"
 
@@ -9,6 +10,10 @@ function Voting() {
   const [questionnaire, setQuestionnaire] = useState(null);
   const [event, setEvent] = useState(null);
   const [loading, setLoading] = useState(true);
+
+  const location = useLocation();
+  const params = new URLSearchParams(location.search);
+  const role = params.get("role") || "anonym";
 
   useEffect(() => {
     const fetchQuestionnaireAndEvent = async () => {
@@ -20,6 +25,33 @@ function Voting() {
         const data = await res.json();
         setQuestionnaire(data.questionnaire);
         setEvent(data.event);
+        const params = new URLSearchParams(window.location.search);
+        const role = params.get("role");
+
+        if (role === "referee") {
+          // Get current Firebase user
+          const currentUser = auth.currentUser;
+          if (!currentUser) {
+            throw new Error("User not authenticated");
+          }
+
+          const verifyRes = await fetch("http://127.0.0.1:5000/event/isRefereeOfEvent", {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json"
+            },
+            body: JSON.stringify({
+              eventID: data.event.eventID,
+              userEmail: currentUser.email
+            })
+          });
+
+          const verifyResult = await verifyRes.json();
+          if (!verifyResult.isReferee) {
+            alert("You are not a registered referee for this event.");
+            window.location.href = "/"; // or navigate away
+          }
+        }
       } catch (error) {
         console.error("Error fetching questionnaire and event:", error);
       } finally {
@@ -57,7 +89,7 @@ function Voting() {
       questionnaireID: questionnaireID,
       ticketOptionsList: ticketOptionsList,
       eventID: event?.eventID,
-      role: null,
+      role: role,
     };
 
     try {
