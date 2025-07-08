@@ -1,5 +1,5 @@
-import React, { useState, useRef } from "react";
-import { useNavigate } from "react-router-dom";
+import React, { useState, useRef, useEffect } from "react";
+import { useNavigate, useLocation } from "react-router-dom";
 import { useAuthContext } from "../context/AuthContext";
 import "./CreateQuestionnaire.css";
 import CategorySideBar from "./sub-component/CategorySideBar";
@@ -7,19 +7,33 @@ import Preview from "./sub-component/Preview";
 import FormBuilder from "./sub-component/FormBuilder";
 
 function CreateQuestionnaire() {
-  const navigate = useNavigate();
   const { User } = useAuthContext();
   const [Questionnaire, setQuestionnaire] = useState(null);
+  const [criteriaList, setCriteriaList] = useState([]);
+
+  const location = useLocation();
+  const template = location.state?.template;
+  const navigate = useNavigate();
   const questionnaireID = useRef(crypto.randomUUID());
+  console.log("Global questionnaireID: ", questionnaireID.current);
   const eventID = useRef(crypto.randomUUID());
-  const [criteriaList, setCriteriaList] = useState([
-    {
-      criteriaID: 1,
+
+  useEffect(() => {
+  if (template) {
+    console.log("Received Template:", template);
+    const mappedCriteriaList = template.criteriaList.map((criteria, index) => ({
+      ...criteria,
       questionnaireID: questionnaireID.current,
-      title: "Structure",
-      questionList: [],
-    },
-  ]);
+      criteriaID: index + 1,
+      questionList: criteria.questionList.map((q, i) => ({
+        ...q,
+      })),
+    }));
+    console.log("questionnaireID in useEffect:", questionnaireID);
+    console.log("questionnaireID.current in useEffect:", questionnaireID.current);
+    setCriteriaList(mappedCriteriaList);
+  }
+}, [template]);
 
   const [selectedCategory, setSelectedCategory] = useState(1);
   //Tag: Function related to building the questionaire
@@ -65,7 +79,9 @@ function CreateQuestionnaire() {
   };
 
   const handleSaveQuestionnaire = () => {
+
     console.log("saving questionaire");
+
     //assigns the current Criteria list to questionaire
     // marks questionaire as template
     const questionnaireObj = {
@@ -76,11 +92,14 @@ function CreateQuestionnaire() {
       isTemplate: true,
     };
     setQuestionnaire(questionnaireObj);
+
     const daten = {
       userID: User.uid,
       Questionnaire: questionnaireObj,
     };
+
     console.log(daten);
+
     // built-in browser API that allows HTTP requests (GET, POST)
     // fetch = fetch data (GET) + send data (POST)
     fetch("http://eventrate-pro.de/template/save", {
@@ -96,7 +115,7 @@ function CreateQuestionnaire() {
       .then((response) => {
         console.log("Answer from Backend:", response);
         console.log("saved questionaire");
-        //navigate("/questionnaire");
+        navigate("/questionnaire");
       })
       // if something goes wrong, the error is handled here
       .catch((error) => {
@@ -104,12 +123,19 @@ function CreateQuestionnaire() {
       });
   };
 
+  // if pressed "Setup event"
   const handleSetupEvent = () => {
-    //TODO: API Call Task:
-    // assigns an available questionaire ID to the questionaire
-    //assigns an event ID to the questionaire
-    // parses the questionaire object for criteria{...questionlist{...options{...}}}
-    //console.log("Create QRs");
+    
+    const totalQuestions = criteriaList.reduce(
+      (sum, criteria) => sum + criteria.questionList.length, 0
+    );
+
+    // if there is no questions, the user cannot proceed
+    if (totalQuestions === 0) {
+      alert("Please add at least one question before setting up the event.");
+      return;
+    }
+
     const questionnaireObj = {
       questionnaireID: questionnaireID.current,
       eventID: eventID.current,
@@ -118,10 +144,12 @@ function CreateQuestionnaire() {
       isTemplate: false,
     };
     setQuestionnaire(questionnaireObj);
+
     const daten = {
       userID: User.uid,
       Questionnaire: questionnaireObj,
     };
+
     navigate("/event-details", { state: daten });
   };
 
