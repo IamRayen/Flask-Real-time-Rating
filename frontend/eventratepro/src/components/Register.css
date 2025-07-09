@@ -1,25 +1,30 @@
 @import url('https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap');
 
 .register-page {
-  height: 100vh;
+  min-height: 100vh;
   background: linear-gradient(180deg, rgb(255, 255, 255), rgb(184, 243, 248));
+  padding: 20px;
+  box-sizing: border-box;
 }
 
 .register-page p {
   font-family: Inter;
-  font-size: 20px;
+  font-size: 18px;
   font-weight: 500;
 }
 
 .title {
-  margin-top: 80px;
-  display: grid;
-  grid-template-columns: 1fr 1fr;
+  margin-top: 40px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  gap: 20px;
 }
 
 .ip {
-  display: grid;
-  justify-items: end;
+  display: flex;
+  justify-content: center;
 }
 
 .wn {
@@ -28,7 +33,7 @@
 
 .register-page h1 {
   font-family: Inter;
-  font-size: large;
+  font-size: 1.5rem;
   font-weight: bold;
 }
 
@@ -49,40 +54,46 @@
 .n-text,
 .p-text,
 .c-text {
-  margin: auto;
-  width: 500px;
+  margin: 10px auto;
+  width: 100%;
+  max-width: 400px;
   height: 40px;
-  padding: 10px;
+  padding: 10px 15px;
   border: 1px solid #ccc;
-  border-radius: 5px;
+  border-radius: 8px;
   font-family: Inter;
-  margin-bottom: 15px;
+  font-size: 16px;
+  box-sizing: border-box;
 }
 
 .reginfor {
-  margin-top: 100px;
-  width: 500px;
+  margin-top: 60px;
+  width: 100%;
+  max-width: 400px;
   margin-left: auto;
   margin-right: auto;
   text-align: left;
+  padding: 0 20px;
+  box-sizing: border-box;
 }
 
 .register {
   display: block;
-  margin: auto;
-  margin-top: 70px;
+  margin: 50px auto 0;
   background-color: rgb(138, 246, 255);
   color: black;
-  width: 294px;
+  width: 100%;
+  max-width: 300px;
   height: 49px;
   border: none;
   border-radius: 20px;
-  padding-top: 10px;
-  padding-bottom: 10px;
-  font-size: 20px;
+  padding: 10px 20px;
+  font-size: 18px;
   font-weight: 600;
   cursor: pointer;
   font-family: Inter;
+  box-sizing: border-box;
+  transition: background-color 0.3s ease;
 }
 
 .register:hover {
@@ -91,30 +102,34 @@
 
 /* Role Selection Styles */
 .role-selection {
-  margin-top: 100px;
-  width: 600px;
+  margin-top: 60px;
+  width: 100%;
+  max-width: 600px;
   margin-left: auto;
   margin-right: auto;
   text-align: center;
   font-family: Inter;
+  padding: 0 20px;
+  box-sizing: border-box;
 }
 
 .role-selection h2 {
-  font-size: 32px;
+  font-size: 24px;
   font-weight: bold;
   color: #333;
-  margin-bottom: 20px;
+  margin-bottom: 15px;
 }
 
 .role-selection p {
-  font-size: 18px;
+  font-size: 16px;
   color: #666;
-  margin-bottom: 40px;
+  margin-bottom: 30px;
 }
 
 .role-buttons {
   display: flex;
-  gap: 30px;
+  flex-direction: column;
+  gap: 20px;
   justify-content: center;
   margin-bottom: 30px;
 }
@@ -123,8 +138,8 @@
   background: white;
   border: 2px solid #ddd;
   border-radius: 15px;
-  padding: 30px 25px;
-  width: 250px;
+  padding: 25px 20px;
+  width: 100%;
   cursor: pointer;
   transition: all 0.3s ease;
   font-family: Inter;
@@ -145,14 +160,14 @@
 }
 
 .role-button h3 {
-  font-size: 24px;
+  font-size: 20px;
   font-weight: bold;
   color: #333;
   margin: 0 0 10px 0;
 }
 
 .role-button p {
-  font-size: 16px;
+  font-size: 14px;
   color: #666;
   margin: 0;
   font-weight: 400;
@@ -173,4 +188,91 @@
   font-size: 16px;
   color: #666;
   font-style: italic;
+}
+
+/* Tablet styles */
+@media (min-width: 768px) {
+  .register-page p {
+    font-size: 20px;
+  }
+  
+  .title {
+    margin-top: 80px;
+    flex-direction: row;
+    justify-content: space-between;
+    max-width: 800px;
+    margin-left: auto;
+    margin-right: auto;
+  }
+  
+  .ip {
+    justify-content: flex-end;
+  }
+  
+  .reginfor {
+    margin-top: 100px;
+    max-width: 500px;
+    padding: 0;
+  }
+  
+  .email,
+  .n-text,
+  .p-text,
+  .c-text {
+    max-width: 500px;
+    margin-bottom: 15px;
+  }
+  
+  .register {
+    margin: 70px auto 0;
+    font-size: 20px;
+    max-width: 294px;
+  }
+  
+  .role-selection {
+    margin-top: 100px;
+    padding: 0;
+  }
+  
+  .role-selection h2 {
+    font-size: 32px;
+    margin-bottom: 20px;
+  }
+  
+  .role-selection p {
+    font-size: 18px;
+    margin-bottom: 40px;
+  }
+  
+  .role-buttons {
+    flex-direction: row;
+    gap: 30px;
+  }
+  
+  .role-button {
+    padding: 30px 25px;
+    width: 250px;
+  }
+  
+  .role-button h3 {
+    font-size: 24px;
+  }
+  
+  .role-button p {
+    font-size: 16px;
+  }
+}
+
+/* Desktop styles */
+@media (min-width: 1024px) {
+  .register-page {
+    padding: 40px;
+  }
+}
+
+/* Large screen styles */
+@media (min-width: 1200px) {
+  .title {
+    max-width: 1000px;
+  }
 } 

@@ -2,13 +2,16 @@
   display: flex;
   flex-direction: column;
   gap: 20px;
+  padding: 0 15px;
+  box-sizing: border-box;
 }
 
 .dashboard-title {
-  margin-bottom: 20px;  /* space between title and cards */
-  font-size: 1.8rem;
+  margin-bottom: 20px;
+  font-size: 1.5rem;
   font-weight: bold;
   text-align: center;
+  padding: 0 10px;
 }
 
 .event-list {
@@ -16,30 +19,89 @@
   padding: 0;
   margin: 0;
   display: flex;
-  flex-wrap: wrap;
-  gap: 20px;
-  justify-content: center;  /* center cards horizontally */
+  flex-direction: column;
+  gap: 15px;
+  align-items: center;
 }
 
 .event-card {
   background-color: #f5f5f5;
   border-radius: 8px;
   padding: 20px;
-  width: 250px; /* fixed width or adjust */
+  width: 100%;
+  max-width: 350px;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
   transition: transform 0.2s ease, box-shadow 0.2s ease;
   cursor: pointer;
+  box-sizing: border-box;
 }
 
 .event-card:hover {
-  transform: translateY(-5px);
-  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+  transform: translateY(-3px);
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.15);
 }
 
 .event-card h3 {
   margin-top: 0;
+  margin-bottom: 10px;
+  font-size: 1.2rem;
+  font-weight: 600;
 }
 
 .event-card p {
   color: #555;
+  margin: 5px 0;
+  line-height: 1.4;
+}
+
+/* Tablet styles */
+@media (min-width: 768px) {
+  .dashboard-content {
+    padding: 0 30px;
+  }
+  
+  .dashboard-title {
+    font-size: 1.8rem;
+    margin-bottom: 30px;
+    padding: 0;
+  }
+  
+  .event-list {
+    flex-direction: row;
+    flex-wrap: wrap;
+    gap: 20px;
+    justify-content: center;
+  }
+  
+  .event-card {
+    width: 280px;
+    max-width: none;
+  }
+  
+  .event-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+  }
+}
+
+/* Desktop styles */
+@media (min-width: 1024px) {
+  .dashboard-content {
+    padding: 0 40px;
+  }
+  
+  .event-card {
+    width: 250px;
+  }
+}
+
+/* Large screen styles */
+@media (min-width: 1200px) {
+  .event-list {
+    gap: 25px;
+  }
+  
+  .event-card {
+    width: 270px;
+  }
 }

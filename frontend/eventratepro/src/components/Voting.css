@@ -1,41 +1,45 @@
 .voting-page {
-  max-width: 900px;
-  margin: 40px auto;
-  padding: 20px;
+  max-width: 100%;
+  margin: 20px auto;
+  padding: 15px;
   font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
   color: #2c3e50;
+  box-sizing: border-box;
 }
 
 .voting-page h1 {
   text-align: center;
-  font-size: 2rem;
-  margin-bottom: 30px;
+  font-size: 1.5rem;
+  margin-bottom: 25px;
   font-weight: 700;
+  padding: 0 10px;
 }
 
 .criteria-section {
   background-color: #f9f9f9;
-  padding: 20px 25px;
+  padding: 15px 20px;
   border-radius: 8px;
   box-shadow: 0 2px 6px rgb(0 0 0 / 0.1);
-  margin-bottom: 25px;
+  margin-bottom: 20px;
 }
 
 .criteria-section h2 {
-  font-size: 1.5rem;
-  margin-bottom: 15px;
+  font-size: 1.2rem;
+  margin-bottom: 12px;
   border-bottom: 2px solid #7fb3d5;
-  padding-bottom: 8px;
+  padding-bottom: 6px;
   font-weight: 600;
 }
 
 .question-block {
-  margin-top: 15px;
+  margin-top: 12px;
 }
 
 .question-block p {
   font-weight: 600;
-  margin-bottom: 10px;
+  margin-bottom: 8px;
+  font-size: 0.95rem;
+  line-height: 1.4;
 }
 
 .question-block div {
@@ -43,6 +47,13 @@
   align-items: center;
   margin-bottom: 8px;
   cursor: pointer;
+  padding: 5px;
+  border-radius: 4px;
+  transition: background-color 0.2s;
+}
+
+.question-block div:hover {
+  background-color: rgba(123, 179, 213, 0.1);
 }
 
 .question-block input[type="radio"] {
@@ -50,14 +61,71 @@
   width: 18px;
   height: 18px;
   cursor: pointer;
+  flex-shrink: 0;
 }
 
 .question-block span {
-  font-size: 1rem;
+  font-size: 0.9rem;
   user-select: none;
   color: #34495e;
+  line-height: 1.3;
 }
 
 .question-block span:hover {
   color: #2874a6;
+}
+
+/* Tablet styles */
+@media (min-width: 768px) {
+  .voting-page {
+    max-width: 700px;
+    margin: 30px auto;
+    padding: 20px;
+  }
+  
+  .voting-page h1 {
+    font-size: 1.8rem;
+    margin-bottom: 30px;
+    padding: 0;
+  }
+  
+  .criteria-section {
+    padding: 20px 25px;
+    margin-bottom: 25px;
+  }
+  
+  .criteria-section h2 {
+    font-size: 1.4rem;
+    margin-bottom: 15px;
+    padding-bottom: 8px;
+  }
+  
+  .question-block {
+    margin-top: 15px;
+  }
+  
+  .question-block p {
+    margin-bottom: 10px;
+    font-size: 1rem;
+  }
+  
+  .question-block span {
+    font-size: 1rem;
+  }
+}
+
+/* Desktop styles */
+@media (min-width: 1024px) {
+  .voting-page {
+    max-width: 900px;
+    margin: 40px auto;
+  }
+  
+  .voting-page h1 {
+    font-size: 2rem;
+  }
+  
+  .criteria-section h2 {
+    font-size: 1.5rem;
+  }
 }
