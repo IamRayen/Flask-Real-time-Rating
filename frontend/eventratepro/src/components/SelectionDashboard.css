@@ -1,13 +1,8 @@
-/* User header with back button, logo, and logout */
-.user-header {
-  display: grid;
-  grid-template-columns: 1fr auto 1fr;
-  align-items: center;
-  padding: 20px;
-  margin-bottom: 20px;
-}
-
+/* Back button positioned independently */
 .back-arrow {
+  position: absolute;
+  top: 20px;
+  left: 20px;
   font-size: 18px;
   font-weight: 600;
   cursor: pointer;
@@ -16,42 +11,27 @@
   border-radius: 8px;
   transition: background-color 0.3s ease;
   font-family: Inter;
+  z-index: 10;
 }
 
 .back-arrow:hover {
   background-color: rgba(138, 246, 255, 0.3);
 }
 
-/* Header logo container and styling */
-.header-logo-container {
+/* Logo header - perfectly centered */
+.logo-header {
   display: flex;
   justify-content: center;
   align-items: center;
+  padding: 30px 0;
+  margin-bottom: 20px;
 }
 
-.header-logo {
+.center-logo {
   width: 120px;
   height: 120px;
   object-fit: contain;
-  filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.1));
-}
-
-.logout-btn {
-  padding: 12px 24px;
-  background-color: #dc3545;
-  color: white;
-  border: none;
-  border-radius: 8px;
-  cursor: pointer;
-  font-family: Inter;
-  font-size: 16px;
-  font-weight: 500;
-  transition: background-color 0.3s ease;
-  justify-self: end;
-}
-
-.logout-btn:hover {
-  background-color: #c82333;
+  filter: drop-shadow(0 4px 8px rgba(0, 0, 0, 0.1));
 }
 
 .dashboard-content {
@@ -112,20 +92,14 @@
 
 /* Mobile responsive */
 @media (max-width: 768px) {
-  .user-header {
-    display: flex;
-    flex-direction: column;
-    gap: 15px;
-    text-align: center;
-  }
-  
-  .header-logo {
+  .center-logo {
     width: 90px;
     height: 90px;
   }
   
-  .logout-btn {
-    justify-self: auto;
+  .logo-header {
+    padding: 20px 0;
+    margin-bottom: 10px;
   }
 }
 

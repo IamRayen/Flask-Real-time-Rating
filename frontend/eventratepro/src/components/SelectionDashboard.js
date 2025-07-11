@@ -5,7 +5,7 @@ import "./SelectionDashboard.css";
 import erpLogo from "../assets/erp.png";
 
 function SelectionDashboard() {
-  const { User, logout } = useAuthContext();
+  const { User } = useAuthContext();
   const [events, setEvents] = useState([]);
   const [loading, setLoading] = useState(true);
   const navigate = useNavigate();
@@ -40,16 +40,12 @@ function SelectionDashboard() {
 
   return (
     <div className="dashboard-page">
-      <div className="user-header">
-        <div className="back-arrow" onClick={handleBackClick}>
-          ← Back
-        </div>
-        <div className="header-logo-container">
-          <img src={erpLogo} alt="ERP Logo" className="header-logo" />
-        </div>
-        <button onClick={logout} className="logout-btn">
-          Logout
-        </button>
+      <div className="back-arrow" onClick={handleBackClick}>
+        ← Back
+      </div>
+
+      <div className="logo-header">
+        <img src={erpLogo} alt="ERP Logo" className="center-logo" />
       </div>
 
       <div className="dashboard-content">

@@ -6,7 +6,7 @@ import { useAuthContext } from "../context/AuthContext";
 import erpLogo from "../assets/erp.png";
 
 function Questionnaire() {
-  const { User, logout } = useAuthContext();
+  const { User } = useAuthContext();
   const [templates, setTemplates] = useState([]);
   const [loading, setLoading] = useState(true);
   const navigate = useNavigate();
@@ -66,16 +66,12 @@ function Questionnaire() {
 
   return (
     <div className="dashboard-page">
-      <div className="user-header">
-        <div className="back-arrow" onClick={handleBackClick}>
-          ← Back
-        </div>
-        <div className="header-logo-container">
-          <img src={erpLogo} alt="ERP Logo" className="header-logo" />
-        </div>
-        <button onClick={logout} className="logout-btn">
-          Logout
-        </button>
+      <div className="back-arrow" onClick={handleBackClick}>
+        ← Back
+      </div>
+
+      <div className="logo-header">
+        <img src={erpLogo} alt="ERP Logo" className="center-logo" />
       </div>
 
       <div className="dashboard-content">

@@ -14,7 +14,6 @@ import { Bar } from "react-chartjs-2";
 import "./Dashboard.css";
 import { useEffect, useState } from "react";
 import { socket } from "../socket";
-import { useAuthContext } from "../context/AuthContext";
 import erpLogo from "../assets/erp.png";
 
 ChartJS.register(
@@ -30,7 +29,6 @@ ChartJS.register(
 function Dashboard() {
   const navigate = useNavigate();
   const { eventID } = useParams();
-  const { User, logout } = useAuthContext();
 
   const participantCount = 24;
 
@@ -217,16 +215,12 @@ function Dashboard() {
 
   return (
     <div className="dashboard-page">
-      <div className="user-header">
-        <div className="back-arrow" onClick={handleBackClick}>
-          ← Back
-        </div>
-        <div className="header-logo-container">
-          <img src={erpLogo} alt="ERP Logo" className="header-logo" />
-        </div>
-        <button onClick={logout} className="logout-btn">
-          Logout
-        </button>
+      <div className="back-arrow" onClick={handleBackClick}>
+        ← Back
+      </div>
+
+      <div className="logo-header">
+        <img src={erpLogo} alt="ERP Logo" className="center-logo" />
       </div>
 
       <div className="dashboard-content">
