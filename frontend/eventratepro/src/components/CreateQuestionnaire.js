@@ -156,7 +156,7 @@ function CreateQuestionnaire() {
 
     // built-in browser API that allows HTTP requests (GET, POST)
     // fetch = fetch data (GET) + send data (POST)
-    fetch("http://eventrate-pro.de/template/save", {
+    fetch("https://eventrate-pro.de/template/save", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
