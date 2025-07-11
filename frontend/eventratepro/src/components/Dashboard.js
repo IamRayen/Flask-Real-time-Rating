@@ -386,7 +386,7 @@ function Dashboard() {
     // Set up periodic refresh every 5 seconds for real-time feel
     const interval = setInterval(() => {
       fetchDashboardData();
-    }, 5000);
+    }, 500);
 
     // Cleanup interval on component unmount
     return () => clearInterval(interval);
