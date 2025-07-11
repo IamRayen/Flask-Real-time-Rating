@@ -49,7 +49,7 @@ function EventDetails() {
 
     // API call to check the given referee email
     fetch(
-      `http://eventrate-pro.de/event/addRefereeToList?email=${refereeEmail}`
+      `https://eventrate-pro.de/event/addRefereeToList?email=${refereeEmail}`
     )
       .then((res) => res.json())
       .then((data) => {
@@ -152,7 +152,7 @@ function EventDetails() {
 
     // built-in browser API that allows HTTP requests (GET, POST)
     // fetch = fetch data (GET) + send data (POST)
-    fetch("http://eventrate-pro.de/event/save", {
+    fetch("https://eventrate-pro.de/event/save", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
