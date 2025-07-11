@@ -232,7 +232,7 @@ function Dashboard() {
     try {
       setError(null);
       const res = await fetch(
-        `http://eventrate-pro.de/dashboard/getDashboardData?eventID=${eventID}`,
+        `https://eventrate-pro.de/dashboard/getDashboardData?eventID=${eventID}`,
         {
           method: "GET",
         }
@@ -276,7 +276,7 @@ function Dashboard() {
   const handleBegin = async () => {
     try {
       const res = await fetch(
-        `http://eventrate-pro.de/dashboard/startEvent?eventID=${eventID}`,
+        `https://eventrate-pro.de/dashboard/startEvent?eventID=${eventID}`,
         {
           method: "POST",
         }
@@ -299,7 +299,7 @@ function Dashboard() {
   const handleEnd = async () => {
     try {
       const res = await fetch(
-        `http://eventrate-pro.de/dashboard/endEvent?eventID=${eventID}`,
+        `https://eventrate-pro.de/dashboard/endEvent?eventID=${eventID}`,
         {
           method: "POST",
         }
