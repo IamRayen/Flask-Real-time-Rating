@@ -14,7 +14,7 @@ function SelectionDashboard() {
     const fetchEvents = async () => {
       try {
         const res = await fetch(
-          `http://eventrate-pro.de/dashboard/getAllPendingOrRunningEvents?userID=${User.uid}`
+          `https://eventrate-pro.de/dashboard/getAllPendingOrRunningEvents?userID=${User.uid}`
         );
         const data = await res.json();
         setEvents(data);
