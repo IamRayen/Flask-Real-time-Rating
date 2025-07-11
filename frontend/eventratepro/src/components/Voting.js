@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { useParams, useLocation } from "react-router-dom";
 import { auth } from "../firebase/config";
 import "./Voting.css";
-import { socket } from "../socket"
+import { socket } from "../socket";
 
 function Voting() {
   const { questionnaireID, posterID } = useParams();
@@ -35,16 +35,19 @@ function Voting() {
             throw new Error("User not authenticated");
           }
 
-          const verifyRes = await fetch("http://eventrate-pro.de/event/isRefereeOfEvent", {
-            method: "POST",
-            headers: {
-              "Content-Type": "application/json"
-            },
-            body: JSON.stringify({
-              eventID: data.event.eventID,
-              userEmail: currentUser.email
-            })
-          });
+          const verifyRes = await fetch(
+            "http://eventrate-pro.de/event/isRefereeOfEvent",
+            {
+              method: "POST",
+              headers: {
+                "Content-Type": "application/json",
+              },
+              body: JSON.stringify({
+                eventID: data.event.eventID,
+                userEmail: currentUser.email,
+              }),
+            }
+          );
 
           const verifyResult = await verifyRes.json();
           if (!verifyResult.isReferee) {
@@ -107,15 +110,21 @@ function Voting() {
 
       const result = await res.json();
 
-
-      // Send vote data to via Socket.IO
-
-      socket.emit("submit_vote_realtime", {
-        eventID: event?.eventID,
-        posterID: posterID,
-        vote: ticketOptionsList,
-      });
-      console.log("Vote emitted real-time:", ticketOptionsList);
+      // Send vote data via Socket.IO for real-time dashboard updates
+      try {
+        socket.connect();
+        socket.emit("submit_vote_realtime", {
+          eventID: event?.eventID,
+          posterID: posterID,
+          vote: ticketOptionsList,
+        });
+        console.log("Vote emitted real-time:", ticketOptionsList);
+      } catch (socketError) {
+        console.log(
+          "Socket.IO emission failed, but vote was saved:",
+          socketError
+        );
+      }
 
       alert("Vote submitted! Vote ID: " + result.voteID);
       console.log("Vote submitted:", result);
@@ -126,25 +135,6 @@ function Voting() {
       alert("Failed to submit vote. Please try again.");
     }
   };
-  
-  //just testing
-  useEffect(() => {
-    // Connect to the socket server. Here to emit the data.
-    socket.connect(); 
-
-    // Send a test message to the backend through the "submit_vote_realtime" event
-    socket.emit("submit_vote_realtime", {
-      message: "hello world",
-    });
-
-    console.log("Vote emitted real-time");
-
-    // Cleanup function runs when component unmounts
-    return () => {
-      socket.disconnect();
-    };
-  }, []);
-  //just testing
 
   if (loading) return <div>Loading...</div>;
   if (!questionnaire) return <div>Questionnaire not found.</div>;
