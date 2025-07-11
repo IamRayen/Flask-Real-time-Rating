@@ -2,10 +2,10 @@ import React, { useEffect, useState } from "react";
 import { useAuthContext } from "../context/AuthContext";
 import { useNavigate } from "react-router-dom";
 import "./SelectionDashboard.css";
-import Header from "./sub-component/Header";
+import erpLogo from "../assets/erp.png";
 
 function SelectionDashboard() {
-  const { User } = useAuthContext();
+  const { User, logout } = useAuthContext();
   const [events, setEvents] = useState([]);
   const [loading, setLoading] = useState(true);
   const navigate = useNavigate();
@@ -34,9 +34,24 @@ function SelectionDashboard() {
     navigate(`/dashboard/${eventID}`);
   };
 
+  const handleBackClick = () => {
+    navigate("/account-overview");
+  };
+
   return (
     <div className="dashboard-page">
-      <Header icon="" />
+      <div className="user-header">
+        <div className="back-arrow" onClick={handleBackClick}>
+          ← Back
+        </div>
+        <div className="header-logo-container">
+          <img src={erpLogo} alt="ERP Logo" className="header-logo" />
+        </div>
+        <button onClick={logout} className="logout-btn">
+          Logout
+        </button>
+      </div>
+
       <div className="dashboard-content">
         <h2 className="dashboard-title">My Pending / Running Events</h2>
 

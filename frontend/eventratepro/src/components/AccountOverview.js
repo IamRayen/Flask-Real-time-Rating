@@ -1,8 +1,8 @@
 import React from "react";
 import { useNavigate } from "react-router-dom";
 import "./AccountOverview.css";
-import Header from "./sub-component/Header";
 import { useAuthContext } from "../context/AuthContext";
+import erpLogo from "../assets/erp.png";
 
 function AccountOverview() {
   const navigate = useNavigate();
@@ -18,7 +18,7 @@ function AccountOverview() {
   };
 
   const handleViewDashboard = () => {
-    navigate("/selection-dashboard")
+    navigate("/selection-dashboard");
     //navigate("/dashboard");
   };
 
@@ -33,52 +33,38 @@ function AccountOverview() {
 
   return (
     <div className="account-overview-page">
-      <Header icon="ERP" />
-
-      <div
-        style={{
-          display: "flex",
-          justifyContent: "space-between",
-          alignItems: "center",
-          padding: "20px",
-        }}
-      >
+      <div className="user-header">
         <h2>Welcome, {User?.displayName || User?.email}</h2>
-        <button
-          onClick={handleLogout}
-          style={{
-            padding: "10px 20px",
-            backgroundColor: "#dc3545",
-            color: "white",
-            border: "none",
-            borderRadius: "5px",
-            cursor: "pointer",
-          }}
-        >
+        <div className="header-logo-container">
+          <img src={erpLogo} alt="ERP Logo" className="header-logo" />
+        </div>
+        <button onClick={handleLogout} className="logout-btn">
           Logout
         </button>
       </div>
 
-      <div className="accinfor">
-        <div className="qp">
-          <div className="questionnaire-icon">📋</div>
-        </div>
-        <div className="qt">
-          <p onClick={handleViewQuestionnaire}>view my Questionnaire</p>
-        </div>
-
-        <div className="hp">
-          <div className="history-icon">📊</div>
-        </div>
-        <div className="ht">
-          <p onClick={handleViewHistory}>view my History</p>
+      <div className="action-cards-container">
+        <div className="action-card" onClick={handleViewQuestionnaire}>
+          <div className="card-icon questionnaire-icon">📋</div>
+          <h3>
+            view my
+            <br />
+            Questionnaire
+          </h3>
         </div>
 
-        <div className="dp">
-          <div className="dashboard-icon">📈</div>
+        <div className="action-card" onClick={handleViewHistory}>
+          <div className="card-icon history-icon">📊</div>
+          <h3>view my History</h3>
         </div>
-        <div className="dt">
-          <p onClick={handleViewDashboard}>view my Dashboard</p>
+
+        <div className="action-card" onClick={handleViewDashboard}>
+          <div className="card-icon dashboard-icon">📈</div>
+          <h3>
+            view my
+            <br />
+            Dashboard
+          </h3>
         </div>
       </div>
     </div>

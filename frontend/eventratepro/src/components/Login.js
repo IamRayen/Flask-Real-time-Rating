@@ -1,10 +1,10 @@
 import React, { useState, useEffect } from "react";
-import { useNavigate, useLocation  } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 import { signInWithEmailAndPassword } from "firebase/auth";
 import { auth } from "../firebase/config";
 import "./Login.css";
 import { useAuthContext } from "../context/AuthContext";
-import Header from "./sub-component/Header";
+import erpLogo from "../assets/erp.png";
 
 function Login() {
   const [email, setEmail] = useState("");
@@ -21,13 +21,13 @@ function Login() {
 
   // Redirect to home if user is already logged in
   useEffect(() => {
-  if (User) {
-    if (next) {
-      navigate(`${next}?role=${role}`);
-    } else {
-      navigate("/account-overview");
+    if (User) {
+      if (next) {
+        navigate(`${next}?role=${role}`);
+      } else {
+        navigate("/account-overview");
+      }
     }
-  }
   }, [User, navigate, next, role]);
 
   const handleLogin = async () => {
@@ -60,7 +60,9 @@ function Login() {
 
   return (
     <div className="login-page">
-      <Header icon="ERP" />
+      <div className="logo-header">
+        <img src={erpLogo} alt="ERP Logo" className="center-logo" />
+      </div>
 
       <form
         className="personalinfor"

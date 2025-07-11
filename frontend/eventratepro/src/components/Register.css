@@ -1,5 +1,21 @@
 @import url('https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap');
 
+/* Logo header for authentication pages */
+.logo-header {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 30px 0;
+  margin-bottom: 20px;
+}
+
+.center-logo {
+  width: 150px;
+  height: 150px;
+  object-fit: contain;
+  filter: drop-shadow(0 4px 8px rgba(0, 0, 0, 0.1));
+}
+
 .register-page {
   min-height: 100vh;
   background: linear-gradient(180deg, rgb(255, 255, 255), rgb(184, 243, 248));
@@ -190,8 +206,21 @@
   font-style: italic;
 }
 
+/* Mobile responsive */
+@media (max-width: 768px) {
+  .center-logo {
+    width: 120px;
+    height: 120px;
+  }
+}
+
 /* Tablet styles */
 @media (min-width: 768px) {
+  .center-logo {
+    width: 170px;
+    height: 170px;
+  }
+  
   .register-page p {
     font-size: 20px;
   }

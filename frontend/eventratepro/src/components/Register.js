@@ -4,7 +4,7 @@ import { createUserWithEmailAndPassword, updateProfile } from "firebase/auth";
 import { auth, db } from "../firebase/config";
 import { doc, setDoc, updateDoc } from "firebase/firestore";
 import "./Register.css";
-import Header from "./sub-component/Header";
+import erpLogo from "../assets/erp.png";
 
 function Register() {
   const [email, setEmail] = useState("");
@@ -98,7 +98,9 @@ function Register() {
     console.log("Rendering role selection UI");
     return (
       <div className="register-page">
-        <Header icon="ERP" />
+        <div className="logo-header">
+          <img src={erpLogo} alt="ERP Logo" className="center-logo" />
+        </div>
         <div className="role-selection">
           <h2>Choose Your Role</h2>
           <p>Please select your role to complete the registration:</p>
@@ -138,7 +140,9 @@ function Register() {
 
   return (
     <div className="register-page">
-      <Header icon="ERP" />
+      <div className="logo-header">
+        <img src={erpLogo} alt="ERP Logo" className="center-logo" />
+      </div>
 
       <form
         className="reginfor"

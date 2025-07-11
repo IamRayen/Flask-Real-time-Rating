@@ -1,12 +1,12 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import "./Questionnaire.css";
-import Header from "./sub-component/Header";
 import TemplateQuestionaire from "./sub-component/TemplateCard";
 import { useAuthContext } from "../context/AuthContext";
+import erpLogo from "../assets/erp.png";
 
 function Questionnaire() {
-  const { User } = useAuthContext();
+  const { User, logout } = useAuthContext();
   const [templates, setTemplates] = useState([]);
   const [loading, setLoading] = useState(true);
   const navigate = useNavigate();
@@ -33,9 +33,9 @@ function Questionnaire() {
   }, [User]);
 
   const handleViewTemplate = (templateID, templateData) => {
-  navigate(`/create-questionnaire`, {
-    state: { template: templateData }
-  });
+    navigate(`/create-questionnaire`, {
+      state: { template: templateData },
+    });
   };
 
   const handleBackClick = () => {
@@ -43,7 +43,9 @@ function Questionnaire() {
   };
 
   const handleDeleteTemplate = async (templateID) => {
-    const confirmed = window.confirm("Are you sure you want to delete this template?");
+    const confirmed = window.confirm(
+      "Are you sure you want to delete this template?"
+    );
     if (!confirmed) return;
 
     try {
@@ -64,11 +66,18 @@ function Questionnaire() {
 
   return (
     <div className="dashboard-page">
-      <div className="back-arrow" onClick={handleBackClick}>
-        ←
+      <div className="user-header">
+        <div className="back-arrow" onClick={handleBackClick}>
+          ← Back
+        </div>
+        <div className="header-logo-container">
+          <img src={erpLogo} alt="ERP Logo" className="header-logo" />
+        </div>
+        <button onClick={logout} className="logout-btn">
+          Logout
+        </button>
       </div>
 
-      <Header icon="" />
       <div className="dashboard-content">
         <h2 className="dashboard-title">My Templates</h2>
 
@@ -82,7 +91,9 @@ function Questionnaire() {
               <li
                 key={template.templateID}
                 className="questionnaire-card"
-                onClick={() => handleViewTemplate(template.templateID, template)}
+                onClick={() =>
+                  handleViewTemplate(template.templateID, template)
+                }
               >
                 <div
                   className="delete-x"
@@ -99,7 +110,10 @@ function Questionnaire() {
             ))}
           </ul>
         )}
-        <button className="create-new-button" onClick={handleCreateNewQuestionnaire}>
+        <button
+          className="create-new-button"
+          onClick={handleCreateNewQuestionnaire}
+        >
           New Questionaire
         </button>
       </div>

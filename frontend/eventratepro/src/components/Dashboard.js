@@ -11,10 +11,11 @@ import {
 } from "chart.js";
 import ChartDataLabels from "chartjs-plugin-datalabels";
 import { Bar } from "react-chartjs-2";
-import Header from "./sub-component/Header";
 import "./Dashboard.css";
 import { useEffect, useState } from "react";
 import { socket } from "../socket";
+import { useAuthContext } from "../context/AuthContext";
+import erpLogo from "../assets/erp.png";
 
 ChartJS.register(
   CategoryScale,
@@ -29,6 +30,7 @@ ChartJS.register(
 function Dashboard() {
   const navigate = useNavigate();
   const { eventID } = useParams();
+  const { User, logout } = useAuthContext();
 
   const participantCount = 24;
 
@@ -62,7 +64,6 @@ function Dashboard() {
       },
     ],
   };
-  
 
   const chartOptions = {
     responsive: true,
@@ -166,7 +167,7 @@ function Dashboard() {
       alert("An error occurred while ending the event.");
     }
   };
-  
+
   const getDashboardData = async () => {
     try {
       const res = await fetch(
@@ -187,8 +188,6 @@ function Dashboard() {
       alert("An error occurred while fetching data.");
     }
   };
-  
-
 
   // This state will store the chart data (like votes) that will be updated in real-time.
   const [charts, setCharts] = useState("");
@@ -208,7 +207,7 @@ function Dashboard() {
         return updated;
       });
     });
-    
+
     // Cleanup function that runs when the component is unmounted
     // It removes the event listener to prevent memory leaks or duplicate events
     return () => {
@@ -216,13 +215,19 @@ function Dashboard() {
     };
   }, []);
 
-
   return (
     <div className="dashboard-page">
-      <div className="back-arrow" onClick={handleBackClick}>
-        ←
+      <div className="user-header">
+        <div className="back-arrow" onClick={handleBackClick}>
+          ← Back
+        </div>
+        <div className="header-logo-container">
+          <img src={erpLogo} alt="ERP Logo" className="header-logo" />
+        </div>
+        <button onClick={logout} className="logout-btn">
+          Logout
+        </button>
       </div>
-      <Header icon="ERP" />
 
       <div className="dashboard-content">
         <div className="dashboard-card">

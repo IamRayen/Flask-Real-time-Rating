@@ -1,25 +1,66 @@
 @import url('https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap');
 
+/* User header with back button, logo, and logout */
+.user-header {
+  display: grid;
+  grid-template-columns: 1fr auto 1fr;
+  align-items: center;
+  padding: 20px;
+  margin-bottom: 20px;
+}
+
+.back-arrow {
+  font-size: 18px;
+  font-weight: 600;
+  cursor: pointer;
+  color: #2C3E50;
+  padding: 10px 15px;
+  border-radius: 8px;
+  transition: background-color 0.3s ease;
+  font-family: Inter;
+}
+
+.back-arrow:hover {
+  background-color: rgba(138, 246, 255, 0.3);
+}
+
+/* Header logo container and styling */
+.header-logo-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.header-logo {
+  width: 120px;
+  height: 120px;
+  object-fit: contain;
+  filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.1));
+}
+
+.logout-btn {
+  padding: 12px 24px;
+  background-color: #dc3545;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  font-family: Inter;
+  font-size: 16px;
+  font-weight: 500;
+  transition: background-color 0.3s ease;
+  justify-self: end;
+}
+
+.logout-btn:hover {
+  background-color: #c82333;
+}
+
 .questionnaire-page {
   height: 100vh;
   background: linear-gradient(180deg, #fff, #b8f3f8);
   position: relative;
   padding: 40px 20px;
-}
-
-.back-arrow {
-  position: absolute;
-  top: 40px;
-  left: 40px;
-  font-size: 2rem;
-  font-weight: bold;
-  cursor: pointer;
-  color: #333;
-  transition: color 0.3s;
-}
-
-.back-arrow:hover {
-  color: #0066cc;
 }
 
 .title {
@@ -140,6 +181,22 @@
 }
 
 @media (max-width: 768px) {
+  .user-header {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    text-align: center;
+  }
+  
+  .header-logo {
+    width: 90px;
+    height: 90px;
+  }
+  
+  .logout-btn {
+    justify-self: auto;
+  }
+  
   .questionnaires-container {
     flex-direction: column;
     align-items: center;
