@@ -152,7 +152,7 @@ function PDFExport() {
       setIsGenerating(true);
 
       // First, try the backend API
-      const response = await fetch("http://eventrate-pro.de/export/pdf", {
+      const response = await fetch("https://eventrate-pro.de/export/pdf", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -207,7 +207,7 @@ function PDFExport() {
     try {
       console.log(`Auto-starting event ${eventData.eventID}...`);
       const response = await fetch(
-        `http://eventrate-pro.de/dashboard/startEvent?eventID=${eventData.eventID}`,
+        `https://eventrate-pro.de/dashboard/startEvent?eventID=${eventData.eventID}`,
         {
           method: "POST",
         }
