@@ -19,7 +19,7 @@ function Voting() {
     const fetchQuestionnaireAndEvent = async () => {
       try {
         const res = await fetch(
-          `http://eventrate-pro.de/${questionnaireID}/${posterID}`
+          `https://eventrate-pro.de/${questionnaireID}/${posterID}`
         );
         if (!res.ok) throw new Error("Failed to fetch");
         const data = await res.json();
@@ -36,7 +36,7 @@ function Voting() {
           }
 
           const verifyRes = await fetch(
-            "http://eventrate-pro.de/event/isRefereeOfEvent",
+            "https://eventrate-pro.de/event/isRefereeOfEvent",
             {
               method: "POST",
               headers: {
@@ -96,7 +96,7 @@ function Voting() {
     };
 
     try {
-      const res = await fetch("http://eventrate-pro.de/submitVote", {
+      const res = await fetch("https://eventrate-pro.de/submitVote", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
