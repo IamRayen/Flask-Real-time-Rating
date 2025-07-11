@@ -15,7 +15,7 @@ function Questionnaire() {
     const fetchTemplates = async () => {
       try {
         const res = await fetch(
-          `http://eventrate-pro.de/template/getAllTemplates?userID=${User.uid}`
+          `https://eventrate-pro.de/template/getAllTemplates?userID=${User.uid}`
         );
         const data = await res.json();
         console.log("All Templates:", data);
@@ -49,7 +49,7 @@ function Questionnaire() {
     if (!confirmed) return;
 
     try {
-      const res = await fetch(`http://eventrate-pro.de/template/delete`, {
+      const res = await fetch(`https://eventrate-pro.de/template/delete`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ templateID, userID: User.uid }),
