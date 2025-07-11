@@ -15,7 +15,7 @@ function EventDetails() {
   const daten = location.state;
 
   console.log("Received questionnaire-data:", daten);
-  
+
   // Toast notification function
   const showToast = (message, type = "error") => {
     setToast({ show: true, message, type });
@@ -47,7 +47,9 @@ function EventDetails() {
     }
 
     // API call to check the given referee email
-    fetch(`http://eventrate-pro.de/event/addRefereeToList?email=${refereeEmail}`)
+    fetch(
+      `http://eventrate-pro.de/event/addRefereeToList?email=${refereeEmail}`
+    )
       .then((res) => res.json())
       .then((data) => {
         // if the given referee is valid, insert it to the RefereeList
@@ -116,6 +118,23 @@ function EventDetails() {
     console.log(Posters);
     console.log(RefereeList);
 
+    // Validation checks with toast notifications
+    if (Posters.length === 0) {
+      showToast(
+        "Please add at least one poster with QR code before exporting to PDF",
+        "error"
+      );
+      return;
+    }
+
+    if (RefereeList.length === 0) {
+      showToast(
+        "Please add at least one referee before exporting to PDF",
+        "error"
+      );
+      return;
+    }
+
     const event = {
       eventID: daten.Questionnaire.eventID,
       questionnaireID: daten.Questionnaire.questionnaireID,
@@ -147,29 +166,43 @@ function EventDetails() {
         console.log("Answer from Backend:", response);
         console.log("saved questionaire");
 
+        showToast(
+          "Event saved successfully! Redirecting to PDF export...",
+          "success"
+        );
+
         // Navigate to PDF export page with the necessary data
-        navigate("/pdf-export", {
-          state: {
-            posters: Posters,
-            refereeList: RefereeList,
-            eventData: event,
-            questionnaire: daten.Questionnaire,
-          },
-        });
+        setTimeout(() => {
+          navigate("/pdf-export", {
+            state: {
+              posters: Posters,
+              refereeList: RefereeList,
+              eventData: event,
+              questionnaire: daten.Questionnaire,
+            },
+          });
+        }, 1000);
       })
 
       // if something goes wrong, the error is handled here
       .catch((error) => {
         console.error("Error when sending:", error);
+        showToast(
+          "Failed to save event. Redirecting to PDF export anyway...",
+          "error"
+        );
+
         // Navigate to PDF export page even if save fails, so user can still view/download
-        navigate("/pdf-export", {
-          state: {
-            posters: Posters,
-            refereeList: RefereeList,
-            eventData: event,
-            questionnaire: daten.Questionnaire,
-          },
-        });
+        setTimeout(() => {
+          navigate("/pdf-export", {
+            state: {
+              posters: Posters,
+              refereeList: RefereeList,
+              eventData: event,
+              questionnaire: daten.Questionnaire,
+            },
+          });
+        }, 1000);
       });
   };
 
@@ -274,9 +307,6 @@ function EventDetails() {
           </ul>
           {/* Bottom Buttons */}
           <div className="eventdetails-bottom-buttons-fixed">
-            <button className="eventdetails-proceed-btn">
-              Proceed to Event
-            </button>
             <button
               className="eventdetails-export-btn"
               onClick={handleExportPDF}

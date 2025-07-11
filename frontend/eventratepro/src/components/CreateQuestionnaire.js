@@ -10,6 +10,7 @@ function CreateQuestionnaire() {
   const { User } = useAuthContext();
   const [Questionnaire, setQuestionnaire] = useState(null);
   const [criteriaList, setCriteriaList] = useState([]);
+  const [toast, setToast] = useState({ show: false, message: "", type: "" });
 
   const location = useLocation();
   const template = location.state?.template;
@@ -18,34 +19,69 @@ function CreateQuestionnaire() {
   console.log("Global questionnaireID: ", questionnaireID.current);
   const eventID = useRef(crypto.randomUUID());
 
+  // Toast notification function
+  const showToast = (message, type = "error") => {
+    setToast({ show: true, message, type });
+  };
+
+  // Auto-hide toast after 4 seconds
   useEffect(() => {
-  if (template) {
-    console.log("Received Template:", template);
-    const mappedCriteriaList = template.criteriaList.map((criteria, index) => ({
-      ...criteria,
-      questionnaireID: questionnaireID.current,
-      criteriaID: index + 1,
-      questionList: criteria.questionList.map((q, i) => ({
-        ...q,
-      })),
-    }));
-    console.log("questionnaireID in useEffect:", questionnaireID);
-    console.log("questionnaireID.current in useEffect:", questionnaireID.current);
-    setCriteriaList(mappedCriteriaList);
-  }
-}, [template]);
+    if (toast.show) {
+      const timer = setTimeout(() => {
+        setToast({ show: false, message: "", type: "" });
+      }, 4000);
+      return () => clearTimeout(timer);
+    }
+  }, [toast.show]);
+
+  useEffect(() => {
+    if (template) {
+      console.log("Received Template:", template);
+      const mappedCriteriaList = template.criteriaList.map(
+        (criteria, index) => ({
+          ...criteria,
+          questionnaireID: questionnaireID.current,
+          criteriaID: index + 1,
+          questionList: criteria.questionList.map((q, i) => ({
+            ...q,
+          })),
+        })
+      );
+      console.log("questionnaireID in useEffect:", questionnaireID);
+      console.log(
+        "questionnaireID.current in useEffect:",
+        questionnaireID.current
+      );
+      setCriteriaList(mappedCriteriaList);
+    }
+  }, [template]);
 
   const [selectedCategory, setSelectedCategory] = useState(1);
   //Tag: Function related to building the questionaire
   //allows creatinga new criteria
   const addCriteria = (name) => {
+    if (!name || !name.trim()) {
+      showToast("Please enter a criteria name", "error");
+      return;
+    }
+
+    // Check if criteria name already exists
+    const existingCriteria = criteriaList.find(
+      (c) => c.title.toLowerCase() === name.trim().toLowerCase()
+    );
+    if (existingCriteria) {
+      showToast("A criteria with this name already exists", "error");
+      return;
+    }
+
     const newCriteria = {
       criteriaID: criteriaList.length + 1,
       questionnaireID: questionnaireID.current,
-      title: name,
+      title: name.trim(),
       questionList: [],
     };
     setCriteriaList((prev) => [...prev, newCriteria]);
+    showToast(`Criteria "${name.trim()}" added successfully!`, "success");
   };
   // This functions navigate  copies previous list inside updated
   //copies the needed criteria
@@ -79,6 +115,24 @@ function CreateQuestionnaire() {
   };
 
   const handleSaveQuestionnaire = () => {
+    // Validation checks
+    if (criteriaList.length === 0) {
+      showToast("Please add at least one criteria before saving", "error");
+      return;
+    }
+
+    const totalQuestions = criteriaList.reduce(
+      (sum, criteria) => sum + criteria.questionList.length,
+      0
+    );
+
+    if (totalQuestions === 0) {
+      showToast(
+        "Please add at least one question before saving the questionnaire",
+        "error"
+      );
+      return;
+    }
 
     console.log("saving questionaire");
 
@@ -115,24 +169,40 @@ function CreateQuestionnaire() {
       .then((response) => {
         console.log("Answer from Backend:", response);
         console.log("saved questionaire");
-        navigate("/questionnaire");
+        showToast("Questionnaire saved successfully!", "success");
+        setTimeout(() => {
+          navigate("/questionnaire");
+        }, 1000);
       })
       // if something goes wrong, the error is handled here
       .catch((error) => {
         console.error("Error when sending:", error);
+        showToast("Failed to save questionnaire. Please try again.", "error");
       });
   };
 
   // if pressed "Setup event"
   const handleSetupEvent = () => {
-    
+    // Validation checks
+    if (criteriaList.length === 0) {
+      showToast(
+        "Please add at least one criteria before setting up the event",
+        "error"
+      );
+      return;
+    }
+
     const totalQuestions = criteriaList.reduce(
-      (sum, criteria) => sum + criteria.questionList.length, 0
+      (sum, criteria) => sum + criteria.questionList.length,
+      0
     );
 
     // if there is no questions, the user cannot proceed
     if (totalQuestions === 0) {
-      alert("Please add at least one question before setting up the event.");
+      showToast(
+        "Please add at least one question before setting up the event",
+        "error"
+      );
       return;
     }
 
@@ -155,6 +225,24 @@ function CreateQuestionnaire() {
 
   return (
     <div className="create-questionnaire-page">
+      {/* Toast Notification */}
+      {toast.show && (
+        <div className={`toast-notification ${toast.type}`}>
+          <div className="toast-content">
+            <span className="toast-icon">
+              {toast.type === "success" ? "✓" : "⚠"}
+            </span>
+            <span className="toast-message">{toast.message}</span>
+            <button
+              className="toast-close"
+              onClick={() => setToast({ show: false, message: "", type: "" })}
+            >
+              ×
+            </button>
+          </div>
+        </div>
+      )}
+
       <div className="back-arrow" onClick={handleBackClick}>
         ←
       </div>
@@ -168,6 +256,7 @@ function CreateQuestionnaire() {
                 current={selectedCategory}
                 onSelect={handleCategoryClick}
                 onAdd={addCriteria}
+                showToast={showToast}
               />
             </div>
             <div className="preview-section">
@@ -180,6 +269,7 @@ function CreateQuestionnaire() {
             form={criteriaList}
             current={selectedCategory}
             onAdd={addQuestionToCriteria}
+            showToast={showToast}
           />
           <div className="save-section">
             <button
