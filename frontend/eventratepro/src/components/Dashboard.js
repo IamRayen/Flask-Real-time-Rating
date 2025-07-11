@@ -383,10 +383,10 @@ function Dashboard() {
   useEffect(() => {
     fetchDashboardData();
 
-    // Set up periodic refresh every 30 seconds
+    // Set up periodic refresh every 5 seconds for real-time feel
     const interval = setInterval(() => {
       fetchDashboardData();
-    }, 30000);
+    }, 5000);
 
     // Cleanup interval on component unmount
     return () => clearInterval(interval);
@@ -453,22 +453,6 @@ function Dashboard() {
         <div className="dashboard-card">
           <div className="participant-count">
             <h2>NUMBER OF PARTICIPANTS: {participantCount}</h2>
-            <button
-              onClick={handleRefresh}
-              className="refresh-btn"
-              style={{
-                marginLeft: "1rem",
-                padding: "0.5rem 1rem",
-                fontSize: "0.9rem",
-                backgroundColor: "#4dd0fa",
-                border: "none",
-                borderRadius: "5px",
-                cursor: "pointer",
-              }}
-              disabled={loading}
-            >
-              {loading ? "Refreshing..." : "Refresh Data"}
-            </button>
           </div>
 
           <div className="chart-container">

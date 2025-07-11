@@ -177,6 +177,9 @@ function PDFExport() {
         link.click();
         document.body.removeChild(link);
         window.URL.revokeObjectURL(url);
+
+        // Automatically start the event after successful PDF download
+        await startEventAutomatically();
       } else {
         throw new Error("Backend PDF generation failed");
       }
@@ -186,8 +189,50 @@ function PDFExport() {
       );
       // Fallback to client-side PDF generation
       await generatePDFClientSide();
+
+      // Automatically start the event after successful client-side PDF generation
+      await startEventAutomatically();
     } finally {
       setIsGenerating(false);
+    }
+  };
+
+  // Function to automatically start the event
+  const startEventAutomatically = async () => {
+    if (!eventData?.eventID) {
+      console.log("No event ID available for auto-start");
+      return;
+    }
+
+    try {
+      console.log(`Auto-starting event ${eventData.eventID}...`);
+      const response = await fetch(
+        `http://eventrate-pro.de/dashboard/startEvent?eventID=${eventData.eventID}`,
+        {
+          method: "POST",
+        }
+      );
+
+      const data = await response.json();
+
+      if (response.ok) {
+        console.log("Event started automatically after PDF download");
+        // Optional: Show a success message or notification
+        alert(
+          "PDF downloaded successfully! Event has been started automatically."
+        );
+      } else {
+        console.error("Failed to auto-start event:", data.error);
+        // Optional: Show a warning but don't stop the process
+        alert(
+          "PDF downloaded successfully, but failed to start event automatically. You can start it manually from the dashboard."
+        );
+      }
+    } catch (error) {
+      console.error("Error auto-starting event:", error);
+      alert(
+        "PDF downloaded successfully, but failed to start event automatically. You can start it manually from the dashboard."
+      );
     }
   };
 
