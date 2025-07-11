@@ -4,6 +4,7 @@ import { QRCodeCanvas } from "qrcode.react";
 import jsPDF from "jspdf";
 import html2canvas from "html2canvas";
 import "./PDFExport.css";
+import erpLogo from "../assets/erp.png";
 
 function PDFExport() {
   const navigate = useNavigate();
@@ -193,14 +194,13 @@ function PDFExport() {
   return (
     <div className="pdf-export-page">
       {/* Back Arrow */}
-      <div className="pdf-export-back" onClick={handleBackClick}>
-        ←
+      <div className="back-arrow" onClick={handleBackClick}>
+        ← Back
       </div>
 
       {/* Header */}
-      <div className="pdf-export-header">
-        <div className="pdf-export-logo">📝🔍</div>
-        <div className="pdf-export-title">EventRate Pro</div>
+      <div className="logo-header">
+        <img src={erpLogo} alt="ERP Logo" className="center-logo" />
       </div>
 
       {/* Main Content */}

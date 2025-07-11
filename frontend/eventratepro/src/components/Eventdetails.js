@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import { QRCodeCanvas } from "qrcode.react";
 import "./Eventdetails.css";
+import erpLogo from "../assets/erp.png";
 
 function EventDetails() {
   const navigate = useNavigate();
@@ -239,13 +240,13 @@ function EventDetails() {
       )}
 
       {/* Back Arrow */}
-      <div className="eventdetails-back" onClick={() => navigate(-1)}>
-        &#8592;
+      <div className="back-arrow" onClick={() => navigate(-1)}>
+        ← Back
       </div>
+
       {/* Logo and Title */}
-      <div className="eventdetails-header">
-        <div className="eventdetails-logo">📝🔍</div>
-        <div className="eventdetails-title">EventRate Pro</div>
+      <div className="logo-header">
+        <img src={erpLogo} alt="ERP Logo" className="center-logo" />
       </div>
       {/* Main Content */}
       <div className="eventdetails-content">
