@@ -68,13 +68,7 @@ function PDFExport() {
       pdf.setFillColor(...primaryColor);
       pdf.rect(0, 0, pageWidth, 80, "F");
 
-      // Logo area (simulated)
-      pdf.setFillColor(255, 255, 255);
-      pdf.circle(pageWidth / 2, 35, 15, "F");
-      pdf.setTextColor(...primaryColor);
-      pdf.setFontSize(12);
-      pdf.setFont("helvetica", "bold");
-      pdf.text("ERP", pageWidth / 2 - 8, 38);
+      // No logo - clean header
 
       // Main title
       pdf.setTextColor(255, 255, 255);
@@ -212,12 +206,12 @@ function PDFExport() {
               }
             );
 
-            // QR Code container with border
-            const qrY = yPos + j * 120;
+            // QR Code container with border - increased spacing for URL underneath
+            const qrY = yPos + j * 130;
 
-            // Background box for QR section
+            // Background box for QR section - increased height for URL underneath
             pdf.setFillColor(...lightGray);
-            pdf.rect(margin, qrY, contentWidth, 100, "F");
+            pdf.rect(margin, qrY, contentWidth, 110, "F");
 
             // QR code border
             pdf.setFillColor(255, 255, 255);
@@ -255,35 +249,45 @@ function PDFExport() {
               qrY + 40
             );
 
-            // URL in a nice box
+            // URL positioned underneath the QR code for more space
             const url =
               poster.content ||
               `http://localhost:3000/questionnaire/${poster.PosterID}`;
-            const urlText =
-              url.length > 45 ? url.substring(0, 45) + "..." : url;
 
+            // Position URL underneath QR code
+            const urlBoxY = qrY + qrSize + 20;
+            const urlBoxWidth = contentWidth - 20; // Full width minus margins for URL
+            const boxHeight = 20;
+
+            // URL container box
             pdf.setFillColor(255, 255, 255);
-            pdf.rect(
-              margin + qrSize + 20,
-              qrY + 50,
-              contentWidth - qrSize - 30,
-              15,
-              "F"
-            );
+            pdf.rect(margin + 10, urlBoxY, urlBoxWidth, boxHeight, "F");
             pdf.setDrawColor(...primaryColor);
-            pdf.rect(
-              margin + qrSize + 20,
-              qrY + 50,
-              contentWidth - qrSize - 30,
-              15,
-              "S"
-            );
+            pdf.rect(margin + 10, urlBoxY, urlBoxWidth, boxHeight, "S");
 
+            // URL label
             pdf.setTextColor(...primaryColor);
             pdf.setFontSize(9);
+            pdf.setFont("helvetica", "bold");
+            pdf.text("URL:", margin + 15, urlBoxY + 8);
+
+            // Display URL as a clickable link underneath QR code
+            pdf.setTextColor(0, 0, 255); // Blue color for clickable URL
             pdf.setFont("helvetica", "normal");
-            pdf.text("URL:", margin + qrSize + 25, qrY + 58);
-            pdf.text(urlText, margin + qrSize + 25, qrY + 62);
+            pdf.setFontSize(9); // Readable font size for longer URLs
+
+            // Add URL as a clickable link
+            const urlText = url;
+            const urlX = margin + 15;
+            const urlY = urlBoxY + 16;
+
+            pdf.textWithLink(urlText, urlX, urlY, { url: url });
+
+            // Add underline to show it's clickable
+            pdf.setDrawColor(0, 0, 255);
+            pdf.setLineWidth(0.3);
+            const textWidth = pdf.getTextWidth(urlText);
+            pdf.line(urlX, urlY + 1, urlX + textWidth, urlY + 1);
           }
         }
       }
@@ -302,11 +306,7 @@ function PDFExport() {
         pdf.setTextColor(150, 150, 150);
         pdf.setFontSize(9);
         pdf.setFont("helvetica", "normal");
-        pdf.text(
-          "EventRate Pro - Event Management System",
-          margin,
-          pageHeight - 10
-        );
+        pdf.text("EventRate Pro", margin, pageHeight - 10);
         pdf.text(
           `Page ${i} of ${totalPages}`,
           pageWidth - margin - 20,

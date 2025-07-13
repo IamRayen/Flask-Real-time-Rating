@@ -11,6 +11,8 @@ function EventDetails() {
   const [RefereeList, setRefereeList] = useState([]);
   const [refereeEmail, setRefereeEmail] = useState("");
   const [toast, setToast] = useState({ show: false, message: "", type: "" });
+  const [showPosterModal, setShowPosterModal] = useState(false);
+  const [posterName, setPosterName] = useState("");
 
   const location = useLocation();
   const daten = location.state;
@@ -86,17 +88,27 @@ function EventDetails() {
   //TODO: missing QR code
   // creates new poster and generates its QRCode
   const handleAddPoster = () => {
-    const name = prompt("Enter Poster name:");
-    if (name) {
+    setShowPosterModal(true);
+  };
+
+  const handlePosterSubmit = () => {
+    if (posterName.trim()) {
       const newPoster = {
         PosterID: Posters.length,
-        Title: name,
+        Title: posterName.trim(),
         content: `http://localhost:3000/choose-role/${daten.Questionnaire.questionnaireID}/${Posters.length}`,
         eventID: daten.Questionnaire.eventID,
       };
       setPosters([...Posters, newPoster]);
+      setPosterName("");
+      setShowPosterModal(false);
       console.log(Posters);
     }
+  };
+
+  const handleModalClose = () => {
+    setPosterName("");
+    setShowPosterModal(false);
   };
 
   // remove QR code of a poster
@@ -317,6 +329,25 @@ function EventDetails() {
           </div>
         </div>
       </div>
+
+      {/* Poster Modal */}
+      {showPosterModal && (
+        <div className="poster-modal-overlay">
+          <div className="poster-modal-content">
+            <h2>Add New Poster</h2>
+            <input
+              type="text"
+              placeholder="Enter Poster Name"
+              value={posterName}
+              onChange={(e) => setPosterName(e.target.value)}
+            />
+            <div className="poster-modal-buttons">
+              <button onClick={handlePosterSubmit}>Add Poster</button>
+              <button onClick={handleModalClose}>Cancel</button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
