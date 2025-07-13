@@ -9,7 +9,23 @@ function Questionnaire() {
   const { User } = useAuthContext();
   const [templates, setTemplates] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [toast, setToast] = useState({ show: false, message: "", type: "" });
   const navigate = useNavigate();
+
+  // Toast notification function
+  const showToast = (message, type = "error") => {
+    setToast({ show: true, message, type });
+  };
+
+  // Auto-hide toast after 4 seconds
+  useEffect(() => {
+    if (toast.show) {
+      const timer = setTimeout(() => {
+        setToast({ show: false, message: "", type: "" });
+      }, 4000);
+      return () => clearTimeout(timer);
+    }
+  }, [toast.show]);
 
   useEffect(() => {
     const fetchTemplates = async () => {
@@ -54,9 +70,26 @@ function Questionnaire() {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ templateID, userID: User.uid }),
       });
-      setTemplates((prev) => prev.filter((t) => t.templateID !== templateID));
+
+      const data = await res.json();
+
+      if (res.ok && data.status === "success") {
+        // Only remove from UI if backend deletion was successful
+        setTemplates((prev) => prev.filter((t) => t.templateID !== templateID));
+        showToast("Template deleted successfully!", "success");
+      } else {
+        // Handle errors from backend
+        console.error(
+          "Error deleting template:",
+          data.message || "Unknown error"
+        );
+        showToast(
+          `Failed to delete template: ${data.message || "Unknown error"}`
+        );
+      }
     } catch (error) {
       console.error("Error deleting template:", error);
+      showToast("Failed to delete template. Please try again.");
     }
   };
 
@@ -66,6 +99,24 @@ function Questionnaire() {
 
   return (
     <div className="dashboard-page">
+      {/* Toast Notification */}
+      {toast.show && (
+        <div className={`toast-notification ${toast.type}`}>
+          <div className="toast-content">
+            <span className="toast-icon">
+              {toast.type === "success" ? "✓" : "⚠"}
+            </span>
+            <span className="toast-message">{toast.message}</span>
+            <button
+              className="toast-close"
+              onClick={() => setToast({ show: false, message: "", type: "" })}
+            >
+              ×
+            </button>
+          </div>
+        </div>
+      )}
+
       <div className="back-arrow" onClick={handleBackClick}>
         ← Back
       </div>

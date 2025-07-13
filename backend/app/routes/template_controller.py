@@ -43,6 +43,51 @@ def getAllTemplates():
         }), 500
 
 
+# API: /template/delete
+# Frontend calls this API in order to delete a template from Firestore
+@template_bp.route('/delete', methods=['POST'])
+def delete_template():
+    data = request.get_json()
+    
+    if not data:
+        return jsonify({"error": "No data provided"}), 400
+    
+    template_id = data.get('templateID')
+    user_id = data.get('userID')
+    
+    if not template_id or not user_id:
+        return jsonify({"error": "Missing templateID or userID"}), 400
+
+    try:
+        # Get reference to the template document
+        template_ref = db.collection('templates').document(template_id)
+        template_doc = template_ref.get()
+        
+        # Check if template exists
+        if not template_doc.exists:
+            return jsonify({"error": "Template not found"}), 404
+        
+        # Verify that the template belongs to the user
+        template_data = template_doc.to_dict()
+        if template_data.get('userID') != user_id:
+            return jsonify({"error": "Unauthorized: Template does not belong to this user"}), 403
+        
+        # Delete the template
+        template_ref.delete()
+        
+        return jsonify({
+            "status": "success",
+            "message": "Template deleted successfully"
+        }), 200
+
+    except Exception as e:
+        print(f"Error deleting template: {e}")
+        return jsonify({
+            "status": "error",
+            "message": str(e)
+        }), 500
+
+
 # API: /template/save
 # Frontend calls this API in order to save the Questionnaire as template for an organizer in Firestore
 @template_bp.route('/save', methods=['POST'])
