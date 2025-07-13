@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import { QRCodeCanvas } from "qrcode.react";
 import jsPDF from "jspdf";
@@ -11,6 +11,22 @@ function PDFExport() {
   const location = useLocation();
   const { posters, refereeList, eventData } = location.state || {};
   const [isGenerating, setIsGenerating] = useState(false);
+  const [toast, setToast] = useState({ show: false, message: "", type: "" });
+
+  // Toast notification function
+  const showToast = (message, type = "success") => {
+    setToast({ show: true, message, type });
+  };
+
+  // Auto-hide toast after 4 seconds
+  useEffect(() => {
+    if (toast.show) {
+      const timer = setTimeout(() => {
+        setToast({ show: false, message: "", type: "" });
+      }, 4000);
+      return () => clearTimeout(timer);
+    }
+  }, [toast.show]);
 
   const handleBackClick = () => {
     navigate(-1);
@@ -18,132 +34,291 @@ function PDFExport() {
 
   const generatePDFClientSide = async () => {
     try {
-      // Create a temporary container for PDF content
-      const pdfContainer = document.createElement("div");
-      pdfContainer.style.cssText = `
-        position: absolute;
-        top: -9999px;
-        left: -9999px;
-        width: 800px;
-        padding: 40px;
-        background: white;
-        font-family: Arial, sans-serif;
-      `;
+      const pdf = new jsPDF("p", "mm", "a4");
+      const pageWidth = 210;
+      const pageHeight = 297;
+      const margin = 20;
+      const contentWidth = pageWidth - margin * 2;
 
-      // Create PDF content
-      pdfContainer.innerHTML = `
-        <div style="text-align: center; margin-bottom: 30px;">
-          <h1 style="color: #333; font-size: 28px; margin-bottom: 10px;">EventRate Pro</h1>
-          <h2 style="color: #667eea; font-size: 20px; margin-bottom: 30px;">Event Export Report</h2>
-        </div>
-        
-        <div style="display: flex; gap: 40px;">
-          <div style="flex: 1;">
-            <h3 style="color: #333; border-bottom: 2px solid #667eea; padding-bottom: 10px;">QR Codes</h3>
-            ${
-              posters && posters.length > 0
-                ? posters
-                    .map(
-                      (poster, index) => `
-                <div style="margin: 20px 0; padding: 15px; border: 1px solid #ddd; border-radius: 8px;">
-                  <h4 style="margin: 0 0 10px 0; color: #333;">${
-                    poster.Title || `Poster ${index + 1}`
-                  }</h4>
-                  <div id="qr-${index}" style="margin: 10px 0;"></div>
-                  <p style="font-size: 12px; color: #666; word-break: break-all;">${
-                    poster.content ||
-                    `http://localhost:3000/questionnaire/${poster.PosterID}`
-                  }</p>
-                </div>
-              `
-                    )
-                    .join("")
-                : '<p style="text-align: center; color: #666; font-style: italic;">No posters available</p>'
-            }
-          </div>
-          
-          <div style="flex: 1;">
-            <h3 style="color: #333; border-bottom: 2px solid #667eea; padding-bottom: 10px;">Referee List</h3>
-            ${
-              refereeList && refereeList.length > 0
-                ? `<div style="margin-top: 20px;">
-                ${refereeList
-                  .map(
-                    (referee, index) => `
-                  <div style="padding: 10px; margin: 8px 0; background: #f8f9ff; border-left: 4px solid #667eea; border-radius: 4px;">
-                    ${referee}
-                  </div>
-                `
-                  )
-                  .join("")}
-              </div>`
-                : '<p style="text-align: center; color: #666; font-style: italic; margin-top: 20px;">No referees added</p>'
-            }
-          </div>
-        </div>
-        
-        <div style="margin-top: 40px; text-align: center; color: #666; font-size: 12px;">
-          Generated on ${new Date().toLocaleDateString()} at ${new Date().toLocaleTimeString()}
-        </div>
-      `;
+      // Colors
+      const primaryColor = [103, 126, 234]; // #667eea
+      const secondaryColor = [138, 246, 255]; // #8af6ff
+      const textColor = [51, 51, 51]; // #333
+      const lightGray = [245, 245, 245]; // #f5f5f5
 
-      document.body.appendChild(pdfContainer);
+      // Helper function to draw a header box
+      const drawHeaderBox = (text, y, color = primaryColor) => {
+        pdf.setFillColor(...color);
+        pdf.rect(margin, y, contentWidth, 12, "F");
+        pdf.setTextColor(255, 255, 255);
+        pdf.setFontSize(14);
+        pdf.setFont("helvetica", "bold");
+        pdf.text(text, margin + 5, y + 8);
+      };
 
-      // Generate QR codes for PDF
+      // Helper function to draw a section divider
+      const drawSectionDivider = (y) => {
+        pdf.setDrawColor(...primaryColor);
+        pdf.setLineWidth(0.5);
+        pdf.line(margin, y, pageWidth - margin, y);
+      };
+
+      // Page 1 - Cover Page
+      // Header with gradient-like effect
+      pdf.setFillColor(...primaryColor);
+      pdf.rect(0, 0, pageWidth, 80, "F");
+
+      // Logo area (simulated)
+      pdf.setFillColor(255, 255, 255);
+      pdf.circle(pageWidth / 2, 35, 15, "F");
+      pdf.setTextColor(...primaryColor);
+      pdf.setFontSize(12);
+      pdf.setFont("helvetica", "bold");
+      pdf.text("ERP", pageWidth / 2 - 8, 38);
+
+      // Main title
+      pdf.setTextColor(255, 255, 255);
+      pdf.setFontSize(28);
+      pdf.setFont("helvetica", "bold");
+      pdf.text("Event Export Report", pageWidth / 2, 60, { align: "center" });
+
+      // Event details box
+      let yPos = 100;
+      pdf.setFillColor(...lightGray);
+      pdf.rect(margin, yPos, contentWidth, 60, "F");
+
+      pdf.setTextColor(...textColor);
+      pdf.setFontSize(16);
+      pdf.setFont("helvetica", "bold");
+      pdf.text("Event Information", margin + 10, yPos + 15);
+
+      pdf.setFontSize(12);
+      pdf.setFont("helvetica", "normal");
+      pdf.text(
+        `Event ID: ${eventData?.eventID || "N/A"}`,
+        margin + 10,
+        yPos + 28
+      );
+      pdf.text(
+        `Status: ${eventData?.status || "Pending"}`,
+        margin + 10,
+        yPos + 38
+      );
+      pdf.text(
+        `Generated: ${new Date().toLocaleDateString()}`,
+        margin + 10,
+        yPos + 48
+      );
+
+      // Statistics box
+      yPos = 180;
+      pdf.setFillColor(...secondaryColor);
+      pdf.rect(margin, yPos, contentWidth / 2 - 5, 40, "F");
+      pdf.setTextColor(...textColor);
+      pdf.setFontSize(14);
+      pdf.setFont("helvetica", "bold");
+      pdf.text("QR Codes", margin + 10, yPos + 15);
+      pdf.setFontSize(20);
+      pdf.text(`${posters?.length || 0}`, margin + 10, yPos + 30);
+
+      pdf.setFillColor(...secondaryColor);
+      pdf.rect(
+        margin + contentWidth / 2 + 5,
+        yPos,
+        contentWidth / 2 - 5,
+        40,
+        "F"
+      );
+      pdf.setFontSize(14);
+      pdf.text("Referees", margin + contentWidth / 2 + 15, yPos + 15);
+      pdf.setFontSize(20);
+      pdf.text(
+        `${refereeList?.length || 0}`,
+        margin + contentWidth / 2 + 15,
+        yPos + 30
+      );
+
+      // Referee List Section
+      yPos = 240;
+      drawHeaderBox("Referee List", yPos);
+      yPos += 20;
+
+      pdf.setTextColor(...textColor);
+      pdf.setFontSize(11);
+      pdf.setFont("helvetica", "normal");
+
+      if (refereeList && refereeList.length > 0) {
+        refereeList.forEach((referee, index) => {
+          if (yPos > pageHeight - 30) {
+            pdf.addPage();
+            yPos = margin + 10;
+            drawHeaderBox("Referee List (continued)", margin);
+            yPos += 20;
+          }
+
+          // Alternating row background
+          if (index % 2 === 0) {
+            pdf.setFillColor(...lightGray);
+            pdf.rect(margin, yPos - 4, contentWidth, 8, "F");
+          }
+
+          pdf.setTextColor(...textColor);
+          pdf.text(`${index + 1}.`, margin + 5, yPos);
+          pdf.text(referee, margin + 15, yPos);
+          yPos += 8;
+        });
+      } else {
+        pdf.setTextColor(150, 150, 150);
+        pdf.setFont("helvetica", "italic");
+        pdf.text(
+          "No referees have been added to this event.",
+          margin + 5,
+          yPos
+        );
+      }
+
+      // QR Codes Section on new pages
       if (posters && posters.length > 0) {
         const QRCode = await import("qrcode");
-        for (let i = 0; i < posters.length; i++) {
-          const qrContainer = document.getElementById(`qr-${i}`);
-          if (qrContainer) {
-            const canvas = document.createElement("canvas");
+        const qrCodesPerPage = 2; // Reduced for better layout
+        const qrSize = 60; // Size in PDF units
+
+        for (let i = 0; i < posters.length; i += qrCodesPerPage) {
+          pdf.addPage();
+
+          // Page header
+          drawHeaderBox("QR Codes", margin);
+          yPos = margin + 25;
+
+          const pagePosters = posters.slice(i, i + qrCodesPerPage);
+
+          for (let j = 0; j < pagePosters.length; j++) {
+            const poster = pagePosters[j];
+            const actualIndex = i + j;
+
+            // Create QR code canvas
+            const tempCanvas = document.createElement("canvas");
             await QRCode.default.toCanvas(
-              canvas,
-              posters[i].content ||
-                `http://localhost:3000/questionnaire/${posters[i].PosterID}`,
+              tempCanvas,
+              poster.content ||
+                `http://localhost:3000/questionnaire/${poster.PosterID}`,
               {
-                width: 120,
+                width: 200,
                 margin: 2,
+                color: {
+                  dark: "#000000",
+                  light: "#FFFFFF",
+                },
               }
             );
-            qrContainer.appendChild(canvas);
+
+            // QR Code container with border
+            const qrY = yPos + j * 120;
+
+            // Background box for QR section
+            pdf.setFillColor(...lightGray);
+            pdf.rect(margin, qrY, contentWidth, 100, "F");
+
+            // QR code border
+            pdf.setFillColor(255, 255, 255);
+            pdf.rect(margin + 10, qrY + 10, qrSize + 4, qrSize + 4, "F");
+            pdf.setDrawColor(...textColor);
+            pdf.setLineWidth(0.5);
+            pdf.rect(margin + 10, qrY + 10, qrSize + 4, qrSize + 4, "S");
+
+            // Add QR code
+            const qrImageData = tempCanvas.toDataURL("image/png");
+            pdf.addImage(
+              qrImageData,
+              "PNG",
+              margin + 12,
+              qrY + 12,
+              qrSize,
+              qrSize
+            );
+
+            // QR Code information
+            pdf.setTextColor(...textColor);
+            pdf.setFontSize(16);
+            pdf.setFont("helvetica", "bold");
+            pdf.text(
+              poster.Title || `Poster ${actualIndex + 1}`,
+              margin + qrSize + 25,
+              qrY + 25
+            );
+
+            pdf.setFontSize(10);
+            pdf.setFont("helvetica", "normal");
+            pdf.text(
+              "Scan this QR code to access the questionnaire",
+              margin + qrSize + 25,
+              qrY + 40
+            );
+
+            // URL in a nice box
+            const url =
+              poster.content ||
+              `http://localhost:3000/questionnaire/${poster.PosterID}`;
+            const urlText =
+              url.length > 45 ? url.substring(0, 45) + "..." : url;
+
+            pdf.setFillColor(255, 255, 255);
+            pdf.rect(
+              margin + qrSize + 20,
+              qrY + 50,
+              contentWidth - qrSize - 30,
+              15,
+              "F"
+            );
+            pdf.setDrawColor(...primaryColor);
+            pdf.rect(
+              margin + qrSize + 20,
+              qrY + 50,
+              contentWidth - qrSize - 30,
+              15,
+              "S"
+            );
+
+            pdf.setTextColor(...primaryColor);
+            pdf.setFontSize(9);
+            pdf.setFont("helvetica", "normal");
+            pdf.text("URL:", margin + qrSize + 25, qrY + 58);
+            pdf.text(urlText, margin + qrSize + 25, qrY + 62);
           }
         }
       }
 
-      // Generate PDF
-      const canvas = await html2canvas(pdfContainer, {
-        useCORS: true,
-        scale: 2,
-        logging: false,
-      });
+      // Footer on all pages
+      const totalPages = pdf.internal.getNumberOfPages();
+      for (let i = 1; i <= totalPages; i++) {
+        pdf.setPage(i);
 
-      const imgData = canvas.toDataURL("image/png");
-      const pdf = new jsPDF("p", "mm", "a4");
-      const imgWidth = 210;
-      const pageHeight = 295;
-      const imgHeight = (canvas.height * imgWidth) / canvas.width;
-      let heightLeft = imgHeight;
+        // Footer line
+        pdf.setDrawColor(...primaryColor);
+        pdf.setLineWidth(0.5);
+        pdf.line(margin, pageHeight - 20, pageWidth - margin, pageHeight - 20);
 
-      let position = 0;
-
-      pdf.addImage(imgData, "PNG", 0, position, imgWidth, imgHeight);
-      heightLeft -= pageHeight;
-
-      while (heightLeft >= 0) {
-        position = heightLeft - imgHeight;
-        pdf.addPage();
-        pdf.addImage(imgData, "PNG", 0, position, imgWidth, imgHeight);
-        heightLeft -= pageHeight;
+        // Footer text
+        pdf.setTextColor(150, 150, 150);
+        pdf.setFontSize(9);
+        pdf.setFont("helvetica", "normal");
+        pdf.text(
+          "EventRate Pro - Event Management System",
+          margin,
+          pageHeight - 10
+        );
+        pdf.text(
+          `Page ${i} of ${totalPages}`,
+          pageWidth - margin - 20,
+          pageHeight - 10
+        );
       }
 
-      // Clean up
-      document.body.removeChild(pdfContainer);
-
       // Download PDF
-      pdf.save(`referee-list-${eventData?.eventID || "export"}.pdf`);
+      pdf.save(`EventRate-Pro-Export-${eventData?.eventID || "report"}.pdf`);
     } catch (error) {
       console.error("Error generating PDF:", error);
-      alert("Error generating PDF. Please try again.");
+      showToast("Error generating PDF. Please try again.", "error");
     }
   };
 
@@ -217,27 +392,61 @@ function PDFExport() {
 
       if (response.ok) {
         console.log("Event started automatically after PDF download");
-        // Optional: Show a success message or notification
-        alert(
-          "PDF downloaded successfully! Event has been started automatically."
+        showToast(
+          "PDF downloaded successfully! Event has been started automatically.",
+          "success"
         );
+
+        // Redirect to dashboard after 2 seconds
+        setTimeout(() => {
+          navigate(`/dashboard/${eventData.eventID}`);
+        }, 2000);
       } else {
         console.error("Failed to auto-start event:", data.error);
-        // Optional: Show a warning but don't stop the process
-        alert(
-          "PDF downloaded successfully, but failed to start event automatically. You can start it manually from the dashboard."
+        showToast(
+          "PDF downloaded successfully, but failed to start event automatically. You can start it manually from the dashboard.",
+          "error"
         );
+
+        // Still redirect to dashboard
+        setTimeout(() => {
+          navigate(`/dashboard/${eventData.eventID}`);
+        }, 3000);
       }
     } catch (error) {
       console.error("Error auto-starting event:", error);
-      alert(
-        "PDF downloaded successfully, but failed to start event automatically. You can start it manually from the dashboard."
+      showToast(
+        "PDF downloaded successfully, but failed to start event automatically. You can start it manually from the dashboard.",
+        "error"
       );
+
+      // Still redirect to dashboard
+      setTimeout(() => {
+        navigate(`/dashboard/${eventData.eventID}`);
+      }, 3000);
     }
   };
 
   return (
     <div className="pdf-export-page">
+      {/* Toast Notification */}
+      {toast.show && (
+        <div className={`toast-notification ${toast.type}`}>
+          <div className="toast-content">
+            <span className="toast-icon">
+              {toast.type === "success" ? "✓" : "⚠"}
+            </span>
+            <span className="toast-message">{toast.message}</span>
+            <button
+              className="toast-close"
+              onClick={() => setToast({ show: false, message: "", type: "" })}
+            >
+              ×
+            </button>
+          </div>
+        </div>
+      )}
+
       {/* Back Arrow */}
       <div className="back-arrow" onClick={handleBackClick}>
         ← Back

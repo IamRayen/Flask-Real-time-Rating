@@ -478,9 +478,11 @@ function Dashboard() {
           </div>
 
           <div className="action-buttons">
-            <button className="action-btn begin-btn" onClick={handleBegin}>
-              Begin
-            </button>
+            {dashboardData?.event?.status === "pending" && (
+              <button className="action-btn begin-btn" onClick={handleBegin}>
+                Begin
+              </button>
+            )}
             <button className="action-btn end-btn" onClick={handleEnd}>
               End
             </button>
