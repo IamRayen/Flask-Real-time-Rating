@@ -100,12 +100,6 @@ function FormBuilder({ form, current, onAdd, showToast }) {
 
   return (
     <div className="form-section">
-      <h3>Visualization type</h3>
-      <div className="visualization-icons">
-        <span className="chart-icon">📊</span>
-        <span className="pie-icon">🥧</span>
-      </div>
-
       <label htmlFor="Qform">Questions</label>
       <input
         id="Qform"

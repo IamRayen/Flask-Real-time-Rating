@@ -142,7 +142,6 @@ function CreateQuestionnaire() {
       questionnaireID: questionnaireID.current,
       eventID: null,
       criteriaList: criteriaList,
-      visualizationType: "bar",
       isTemplate: true,
     };
     setQuestionnaire(questionnaireObj);
@@ -210,7 +209,6 @@ function CreateQuestionnaire() {
       questionnaireID: questionnaireID.current,
       eventID: eventID.current,
       criteriaList: criteriaList,
-      visualizationType: "bar",
       isTemplate: false,
     };
     setQuestionnaire(questionnaireObj);
