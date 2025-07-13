@@ -96,7 +96,7 @@ function EventDetails() {
       const newPoster = {
         PosterID: Posters.length,
         Title: posterName.trim(),
-        content: `http://localhost:3000/choose-role/${daten.Questionnaire.questionnaireID}/${Posters.length}`,
+        content: `https://event-rate-pro.vercel.app/choose-role/${daten.Questionnaire.questionnaireID}/${Posters.length}`,
         eventID: daten.Questionnaire.eventID,
       };
       setPosters([...Posters, newPoster]);
@@ -273,7 +273,7 @@ function EventDetails() {
                   </div>
                   <div className="eventdetails-qr-mock">
                     <QRCodeCanvas
-                      value={`http://localhost:3000/choose-role/${daten.Questionnaire.questionnaireID}/${Posters.length}`}
+                      value={`https://event-rate-pro.vercel.app/choose-role/${daten.Questionnaire.questionnaireID}/${Posters.length}`}
                       size={90}
                       style={{ backgroundColor: "white" }}
                     />

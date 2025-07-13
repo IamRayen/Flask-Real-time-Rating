@@ -6,7 +6,7 @@ import erpLogo from "../assets/erp.png";
 
 function QRCode() {
   const id = "questionnaire-id";
-  const url = "http://localhost:3000/questionnaire/${id}";
+  const url = "https://event-rate-pro.vercel.app/questionnaire/${id}";
   const navigate = useNavigate();
 
   const handleBackClick = () => {

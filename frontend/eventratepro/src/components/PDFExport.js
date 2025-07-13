@@ -195,7 +195,7 @@ function PDFExport() {
             await QRCode.default.toCanvas(
               tempCanvas,
               poster.content ||
-                `http://localhost:3000/questionnaire/${poster.PosterID}`,
+                `https://event-rate-pro.vercel.app/questionnaire/${poster.PosterID}`,
               {
                 width: 200,
                 margin: 2,
@@ -252,7 +252,7 @@ function PDFExport() {
             // URL positioned underneath the QR code for more space
             const url =
               poster.content ||
-              `http://localhost:3000/questionnaire/${poster.PosterID}`;
+              `https://event-rate-pro.vercel.app/questionnaire/${poster.PosterID}`;
 
             // Position URL underneath QR code
             const urlBoxY = qrY + qrSize + 20;
@@ -468,7 +468,7 @@ function PDFExport() {
                   <QRCodeCanvas
                     value={
                       poster.content ||
-                      `http://localhost:3000/questionnaire/${poster.PosterID}`
+                      `https://event-rate-pro.vercel.app/questionnaire/${poster.PosterID}`
                     }
                     size={120}
                     style={{ backgroundColor: "white" }}
