@@ -445,6 +445,162 @@
   padding: 20px;
 }
 
+/* Thank You Page Styles */
+.thank-you-container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 100vh;
+  padding: 20px;
+}
+
+.thank-you-content {
+  background: white;
+  border-radius: 20px;
+  padding: 40px;
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+  text-align: center;
+  max-width: 500px;
+  width: 100%;
+  animation: fadeInUp 0.6s ease-out;
+}
+
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.thank-you-icon {
+  margin-bottom: 25px;
+}
+
+.thank-you-logo {
+  width: 80px;
+  height: 80px;
+  object-fit: contain;
+  filter: drop-shadow(0 4px 8px rgba(0, 0, 0, 0.1));
+}
+
+.thank-you-message h1 {
+  font-size: 2.2rem;
+  font-weight: 700;
+  color: #2c3e50;
+  margin: 0 0 15px 0;
+  background: linear-gradient(135deg, #667eea, #764ba2);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.thank-you-subtitle {
+  font-size: 1.1rem;
+  color: #666;
+  margin: 0 0 25px 0;
+  line-height: 1.4;
+}
+
+.vote-details {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+  margin-bottom: 25px;
+}
+
+.vote-id-box {
+  background: linear-gradient(135deg, rgba(102, 126, 234, 0.1), rgba(118, 75, 162, 0.1));
+  border: 2px solid rgba(102, 126, 234, 0.2);
+  border-radius: 12px;
+  padding: 15px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.vote-id-label {
+  font-size: 0.9rem;
+  color: #666;
+  font-weight: 500;
+}
+
+.vote-id-value {
+  font-size: 0.9rem;
+  color: #667eea;
+  font-weight: 700;
+  font-family: 'Courier New', monospace;
+  background: white;
+  padding: 4px 8px;
+  border-radius: 6px;
+  border: 1px solid rgba(102, 126, 234, 0.3);
+}
+
+.role-info {
+  display: flex;
+  justify-content: center;
+}
+
+.role-badge-thank-you {
+  padding: 10px 20px;
+  border-radius: 25px;
+  font-size: 14px;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.role-badge-thank-you.referee {
+  background: linear-gradient(135deg, #667eea, #764ba2);
+  color: white;
+}
+
+.role-badge-thank-you.anonym {
+  background: linear-gradient(135deg, #f093fb, #f5576c);
+  color: white;
+}
+
+.thank-you-description {
+  margin-bottom: 30px;
+}
+
+.thank-you-description p {
+  font-size: 1rem;
+  color: #666;
+  line-height: 1.5;
+  margin: 0;
+}
+
+.thank-you-actions {
+  display: flex;
+  justify-content: center;
+}
+
+.back-home-button {
+  background: linear-gradient(135deg, #667eea, #764ba2);
+  color: white;
+  border: none;
+  padding: 14px 30px;
+  font-size: 1rem;
+  font-weight: 600;
+  border-radius: 25px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 150px;
+}
+
+.back-home-button:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+}
+
 .loading-spinner {
   width: 50px;
   height: 50px;
@@ -524,12 +680,40 @@
     font-size: 1rem;
   }
   
-  .toast-notification {
-    min-width: 250px;
-    max-width: 300px;
-    right: 10px;
-    top: 10px;
-  }
+     .toast-notification {
+     min-width: 250px;
+     max-width: 300px;
+     right: 10px;
+     top: 10px;
+   }
+   
+   /* Thank you page mobile styles */
+   .thank-you-container {
+     padding: 15px;
+   }
+   
+   .thank-you-content {
+     padding: 25px;
+   }
+   
+   .thank-you-logo {
+     width: 60px;
+     height: 60px;
+   }
+   
+   .thank-you-message h1 {
+     font-size: 1.8rem;
+   }
+   
+   .thank-you-subtitle {
+     font-size: 1rem;
+   }
+   
+   .vote-id-box {
+     flex-direction: column;
+     gap: 8px;
+     text-align: center;
+   }
 }
 
 /* Tablet and larger screens */
@@ -594,10 +778,24 @@
     padding: 30px;
   }
   
-  .submit-button {
-    width: auto;
-    min-width: 250px;
-  }
+     .submit-button {
+     width: auto;
+     min-width: 250px;
+   }
+   
+   /* Thank you page tablet/desktop styles */
+   .thank-you-content {
+     padding: 50px;
+   }
+   
+   .thank-you-logo {
+     width: 100px;
+     height: 100px;
+   }
+   
+   .thank-you-message h1 {
+     font-size: 2.5rem;
+   }
 }
 
 @media (min-width: 1024px) {

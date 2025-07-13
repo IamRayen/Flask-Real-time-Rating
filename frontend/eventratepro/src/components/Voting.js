@@ -13,6 +13,8 @@ function Voting() {
   const [loading, setLoading] = useState(true);
   const [toast, setToast] = useState({ show: false, message: "", type: "" });
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [voteSubmitted, setVoteSubmitted] = useState(false);
+  const [submittedVoteId, setSubmittedVoteId] = useState(null);
 
   const location = useLocation();
   const params = new URLSearchParams(location.search);
@@ -181,19 +183,14 @@ function Voting() {
         );
       }
 
-      showToast(
-        `Vote submitted successfully! Vote ID: ${result.voteID}`,
-        "success"
-      );
       console.log("Vote submitted:", result);
+
+      // Set vote as submitted and store vote ID
+      setVoteSubmitted(true);
+      setSubmittedVoteId(result.voteID);
 
       // Clear answers after successful submission
       setAnswers({});
-
-      // Optionally redirect after a delay
-      setTimeout(() => {
-        window.location.href = "/";
-      }, 3000);
     } catch (error) {
       console.error("Error submitting vote:", error);
       showToast("Failed to submit vote. Please try again.", "error");
@@ -219,6 +216,54 @@ function Voting() {
         <div className="error-container">
           <h2>Questionnaire not found</h2>
           <p>The requested questionnaire could not be loaded.</p>
+        </div>
+      </div>
+    );
+  }
+
+  // Show thank you page after successful submission
+  if (voteSubmitted) {
+    return (
+      <div className="voting-page">
+        <div className="thank-you-container">
+          <div className="thank-you-content">
+            <div className="thank-you-icon">
+              <img src={erpLogo} alt="ERP Logo" className="thank-you-logo" />
+            </div>
+            <div className="thank-you-message">
+              <h1>Thank You!</h1>
+              <p className="thank-you-subtitle">
+                Your vote has been submitted successfully
+              </p>
+              <div className="vote-details">
+                <div className="vote-id-box">
+                  <span className="vote-id-label">Vote ID:</span>
+                  <span className="vote-id-value">{submittedVoteId}</span>
+                </div>
+                <div className="role-info">
+                  <span className={`role-badge-thank-you ${role}`}>
+                    {role === "referee"
+                      ? "👤 Referee Vote"
+                      : "🎭 Anonymous Vote"}
+                  </span>
+                </div>
+              </div>
+              <div className="thank-you-description">
+                <p>
+                  Your feedback is valuable to us and will help improve future
+                  events.
+                </p>
+              </div>
+              <div className="thank-you-actions">
+                <button
+                  className="back-home-button"
+                  onClick={() => (window.location.href = "/")}
+                >
+                  Back to Home
+                </button>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
     );

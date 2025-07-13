@@ -38,11 +38,6 @@ function VoteRoleSelection() {
             <div className="role-info">
               <h3>Referee</h3>
               <p>I am a registered referee for this event</p>
-              <div className="role-features">
-                <span>✓ Authenticated voting</span>
-                <span>✓ Verified participation</span>
-                <span>✓ Official feedback</span>
-              </div>
             </div>
             <div className="role-arrow">→</div>
           </div>
@@ -59,11 +54,6 @@ function VoteRoleSelection() {
             <div className="role-info">
               <h3>Anonymous</h3>
               <p>I want to participate anonymously</p>
-              <div className="role-features">
-                <span>✓ Quick participation</span>
-                <span>✓ No login required</span>
-                <span>✓ Private feedback</span>
-              </div>
             </div>
             <div className="role-arrow">→</div>
           </div>
