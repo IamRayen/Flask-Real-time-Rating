@@ -160,6 +160,7 @@ function EventDetails() {
     const storeEvent = {
       event: event,
       questionnaire: daten.Questionnaire,
+      eventTitle: daten.eventTitle,
     };
 
     // built-in browser API that allows HTTP requests (GET, POST)

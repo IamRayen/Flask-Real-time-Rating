@@ -67,7 +67,7 @@ function SelectionDashboard() {
           <ul className="event-list">
             {events.map((event) => (
               <li key={event.eventID} className="event-card">
-                <h3>{event.title || "Untitled Event"}</h3>
+                <h3>{event.eventName || "Untitled Event"}</h3>
                 <p>Status: {event.status}</p>
                 <button onClick={() => handleViewEvent(event.eventID)}>
                   View Event

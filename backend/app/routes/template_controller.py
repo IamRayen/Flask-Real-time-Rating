@@ -95,16 +95,21 @@ def save_questionnaireAsTemplate():
     data = request.get_json()
     userID = data['userID']
     questionnaire = data['Questionnaire']
+    template_title = data.get('templateTitle', '').strip()
     print(data)
 
     if not userID or not questionnaire:
         return jsonify({"error": "Missing userID or Questionnaire"}), 400
+
+    if not template_title:
+        return jsonify({"error": "Template title is required"}), 400
 
     try:
         doc_ref = db.collection('templates').document()
 
         questionnaire['questionnaireID'] = doc_ref.id
         questionnaire['userID'] = userID
+        questionnaire['title'] = template_title
 
         # Save to Firestore
         doc_ref.set(questionnaire)

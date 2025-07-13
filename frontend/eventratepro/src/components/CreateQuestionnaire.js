@@ -11,6 +11,10 @@ function CreateQuestionnaire() {
   const [Questionnaire, setQuestionnaire] = useState(null);
   const [criteriaList, setCriteriaList] = useState([]);
   const [toast, setToast] = useState({ show: false, message: "", type: "" });
+  const [showTemplateModal, setShowTemplateModal] = useState(false);
+  const [showEventModal, setShowEventModal] = useState(false);
+  const [templateName, setTemplateName] = useState("");
+  const [eventName, setEventName] = useState("");
 
   const location = useLocation();
   const template = location.state?.template;
@@ -134,6 +138,16 @@ function CreateQuestionnaire() {
       return;
     }
 
+    // Show template naming modal
+    setShowTemplateModal(true);
+  };
+
+  const handleTemplateSubmit = () => {
+    if (!templateName.trim()) {
+      showToast("Please enter a template name", "error");
+      return;
+    }
+
     console.log("saving questionaire");
 
     //assigns the current Criteria list to questionaire
@@ -149,6 +163,7 @@ function CreateQuestionnaire() {
     const daten = {
       userID: User.uid,
       Questionnaire: questionnaireObj,
+      templateTitle: templateName.trim(),
     };
 
     console.log(daten);
@@ -167,17 +182,31 @@ function CreateQuestionnaire() {
       // once JSON is parsed, handle the response from the backend and go back to the questionnaire-overview
       .then((response) => {
         console.log("Answer from Backend:", response);
-        console.log("saved questionaire");
-        showToast("Questionnaire saved successfully!", "success");
-        setTimeout(() => {
-          navigate("/questionnaire");
-        }, 1000);
+        if (response.status === "success") {
+          console.log("saved questionaire");
+          showToast("Questionnaire saved successfully!", "success");
+          setShowTemplateModal(false);
+          setTemplateName("");
+          setTimeout(() => {
+            navigate("/questionnaire");
+          }, 1000);
+        } else {
+          showToast(
+            response.message || "Failed to save questionnaire",
+            "error"
+          );
+        }
       })
       // if something goes wrong, the error is handled here
       .catch((error) => {
         console.error("Error when sending:", error);
         showToast("Failed to save questionnaire. Please try again.", "error");
       });
+  };
+
+  const handleTemplateModalClose = () => {
+    setTemplateName("");
+    setShowTemplateModal(false);
   };
 
   // if pressed "Setup event"
@@ -205,6 +234,16 @@ function CreateQuestionnaire() {
       return;
     }
 
+    // Show event naming modal
+    setShowEventModal(true);
+  };
+
+  const handleEventSubmit = () => {
+    if (!eventName.trim()) {
+      showToast("Please enter an event name", "error");
+      return;
+    }
+
     const questionnaireObj = {
       questionnaireID: questionnaireID.current,
       eventID: eventID.current,
@@ -216,9 +255,15 @@ function CreateQuestionnaire() {
     const daten = {
       userID: User.uid,
       Questionnaire: questionnaireObj,
+      eventTitle: eventName.trim(),
     };
 
     navigate("/event-details", { state: daten });
+  };
+
+  const handleEventModalClose = () => {
+    setEventName("");
+    setShowEventModal(false);
   };
 
   return (
@@ -237,6 +282,48 @@ function CreateQuestionnaire() {
             >
               ×
             </button>
+          </div>
+        </div>
+      )}
+
+      {/* Template Naming Modal */}
+      {showTemplateModal && (
+        <div className="modal-overlay">
+          <div className="modal-content">
+            <h2>Save Template</h2>
+            <p>Enter a name for your template:</p>
+            <input
+              type="text"
+              placeholder="Template Name"
+              value={templateName}
+              onChange={(e) => setTemplateName(e.target.value)}
+              autoFocus
+            />
+            <div className="modal-buttons">
+              <button onClick={handleTemplateSubmit}>Save Template</button>
+              <button onClick={handleTemplateModalClose}>Cancel</button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Event Naming Modal */}
+      {showEventModal && (
+        <div className="modal-overlay">
+          <div className="modal-content">
+            <h2>Setup Event</h2>
+            <p>Enter a name for your event:</p>
+            <input
+              type="text"
+              placeholder="Event Name"
+              value={eventName}
+              onChange={(e) => setEventName(e.target.value)}
+              autoFocus
+            />
+            <div className="modal-buttons">
+              <button onClick={handleEventSubmit}>Setup Event</button>
+              <button onClick={handleEventModalClose}>Cancel</button>
+            </div>
           </div>
         </div>
       )}

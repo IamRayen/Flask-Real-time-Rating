@@ -58,14 +58,21 @@ def save_event():
 
     event_data = data.get('event')
     questionnaire_data = data.get('questionnaire')
+    event_title = data.get('eventTitle', '').strip() if data.get('eventTitle') else event_data.get('eventName', '').strip()
 
     if not event_data or not questionnaire_data:
         return jsonify({"status": "error", "message": "Missing event or questionnaire data"}), 400
+
+    if not event_title:
+        return jsonify({"status": "error", "message": "Event title is required"}), 400
 
     event_id = event_data.get('eventID')
     if not event_id:
         event_id = str(uuid.uuid4())
         event_data['eventID'] = event_id
+
+    # Ensure event has a title
+    event_data['eventName'] = event_title
 
     db.collection('events').document(event_id).set(event_data)
 
