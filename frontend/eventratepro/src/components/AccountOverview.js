@@ -13,8 +13,7 @@ function AccountOverview() {
   };
 
   const handleViewHistory = () => {
-    console.log("View History clicked");
-    // Add functionality later
+    navigate("/history");
   };
 
   const handleViewDashboard = () => {

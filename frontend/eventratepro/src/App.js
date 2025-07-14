@@ -18,7 +18,9 @@ import QRCode from "./components/QRCode";
 import EventDetails from "./components/Eventdetails";
 import Voting from "./components/Voting";
 import PDFExport from "./components/PDFExport";
-import VoteRoleSelection from "./components/VoteRoleSelection"
+import VoteRoleSelection from "./components/VoteRoleSelection";
+import History from "./components/History";
+import HistoryDetails from "./components/HistoryDetails";
 
 function App() {
   return (
@@ -56,8 +58,30 @@ function App() {
               element={<SelectionDashboard />}
             />
             <Route path="/dashboard/:eventID" element={<Dashboard />} />
-            <Route path="/vote/:questionnaireID/:posterID" element={<Voting />} />
-            <Route path="/choose-role/:questionnaireID/:posterID" element={<VoteRoleSelection />} />
+            <Route
+              path="/history"
+              element={
+                <LoginGuard>
+                  <History />
+                </LoginGuard>
+              }
+            />
+            <Route
+              path="/history/:eventID"
+              element={
+                <LoginGuard>
+                  <HistoryDetails />
+                </LoginGuard>
+              }
+            />
+            <Route
+              path="/vote/:questionnaireID/:posterID"
+              element={<Voting />}
+            />
+            <Route
+              path="/choose-role/:questionnaireID/:posterID"
+              element={<VoteRoleSelection />}
+            />
           </Routes>
         </div>
       </AuthProvider>
