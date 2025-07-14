@@ -84,7 +84,41 @@ function Register() {
         role: selectedRole,
       });
 
-      // Navigate to login after role is set
+      // Create sample templates for the new user (regardless of role)
+      try {
+        console.log("Creating sample templates for new user...");
+        const templateResponse = await fetch(
+          "https://eventrate-pro.de/template/createSampleTemplates",
+          {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+              userID: userUid,
+            }),
+          }
+        );
+
+        const templateResult = await templateResponse.json();
+        if (templateResult.status === "success") {
+          console.log(
+            "Sample templates created successfully:",
+            templateResult.templates
+          );
+        } else {
+          console.warn(
+            "Failed to create sample templates:",
+            templateResult.message
+          );
+          // Don't block registration if template creation fails
+        }
+      } catch (templateError) {
+        console.error("Error creating sample templates:", templateError);
+        // Don't block registration if template creation fails
+      }
+
+      // Navigate to login after role is set and templates are created
       navigate("/login");
     } catch (error) {
       setError("Failed to set role. Please try again.");
@@ -126,7 +160,9 @@ function Register() {
             </button>
           </div>
           {roleLoading && (
-            <div className="loading-message">Setting up your account...</div>
+            <div className="loading-message">
+              Setting up your account and creating sample templates...
+            </div>
           )}
         </div>
       </div>

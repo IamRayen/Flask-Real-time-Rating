@@ -31,7 +31,15 @@ def getQuestionnaireAndEvent(questionnaireID, posterID):
 
         event_ref = db.collection("events").document(eventID)
         event_doc = event_ref.get()
-        event_data = event_doc.to_dict() if event_doc.exists else None
+        
+        if not event_doc.exists:
+            return jsonify({"error": "Event not found"}), 404
+            
+        event_data = event_doc.to_dict()
+        
+        event_status = event_data.get("status", "")
+        if event_status == "ended":
+            return jsonify({"error": "EVENT_ENDED", "message": "This event has already ended and voting is no longer available."}), 403
 
         return jsonify({
             "questionnaire": questionnaire_data,
@@ -58,6 +66,18 @@ def submit_vote():
 
         if not itemID or not ticketOptionsList or not questionnaireID or not eventID:
             return jsonify({'error': 'Missing required fields'}), 400
+
+        event_ref = db.collection("events").document(eventID)
+        event_doc = event_ref.get()
+        
+        if not event_doc.exists:
+            return jsonify({'error': 'Event not found'}), 404
+            
+        event_data = event_doc.to_dict()
+        event_status = event_data.get("status", "")
+        
+        if event_status == "ended":
+            return jsonify({'error': 'EVENT_ENDED', 'message': 'This event has ended and no longer accepts votes.'}), 403
 
         vote_doc = {
             'voteID': voteID,

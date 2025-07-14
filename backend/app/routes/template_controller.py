@@ -9,6 +9,307 @@ template_bp = Blueprint('template_bp', __name__,url_prefix='/template')
 
 # --- APIs --- #
 
+# API: /template/createSampleTemplates
+# This API creates 3 sample templates for new users
+@template_bp.route('/createSampleTemplates', methods=['POST'])
+def create_sample_templates():
+    data = request.get_json()
+    user_id = data.get('userID')
+    
+    if not user_id:
+        return jsonify({"error": "Missing userID"}), 400
+    
+    try:
+        # Sample Template 1: Study/Research Poster Evaluation
+        template1 = {
+            "questionnaireID": str(uuid.uuid4()),
+            "userID": user_id,
+            "title": "Study/Research Poster Evaluation",
+            "eventID": None,
+            "criteriaList": [
+                {
+                    "criteriaID": 1,
+                    "title": "Content Quality",
+                    "questionnaireID": "",
+                    "questionList": [
+                        {
+                            "questionID": str(uuid.uuid4()),
+                            "title": "How clear and well-organized is the research content?",
+                            "optionList": [
+                                {"label": "Excellent - Very clear and logical", "points": 5},
+                                {"label": "Good - Mostly clear", "points": 4},
+                                {"label": "Fair - Somewhat confusing", "points": 3},
+                                {"label": "Poor - Hard to follow", "points": 2},
+                                {"label": "Very Poor - Confusing", "points": 1}
+                            ]
+                        },
+                        {
+                            "questionID": str(uuid.uuid4()),
+                            "title": "How relevant and significant are the research findings?",
+                            "optionList": [
+                                {"label": "Highly significant findings", "points": 5},
+                                {"label": "Moderately significant", "points": 4},
+                                {"label": "Some significance", "points": 3},
+                                {"label": "Limited significance", "points": 2},
+                                {"label": "Not significant", "points": 1}
+                            ]
+                        }
+                    ]
+                },
+                {
+                    "criteriaID": 2,
+                    "title": "Visual Design",
+                    "questionnaireID": "",
+                    "questionList": [
+                        {
+                            "questionID": str(uuid.uuid4()),
+                            "title": "How effective is the visual layout and design?",
+                            "optionList": [
+                                {"label": "Excellent - Very professional", "points": 5},
+                                {"label": "Good - Well designed", "points": 4},
+                                {"label": "Average - Acceptable", "points": 3},
+                                {"label": "Below average - Needs improvement", "points": 2},
+                                {"label": "Poor - Unprofessional", "points": 1}
+                            ]
+                        },
+                        {
+                            "questionID": str(uuid.uuid4()),
+                            "title": "Are charts, graphs, and images appropriate and helpful?",
+                            "optionList": [
+                                {"label": "Very helpful and appropriate", "points": 5},
+                                {"label": "Mostly helpful", "points": 4},
+                                {"label": "Somewhat helpful", "points": 3},
+                                {"label": "Not very helpful", "points": 2},
+                                {"label": "Unhelpful or inappropriate", "points": 1}
+                            ]
+                        }
+                    ]
+                },
+                {
+                    "criteriaID": 3,
+                    "title": "Methodology",
+                    "questionnaireID": "",
+                    "questionList": [
+                        {
+                            "questionID": str(uuid.uuid4()),
+                            "title": "How appropriate and rigorous is the research methodology?",
+                            "optionList": [
+                                {"label": "Highly rigorous and appropriate", "points": 5},
+                                {"label": "Good methodology", "points": 4},
+                                {"label": "Adequate methodology", "points": 3},
+                                {"label": "Some methodological issues", "points": 2},
+                                {"label": "Poor methodology", "points": 1}
+                            ]
+                        }
+                    ]
+                }
+            ],
+            "isTemplate": True
+        }
+        
+        # Sample Template 2: Fair/Exhibition Evaluation
+        template2 = {
+            "questionnaireID": str(uuid.uuid4()),
+            "userID": user_id,
+            "title": "Fair/Exhibition Evaluation",
+            "eventID": None,
+            "criteriaList": [
+                {
+                    "criteriaID": 1,
+                    "title": "Product Innovation",
+                    "questionnaireID": "",
+                    "questionList": [
+                        {
+                            "questionID": str(uuid.uuid4()),
+                            "title": "How innovative and unique is the product/service?",
+                            "optionList": [
+                                {"label": "Highly innovative - Breakthrough", "points": 5},
+                                {"label": "Very innovative", "points": 4},
+                                {"label": "Moderately innovative", "points": 3},
+                                {"label": "Somewhat innovative", "points": 2},
+                                {"label": "Not innovative", "points": 1}
+                            ]
+                        },
+                        {
+                            "questionID": str(uuid.uuid4()),
+                            "title": "How practical and useful is the solution?",
+                            "optionList": [
+                                {"label": "Extremely practical and useful", "points": 5},
+                                {"label": "Very practical", "points": 4},
+                                {"label": "Moderately practical", "points": 3},
+                                {"label": "Limited practicality", "points": 2},
+                                {"label": "Not practical", "points": 1}
+                            ]
+                        }
+                    ]
+                },
+                {
+                    "criteriaID": 2,
+                    "title": "Presentation Quality",
+                    "questionnaireID": "",
+                    "questionList": [
+                        {
+                            "questionID": str(uuid.uuid4()),
+                            "title": "How professional and engaging is the booth presentation?",
+                            "optionList": [
+                                {"label": "Excellent - Very engaging", "points": 5},
+                                {"label": "Good - Well presented", "points": 4},
+                                {"label": "Average - Acceptable", "points": 3},
+                                {"label": "Below average", "points": 2},
+                                {"label": "Poor - Unengaging", "points": 1}
+                            ]
+                        },
+                        {
+                            "questionID": str(uuid.uuid4()),
+                            "title": "How knowledgeable and helpful is the staff?",
+                            "optionList": [
+                                {"label": "Extremely knowledgeable", "points": 5},
+                                {"label": "Very knowledgeable", "points": 4},
+                                {"label": "Moderately knowledgeable", "points": 3},
+                                {"label": "Limited knowledge", "points": 2},
+                                {"label": "Poor knowledge", "points": 1}
+                            ]
+                        }
+                    ]
+                },
+                {
+                    "criteriaID": 3,
+                    "title": "Market Potential",
+                    "questionnaireID": "",
+                    "questionList": [
+                        {
+                            "questionID": str(uuid.uuid4()),
+                            "title": "What is the commercial viability and market potential?",
+                            "optionList": [
+                                {"label": "High market potential", "points": 5},
+                                {"label": "Good market potential", "points": 4},
+                                {"label": "Moderate market potential", "points": 3},
+                                {"label": "Limited market potential", "points": 2},
+                                {"label": "Low market potential", "points": 1}
+                            ]
+                        }
+                    ]
+                }
+            ],
+            "isTemplate": True
+        }
+        
+        # Sample Template 3: Conference Presentation Evaluation
+        template3 = {
+            "questionnaireID": str(uuid.uuid4()),
+            "userID": user_id,
+            "title": "Conference Presentation Evaluation",
+            "eventID": None,
+            "criteriaList": [
+                {
+                    "criteriaID": 1,
+                    "title": "Content Quality",
+                    "questionnaireID": "",
+                    "questionList": [
+                        {
+                            "questionID": str(uuid.uuid4()),
+                            "title": "How relevant and valuable is the content?",
+                            "optionList": [
+                                {"label": "Extremely valuable content", "points": 5},
+                                {"label": "Very valuable", "points": 4},
+                                {"label": "Moderately valuable", "points": 3},
+                                {"label": "Somewhat valuable", "points": 2},
+                                {"label": "Not valuable", "points": 1}
+                            ]
+                        },
+                        {
+                            "questionID": str(uuid.uuid4()),
+                            "title": "How well-structured and organized is the presentation?",
+                            "optionList": [
+                                {"label": "Excellent structure", "points": 5},
+                                {"label": "Good structure", "points": 4},
+                                {"label": "Average structure", "points": 3},
+                                {"label": "Poor structure", "points": 2},
+                                {"label": "No clear structure", "points": 1}
+                            ]
+                        }
+                    ]
+                },
+                {
+                    "criteriaID": 2,
+                    "title": "Delivery & Communication",
+                    "questionnaireID": "",
+                    "questionList": [
+                        {
+                            "questionID": str(uuid.uuid4()),
+                            "title": "How effective is the speaker's delivery and communication?",
+                            "optionList": [
+                                {"label": "Excellent delivery - Very engaging", "points": 5},
+                                {"label": "Good delivery", "points": 4},
+                                {"label": "Average delivery", "points": 3},
+                                {"label": "Below average delivery", "points": 2},
+                                {"label": "Poor delivery", "points": 1}
+                            ]
+                        },
+                        {
+                            "questionID": str(uuid.uuid4()),
+                            "title": "How well does the speaker handle questions and interaction?",
+                            "optionList": [
+                                {"label": "Excellent Q&A handling", "points": 5},
+                                {"label": "Good Q&A handling", "points": 4},
+                                {"label": "Average Q&A handling", "points": 3},
+                                {"label": "Poor Q&A handling", "points": 2},
+                                {"label": "Avoided or mishandled Q&A", "points": 1}
+                            ]
+                        }
+                    ]
+                },
+                {
+                    "criteriaID": 3,
+                    "title": "Visual Aids & Technology",
+                    "questionnaireID": "",
+                    "questionList": [
+                        {
+                            "questionID": str(uuid.uuid4()),
+                            "title": "How effective are the slides and visual aids?",
+                            "optionList": [
+                                {"label": "Excellent visual aids", "points": 5},
+                                {"label": "Good visual aids", "points": 4},
+                                {"label": "Average visual aids", "points": 3},
+                                {"label": "Poor visual aids", "points": 2},
+                                {"label": "No or confusing visual aids", "points": 1}
+                            ]
+                        }
+                    ]
+                }
+            ],
+            "isTemplate": True
+        }
+        
+        # Save all templates to Firestore
+        templates = [template1, template2, template3]
+        created_templates = []
+        
+        for template in templates:
+            # Set the criteriaList questionnaireID for each criteria
+            for criteria in template["criteriaList"]:
+                criteria["questionnaireID"] = template["questionnaireID"]
+            
+            doc_ref = db.collection('templates').document(template["questionnaireID"])
+            doc_ref.set(template)
+            created_templates.append({
+                "templateID": template["questionnaireID"],
+                "title": template["title"]
+            })
+        
+        return jsonify({
+            "status": "success",
+            "message": "Sample templates created successfully",
+            "templates": created_templates
+        }), 200
+        
+    except Exception as e:
+        print(f"Error creating sample templates: {e}")
+        return jsonify({
+            "status": "error",
+            "message": str(e)
+        }), 500
+
 
 # API: /template/getAllTemplates
 # Frontend calls this API in order to retrieve all templates from Firestore (TODO - make it organizer-specific)
