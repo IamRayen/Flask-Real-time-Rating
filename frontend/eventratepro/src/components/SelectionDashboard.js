@@ -57,10 +57,10 @@ function SelectionDashboard() {
           <div>
             <p>No pending or running events found.</p>
             <button
-              onClick={() => navigate("/dashboard/default")}
-              className="go-to-dashboard-btn"
+              onClick={() => navigate("/questionnaire")}
+              className="create-questionnaire-btn"
             >
-              Go to Dashboard anyway
+              Go to Questionnaires
             </button>
           </div>
         ) : (

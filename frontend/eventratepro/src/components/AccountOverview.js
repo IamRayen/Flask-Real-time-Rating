@@ -46,25 +46,17 @@ function AccountOverview() {
       <div className="action-cards-container">
         <div className="action-card" onClick={handleViewQuestionnaire}>
           <div className="card-icon questionnaire-icon">📋</div>
-          <h3>
-            view my
-            <br />
-            Questionnaire
-          </h3>
+          <h3>Questionnaire</h3>
         </div>
 
         <div className="action-card" onClick={handleViewHistory}>
           <div className="card-icon history-icon">📊</div>
-          <h3>view my History</h3>
+          <h3>History</h3>
         </div>
 
         <div className="action-card" onClick={handleViewDashboard}>
           <div className="card-icon dashboard-icon">📈</div>
-          <h3>
-            view my
-            <br />
-            Dashboard
-          </h3>
+          <h3>Dashboard</h3>
         </div>
       </div>
     </div>
