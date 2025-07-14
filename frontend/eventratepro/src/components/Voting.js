@@ -15,6 +15,7 @@ function Voting() {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [voteSubmitted, setVoteSubmitted] = useState(false);
   const [submittedVoteId, setSubmittedVoteId] = useState(null);
+  const [eventEnded, setEventEnded] = useState(false);
 
   const location = useLocation();
   const params = new URLSearchParams(location.search);
@@ -41,7 +42,20 @@ function Voting() {
         const res = await fetch(
           `https://eventrate-pro.de/${questionnaireID}/${posterID}`
         );
-        if (!res.ok) throw new Error("Failed to fetch");
+
+        if (!res.ok) {
+          const errorData = await res.json();
+
+          // Check if event is ended
+          if (errorData.error === "EVENT_ENDED") {
+            setEventEnded(true);
+            setLoading(false);
+            return;
+          }
+
+          throw new Error(errorData.message || "Failed to fetch");
+        }
+
         const data = await res.json();
         setQuestionnaire(data.questionnaire);
         setEvent(data.event);
@@ -205,6 +219,42 @@ function Voting() {
         <div className="loading-container">
           <div className="loading-spinner"></div>
           <p>Loading questionnaire...</p>
+        </div>
+      </div>
+    );
+  }
+
+  // Show event ended page
+  if (eventEnded) {
+    return (
+      <div className="voting-page">
+        <div className="event-ended-container">
+          <div className="event-ended-content">
+            <div className="event-ended-icon">
+              <img src={erpLogo} alt="ERP Logo" className="event-ended-logo" />
+            </div>
+            <div className="event-ended-message">
+              <h1>Event Has Ended</h1>
+              <p className="event-ended-subtitle">
+                This event has already concluded and voting is no longer
+                available.
+              </p>
+              <div className="event-ended-description">
+                <p>
+                  Thank you for your interest in participating. The event
+                  organizer has closed the voting period for this questionnaire.
+                </p>
+              </div>
+              <div className="event-ended-actions">
+                <button
+                  className="back-home-button"
+                  onClick={() => (window.location.href = "/")}
+                >
+                  Back to Home
+                </button>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
     );
