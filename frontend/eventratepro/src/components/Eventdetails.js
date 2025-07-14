@@ -92,18 +92,35 @@ function EventDetails() {
   };
 
   const handlePosterSubmit = () => {
-    if (posterName.trim()) {
-      const newPoster = {
-        PosterID: Posters.length,
-        Title: posterName.trim(),
-        content: `https://event-rate-pro.vercel.app/choose-role/${daten.Questionnaire.questionnaireID}/${Posters.length}`,
-        eventID: daten.Questionnaire.eventID,
-      };
-      setPosters([...Posters, newPoster]);
-      setPosterName("");
-      setShowPosterModal(false);
-      console.log(Posters);
+    if (!posterName.trim()) {
+      showToast("Please enter a poster name", "error");
+      return;
     }
+
+    // Check if poster name already exists
+    const existingPoster = Posters.find(
+      (poster) => poster.Title.toLowerCase() === posterName.trim().toLowerCase()
+    );
+
+    if (existingPoster) {
+      showToast(
+        "A poster with this name already exists. Please choose a different name.",
+        "error"
+      );
+      return;
+    }
+
+    const newPoster = {
+      PosterID: Posters.length,
+      Title: posterName.trim(),
+      content: `https://event-rate-pro.vercel.app/choose-role/${daten.Questionnaire.questionnaireID}/${Posters.length}`,
+      eventID: daten.Questionnaire.eventID,
+    };
+    setPosters([...Posters, newPoster]);
+    showToast(`Poster "${posterName.trim()}" added successfully!`, "success");
+    setPosterName("");
+    setShowPosterModal(false);
+    console.log(Posters);
   };
 
   const handleModalClose = () => {

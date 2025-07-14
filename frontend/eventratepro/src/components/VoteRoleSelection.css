@@ -56,7 +56,7 @@
   display: flex;
   flex-direction: column;
   gap: 30px;
-  margin-bottom: 50px;
+  margin-bottom: 20px;
 }
 
 /* Role cards */
@@ -195,17 +195,7 @@
   z-index: 1;
 }
 
-/* Footer */
-.vote-role-selection-page .vote-role-footer {
-  margin-top: 40px;
-}
-
-.vote-role-selection-page .vote-role-footer p {
-  font-size: 1rem;
-  color: #888;
-  font-style: italic;
-  margin: 0;
-}
+/* Footer styles removed since footer element was removed */
 
 /* Responsive design */
 @media (max-width: 768px) {
@@ -231,25 +221,31 @@
   }
   
   .vote-role-selection-page .role-options {
-    gap: 25px;
+    display: grid;
+    grid-template-columns: 1fr;
+    grid-template-rows: auto auto auto;
+    gap: 20px;
+    max-height: 70vh;
+    overflow-y: auto;
   }
   
   .vote-role-selection-page .role-card {
-    flex-direction: column;
-    text-align: center;
-    padding: 25px;
+    flex-direction: row;
+    text-align: left;
+    padding: 20px;
+    min-height: auto;
   }
   
   .vote-role-selection-page .role-icon {
-    margin-right: 0;
-    margin-bottom: 20px;
-    width: 70px;
-    height: 70px;
-    font-size: 2.5rem;
+    margin-right: 15px;
+    margin-bottom: 0;
+    width: 60px;
+    height: 60px;
+    font-size: 2rem;
   }
   
   .vote-role-selection-page .role-info {
-    text-align: center;
+    text-align: left;
   }
   
   .vote-role-selection-page .role-info h3 {
@@ -261,8 +257,8 @@
   }
   
   .vote-role-selection-page .role-arrow {
-    margin-left: 0;
-    margin-top: 15px;
+    margin-left: 10px;
+    margin-top: 0;
   }
 }
 
@@ -286,18 +282,23 @@
   }
   
   .vote-role-selection-page .role-card {
-    padding: 20px;
+    padding: 15px;
   }
   
   .vote-role-selection-page .role-icon {
-    width: 60px;
-    height: 60px;
-    font-size: 2rem;
+    width: 50px;
+    height: 50px;
+    font-size: 1.8rem;
+    margin-right: 12px;
   }
   
-     .vote-role-selection-page .role-info h3 {
-     font-size: 1.3rem;
-   }
+  .vote-role-selection-page .role-info h3 {
+    font-size: 1.2rem;
+  }
+  
+  .vote-role-selection-page .role-info > p {
+    font-size: 0.9rem;
+  }
 }
 
 @media (min-width: 1024px) {

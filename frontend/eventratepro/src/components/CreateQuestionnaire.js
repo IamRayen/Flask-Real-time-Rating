@@ -108,6 +108,74 @@ function CreateQuestionnaire() {
     });
   };
 
+  // Delete a criteria and all its questions
+  const deleteCriteria = (criteriaID) => {
+    const criteria = criteriaList.find((c) => c.criteriaID === criteriaID);
+    if (!criteria) return;
+
+    const confirmed = window.confirm(
+      `Are you sure you want to delete the criteria "${criteria.title}" and all its questions?`
+    );
+    if (!confirmed) return;
+
+    setCriteriaList((prev) => {
+      const filtered = prev.filter((c) => c.criteriaID !== criteriaID);
+      // Renumber criteria IDs to maintain sequence
+      return filtered.map((criteria, index) => ({
+        ...criteria,
+        criteriaID: index + 1,
+      }));
+    });
+
+    // If we deleted the currently selected criteria, switch to the first one
+    if (selectedCategory === criteriaID) {
+      const remainingCriteria = criteriaList.filter(
+        (c) => c.criteriaID !== criteriaID
+      );
+      if (remainingCriteria.length > 0) {
+        setSelectedCategory(1); // Will be the first criteria after renumbering
+      }
+    } else if (selectedCategory > criteriaID) {
+      // Adjust selected category if it's after the deleted one
+      setSelectedCategory(selectedCategory - 1);
+    }
+
+    showToast(`Criteria "${criteria.title}" deleted successfully!`, "success");
+  };
+
+  // Delete a specific question from a criteria
+  const deleteQuestion = (criteriaID, questionID) => {
+    setCriteriaList((prev) => {
+      return prev.map((criteria) => {
+        if (criteria.criteriaID === criteriaID) {
+          const question = criteria.questionList.find(
+            (q) => q.questionID === questionID
+          );
+          const questionTitle = question ? question.title : "Question";
+
+          const updatedQuestionList = criteria.questionList
+            .filter((q) => q.questionID !== questionID)
+            // Renumber question IDs to maintain sequence
+            .map((q, index) => ({ ...q, questionID: index }));
+
+          // Show success message
+          setTimeout(() => {
+            showToast(
+              `Question "${questionTitle}" deleted successfully!`,
+              "success"
+            );
+          }, 100);
+
+          return {
+            ...criteria,
+            questionList: updatedQuestionList,
+          };
+        }
+        return criteria;
+      });
+    });
+  };
+
   const handleBackClick = () => {
     navigate("/questionnaire");
   };
@@ -341,11 +409,16 @@ function CreateQuestionnaire() {
                 current={selectedCategory}
                 onSelect={handleCategoryClick}
                 onAdd={addCriteria}
+                onDelete={deleteCriteria}
                 showToast={showToast}
               />
             </div>
             <div className="preview-section">
-              <Preview currentID={selectedCategory} list={criteriaList} />
+              <Preview
+                currentID={selectedCategory}
+                list={criteriaList}
+                onDeleteQuestion={deleteQuestion}
+              />
             </div>
           </div>
         </div>

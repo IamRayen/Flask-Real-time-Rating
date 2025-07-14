@@ -23,7 +23,13 @@ function FormBuilder({ form, current, onAdd, showToast }) {
 
   const handleRemoveOption = (index) => {
     if (Options.length > 1) {
-      setOptions(Options.filter((_, i) => i !== index));
+      const filteredOptions = Options.filter((_, i) => i !== index);
+      // Recalculate points for remaining options to maintain sequential order
+      const renumberedOptions = filteredOptions.map((option, newIndex) => ({
+        ...option,
+        points: newIndex < 4 ? newIndex + 1 : 5,
+      }));
+      setOptions(renumberedOptions);
     }
   };
 

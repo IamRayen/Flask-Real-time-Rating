@@ -58,10 +58,6 @@ function VoteRoleSelection() {
             <div className="role-arrow">→</div>
           </div>
         </div>
-
-        <div className="vote-role-footer">
-          <p>Your choice determines how your feedback will be recorded</p>
-        </div>
       </div>
     </div>
   );
