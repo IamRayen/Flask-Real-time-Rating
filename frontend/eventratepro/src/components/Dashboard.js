@@ -757,6 +757,17 @@ function Dashboard() {
         </div>
       )}
 
+      {presentationMode && (
+        <div className="presentation-actions">
+          <button
+            className="exit-presentation-btn"
+            onClick={togglePresentationMode}
+          >
+            ✖
+          </button>
+        </div>
+      )}
+
       <div className="dashboard-content">
         <div
           className={`dashboard-card ${
@@ -855,17 +866,6 @@ function Dashboard() {
                 onClick={togglePresentationMode}
               >
                 🖥️ Presentation Mode
-              </button>
-            </div>
-          )}
-
-          {presentationMode && (
-            <div className="presentation-actions">
-              <button
-                className="exit-presentation-btn"
-                onClick={togglePresentationMode}
-              >
-                ✖️ Exit Presentation
               </button>
             </div>
           )}
