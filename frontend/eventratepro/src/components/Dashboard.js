@@ -8,9 +8,10 @@ import {
   Title,
   Tooltip,
   Legend,
+  ArcElement,
 } from "chart.js";
 import ChartDataLabels from "chartjs-plugin-datalabels";
-import { Bar } from "react-chartjs-2";
+import { Bar, Pie } from "react-chartjs-2";
 import "./Dashboard.css";
 import { useEffect, useState } from "react";
 import erpLogo from "../assets/erp.png";
@@ -22,6 +23,7 @@ ChartJS.register(
   Title,
   Tooltip,
   Legend,
+  ArcElement,
   ChartDataLabels
 );
 
@@ -32,9 +34,11 @@ function Dashboard() {
   // State for dashboard data
   const [dashboardData, setDashboardData] = useState(null);
   const [chartData, setChartData] = useState(null);
+  const [pieChartData, setPieChartData] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [participantCount, setParticipantCount] = useState(0);
+  const [chartType, setChartType] = useState('bar'); // 'bar' or 'pie'
 
   const handleBackClick = () => {
     navigate("/account-overview");
@@ -161,6 +165,87 @@ function Dashboard() {
     },
   };
 
+  // Pie chart options configuration
+  const pieChartOptions = {
+    responsive: true,
+    maintainAspectRatio: false,
+    plugins: {
+      legend: {
+        position: "right",
+        align: "center",
+        labels: {
+          usePointStyle: true,
+          pointStyle: "circle",
+          padding: 20,
+          font: {
+            size: 16,
+            weight: '600',
+          },
+          color: '#2C3E50',
+          generateLabels: function(chart) {
+            const data = chart.data;
+            if (data.labels.length && data.datasets.length) {
+              return data.labels.map((label, i) => {
+                const dataset = data.datasets[0];
+                const backgroundColor = Array.isArray(dataset.backgroundColor) 
+                  ? dataset.backgroundColor[i] 
+                  : dataset.backgroundColor;
+                
+                return {
+                  text: label,
+                  fillStyle: backgroundColor,
+                  strokeStyle: backgroundColor,
+                  lineWidth: 2,
+                  pointStyle: 'circle',
+                  hidden: false,
+                  index: i
+                };
+              });
+            }
+            return [];
+          }
+        },
+      },
+      tooltip: {
+        enabled: true,
+        backgroundColor: 'rgba(44, 62, 80, 0.9)',
+        titleColor: '#fff',
+        bodyColor: '#fff',
+        borderColor: '#7FDBDA',
+        borderWidth: 2,
+        cornerRadius: 10,
+        callbacks: {
+          label: function (context) {
+            const total = context.dataset.data.reduce((a, b) => a + b, 0);
+            const percentage = ((context.parsed / total) * 100).toFixed(1);
+            return `${context.label}: ${context.parsed.toFixed(1)} pts (${percentage}%)`;
+          },
+        },
+      },
+      datalabels: {
+        display: true,
+        color: '#fff',
+        font: {
+          size: 14,
+          weight: 'bold',
+        },
+        formatter: (value, context) => {
+          const total = context.dataset.data.reduce((a, b) => a + b, 0);
+          const percentage = ((value / total) * 100).toFixed(1);
+          return `${percentage}%`;
+        },
+      },
+    },
+    layout: {
+      padding: {
+        top: 20,
+        bottom: 20,
+        left: 20,
+        right: 20,
+      },
+    },
+  };
+
   // Process vote data to create chart data
   const processVoteData = (dashboardData) => {
     if (
@@ -282,6 +367,97 @@ function Dashboard() {
     };
   };
 
+  // Process vote data to create pie chart data
+  const processPieChartData = (dashboardData) => {
+    if (
+      !dashboardData ||
+      !dashboardData.votes ||
+      !dashboardData.questionnaire
+    ) {
+      return null;
+    }
+
+    const { votes, event } = dashboardData;
+
+    // Get all items (posters) from event
+    const itemList = event.itemList || [];
+
+    if (itemList.length === 0) {
+      return null;
+    }
+
+    // Create a map to store total scores for each item
+    const totalScoresByItem = {};
+    const voteCountsByItem = {};
+
+    // Initialize score tracking for each item
+    itemList.forEach((item, index) => {
+      const itemKey = item.PosterID || item.posterID || index;
+      totalScoresByItem[itemKey] = 0;
+      voteCountsByItem[itemKey] = 0;
+    });
+
+    // Process each vote to calculate total scores per item
+    votes.forEach((vote) => {
+      const itemKey = vote.itemID;
+      if (totalScoresByItem[itemKey] === undefined) return;
+
+      let voteTotal = 0;
+
+      // Sum all points from this vote
+      vote.ticketOptionsList.forEach((answer) => {
+        const points = answer.points || 0;
+        voteTotal += points;
+      });
+
+      totalScoresByItem[itemKey] += voteTotal;
+      voteCountsByItem[itemKey]++;
+    });
+
+    // Calculate average scores and prepare pie chart data
+    const labels = [];
+    const data = [];
+    const backgroundColors = [
+      "#4A90E2",
+      "#F39C12",
+      "#8E44AD",
+      "#E74C3C",
+      "#2ECC71",
+      "#16A085",
+      "#D35400",
+      "#C0392B",
+      "#7D3C98",
+      "#1ABC9C",
+    ];
+
+    itemList.forEach((item, index) => {
+      const itemKey = item.PosterID || item.posterID || index;
+      const itemTitle = item.Title || item.title || `Poster ${index + 1}`;
+      
+      const totalScore = totalScoresByItem[itemKey];
+      const voteCount = voteCountsByItem[itemKey];
+      const averageScore = voteCount > 0 ? totalScore / voteCount : 0;
+
+      if (averageScore > 0) {
+        labels.push(itemTitle);
+        data.push(averageScore);
+      }
+    });
+
+    return {
+      labels,
+      datasets: [
+        {
+          data,
+          backgroundColor: backgroundColors.slice(0, data.length),
+          borderColor: backgroundColors.slice(0, data.length),
+          borderWidth: 2,
+          hoverOffset: 10,
+        },
+      ],
+    };
+  };
+
   // Fetch dashboard data from API
   const fetchDashboardData = async () => {
     try {
@@ -301,6 +477,10 @@ function Dashboard() {
         // Process chart data
         const processedChartData = processVoteData(data);
         setChartData(processedChartData);
+
+        // Process pie chart data
+        const processedPieChartData = processPieChartData(data);
+        setPieChartData(processedPieChartData);
 
         // Calculate participant count (unique voters)
         const uniqueVoters = new Set();
@@ -510,25 +690,64 @@ function Dashboard() {
             <h2>NUMBER OF PARTICIPANTS: {participantCount}</h2>
           </div>
 
-          <div className="chart-container">
-            {chartData ? (
-              <Bar data={chartData} options={chartOptions} />
-            ) : (
-              <div
-                style={{
-                  textAlign: "center",
-                  padding: "2rem",
-                  color: "#666",
-                  minHeight: "400px",
-                  display: "flex",
-                  alignItems: "center",
-                  justifyContent: "center",
-                }}
+          <div className="chart-controls">
+            <div className="chart-type-toggle">
+              <button 
+                className={`toggle-btn ${chartType === 'bar' ? 'active' : ''}`}
+                onClick={() => setChartType('bar')}
               >
-                {dashboardData?.votes?.length === 0
-                  ? "No votes have been submitted yet."
-                  : "Loading chart data..."}
-              </div>
+                📊 Bar Chart
+              </button>
+              <button 
+                className={`toggle-btn ${chartType === 'pie' ? 'active' : ''}`}
+                onClick={() => setChartType('pie')}
+              >
+                🥧 Pie Chart
+              </button>
+            </div>
+          </div>
+
+          <div className="chart-container">
+            {chartType === 'bar' ? (
+              chartData ? (
+                <Bar data={chartData} options={chartOptions} />
+              ) : (
+                <div
+                  style={{
+                    textAlign: "center",
+                    padding: "2rem",
+                    color: "#666",
+                    minHeight: "400px",
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                  }}
+                >
+                  {dashboardData?.votes?.length === 0
+                    ? "No votes have been submitted yet."
+                    : "Loading chart data..."}
+                </div>
+              )
+            ) : (
+              pieChartData ? (
+                <Pie data={pieChartData} options={pieChartOptions} />
+              ) : (
+                <div
+                  style={{
+                    textAlign: "center",
+                    padding: "2rem",
+                    color: "#666",
+                    minHeight: "400px",
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                  }}
+                >
+                  {dashboardData?.votes?.length === 0
+                    ? "No votes have been submitted yet."
+                    : "Loading pie chart data..."}
+                </div>
+              )
             )}
           </div>
 

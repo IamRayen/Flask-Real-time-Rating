@@ -83,6 +83,46 @@
   font-family: 'Inter', sans-serif;
 }
 
+.chart-controls {
+  display: flex;
+  justify-content: center;
+  margin: 15px 0;
+  flex-shrink: 0;
+}
+
+.chart-type-toggle {
+  display: flex;
+  background: #f0f0f0;
+  border-radius: 25px;
+  padding: 4px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.toggle-btn {
+  background: transparent;
+  border: none;
+  border-radius: 20px;
+  padding: 12px 24px;
+  font-size: 16px;
+  font-weight: 600;
+  color: #666;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  font-family: 'Inter', sans-serif;
+  white-space: nowrap;
+}
+
+.toggle-btn:hover {
+  color: #2C3E50;
+  background: rgba(138, 246, 255, 0.3);
+}
+
+.toggle-btn.active {
+  background: rgb(138, 246, 255);
+  color: #2C3E50;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
+}
+
 .chart-container {
   flex: 1;
   height: calc(100% - 120px);
@@ -198,5 +238,14 @@
     padding: 12px 25px;
     font-size: 14px;
     min-width: 100px;
+  }
+
+  .chart-controls {
+    margin: 10px 0;
+  }
+
+  .toggle-btn {
+    padding: 10px 20px;
+    font-size: 14px;
   }
 } 
