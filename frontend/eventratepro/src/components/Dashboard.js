@@ -44,6 +44,10 @@ function Dashboard() {
   const chartOptions = {
     responsive: true,
     maintainAspectRatio: false,
+    interaction: {
+      intersect: false,
+      mode: 'index',
+    },
     plugins: {
       legend: {
         position: "top",
@@ -51,19 +55,26 @@ function Dashboard() {
         labels: {
           usePointStyle: true,
           pointStyle: "rect",
-          padding: 20,
+          padding: 30,
           font: {
-            size: 16,
+            size: 20,
+            weight: '600',
           },
+          color: '#2C3E50',
         },
       },
       tooltip: {
         enabled: true,
+        backgroundColor: 'rgba(44, 62, 80, 0.9)',
+        titleColor: '#fff',
+        bodyColor: '#fff',
+        borderColor: '#7FDBDA',
+        borderWidth: 2,
+        cornerRadius: 10,
+        displayColors: true,
         callbacks: {
           label: function (context) {
-            return `${context.dataset.label}: ${context.parsed.y.toFixed(
-              1
-            )} pts`;
+            return `${context.dataset.label}: ${context.parsed.y.toFixed(1)} pts`;
           },
         },
       },
@@ -72,10 +83,11 @@ function Dashboard() {
         align: "top",
         formatter: (value) => value.toFixed(1),
         font: {
-          size: 12,
+          size: 14,
           weight: "bold",
         },
         color: "#2C3E50",
+        offset: 4,
       },
     },
     scales: {
@@ -85,20 +97,51 @@ function Dashboard() {
         },
         ticks: {
           font: {
-            size: 14,
+            size: 18,
+            weight: '500',
           },
+          color: '#2C3E50',
+          padding: 15,
+          maxRotation: 45,
+          minRotation: 0,
         },
+        title: {
+          display: true,
+          text: 'Evaluation Criteria',
+          font: {
+            size: 22,
+            weight: '600',
+          },
+          color: '#2C3E50',
+          padding: 25,
+        },
+        categoryPercentage: 0.9,
+        barPercentage: 1.0,
       },
       y: {
         beginAtZero: true,
         grid: {
           display: true,
           color: "#E5E7EB",
+          lineWidth: 1,
         },
         ticks: {
           font: {
-            size: 12,
+            size: 16,
+            weight: '500',
           },
+          color: '#2C3E50',
+          padding: 12,
+        },
+        title: {
+          display: true,
+          text: 'Average Score (Points)',
+          font: {
+            size: 22,
+            weight: '600',
+          },
+          color: '#2C3E50',
+          padding: 25,
         },
       },
     },
@@ -106,6 +149,14 @@ function Dashboard() {
       padding: {
         top: 20,
         bottom: 20,
+        left: 10,
+        right: 10,
+      },
+    },
+    elements: {
+      bar: {
+        borderRadius: 8,
+        borderSkipped: false,
       },
     },
   };
@@ -182,14 +233,16 @@ function Dashboard() {
     const labels = [...criteriaList.map((c) => c.title), "Total Score"];
     const datasets = [];
     const colors = [
-      "#7FB3D5",
-      "#F0B27A",
-      "#AAB7B8",
-      "#85C1E9",
-      "#F8C471",
-      "#BB8FCE",
-      "#82E0AA",
-      "#F1948A",
+      "#4A90E2",
+      "#F39C12",
+      "#8E44AD",
+      "#E74C3C",
+      "#2ECC71",
+      "#16A085",
+      "#D35400",
+      "#C0392B",
+      "#7D3C98",
+      "#1ABC9C",
     ];
 
     itemList.forEach((item, index) => {
@@ -216,8 +269,10 @@ function Dashboard() {
         label: itemTitle,
         data: data,
         backgroundColor: colors[index % colors.length],
-        borderWidth: 0,
-        barThickness: 40,
+        borderColor: colors[index % colors.length],
+        borderWidth: 2,
+        borderRadius: 8,
+        borderSkipped: false,
       });
     });
 

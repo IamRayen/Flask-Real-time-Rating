@@ -7,6 +7,7 @@
   margin: 0;
   font-family: 'Inter', sans-serif;
   position: relative;
+  overflow: hidden;
 }
 
 /* Back button positioned independently */
@@ -34,13 +35,13 @@
   display: flex;
   justify-content: center;
   align-items: center;
-  padding: 30px 0;
-  margin-bottom: 20px;
+  padding: 15px 0;
+  margin-bottom: 5px;
 }
 
 .center-logo {
-  width: 120px;
-  height: 120px;
+  width: 80px;
+  height: 80px;
   object-fit: contain;
   filter: drop-shadow(0 4px 8px rgba(0, 0, 0, 0.1));
 }
@@ -49,9 +50,8 @@
   display: flex;
   justify-content: center;
   align-items: center;
-  height: calc(100vh - 120px);
-  padding: 20px;
-  overflow: hidden;
+  height: calc(100vh - 100px);
+  padding: 10px;
 }
 
 .dashboard-card {
@@ -60,9 +60,7 @@
   padding: 30px;
   box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
   width: 90%;
-  max-width: 900px;
-  height: 80vh;
-  max-height: 600px;
+  height: 80%;
   display: flex;
   flex-direction: column;
   justify-content: space-between;
@@ -71,11 +69,12 @@
 
 .participant-count {
   text-align: center;
-  margin-bottom: 30px;
+  margin-bottom: 15px;
+  flex-shrink: 0;
 }
 
 .participant-count h2 {
-  font-size: 20px;
+  font-size: 24px;
   font-weight: 600;
   color: #2C3E50;
   letter-spacing: 1px;
@@ -86,16 +85,27 @@
 
 .chart-container {
   flex: 1;
-  height: 350px;
-  margin: 15px 0;
+  height: calc(100% - 120px);
+  width: 100%;
+  margin: 10px 0;
   position: relative;
+  padding: 20px;
+  background: #fafafa;
+  border-radius: 15px;
+  border: 1px solid #e5e7eb;
+}
+
+.chart-container canvas {
+  width: 100% !important;
+  height: 100% !important;
 }
 
 .action-buttons {
   display: flex;
   justify-content: center;
-  gap: 15px;
-  margin-top: 20px;
+  gap: 20px;
+  margin-top: 15px;
+  flex-shrink: 0;
   flex-wrap: wrap;
 }
 
@@ -103,20 +113,21 @@
   background: rgb(138, 246, 255);
   border: none;
   border-radius: 20px;
-  padding: 12px 25px;
+  padding: 15px 30px;
   font-size: 16px;
   font-weight: 600;
   color: black;
   cursor: pointer;
   transition: all 0.3s ease;
-  min-width: 100px;
+  min-width: 120px;
   text-transform: capitalize;
   font-family: 'Inter', sans-serif;
 }
 
 .action-btn:hover {
   background: rgb(118, 226, 235);
-  transform: translateY(-1px);
+  transform: translateY(-2px);
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
 }
 
 .action-btn:active {
@@ -139,22 +150,33 @@
   background: #7FDBDA;
 }
 
-/* Responsive design */
+/* Mobile fallback */
 @media (max-width: 768px) {
+  .dashboard-page {
+    height: auto;
+    min-height: 100vh;
+  }
+  
   .center-logo {
-    width: 90px;
-    height: 90px;
+    width: 60px;
+    height: 60px;
   }
   
   .logo-header {
-    padding: 20px 0;
-    margin-bottom: 10px;
+    padding: 10px 0;
+    margin-bottom: 5px;
+  }
+  
+  .dashboard-content {
+    height: auto;
+    padding: 5px;
   }
   
   .dashboard-card {
-    padding: 20px;
-    margin: 10px;
-    width: 95%;
+    padding: 15px;
+    width: 99%;
+    min-height: 600px;
+    height: auto;
   }
   
   .participant-count h2 {
@@ -162,27 +184,19 @@
   }
   
   .chart-container {
-    height: 300px;
+    min-height: 400px;
+    height: 400px;
+    padding: 15px;
   }
   
   .action-buttons {
-    gap: 10px;
+    gap: 15px;
+    margin-top: 15px;
   }
   
   .action-btn {
-    padding: 12px 20px;
-    font-size: 16px;
+    padding: 12px 25px;
+    font-size: 14px;
     min-width: 100px;
-  }
-}
-
-@media (max-width: 480px) {
-  .action-buttons {
-    flex-direction: column;
-    align-items: center;
-  }
-  
-  .action-btn {
-    width: 200px;
   }
 } 
