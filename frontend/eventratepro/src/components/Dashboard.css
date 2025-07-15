@@ -276,4 +276,239 @@
   .dashboard-card {
     height: calc(100vh - 110px);
   }
-} 
+}
+
+
+
+.dashboard-page.presentation-mode {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  overflow: hidden;
+  cursor: none;
+}
+
+.dashboard-page.presentation-mode:hover {
+  cursor: auto;
+}
+
+.presentation-header {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  background: rgba(255, 255, 255, 0.95);
+  backdrop-filter: blur(10px);
+  padding: 20px 40px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  z-index: 100;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+  border-bottom: 3px solid #8AFAFF;
+}
+
+.presentation-logo {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+}
+
+.presentation-logo-img {
+  width: 80px;
+  height: 80px;
+  object-fit: contain;
+  filter: drop-shadow(0 4px 8px rgba(0, 0, 0, 0.2));
+}
+
+.presentation-title {
+  font-size: 36px;
+  font-weight: 700;
+  color: #2C3E50;
+  margin: 0;
+  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.presentation-info {
+  display: flex;
+  gap: 40px;
+  align-items: center;
+}
+
+.presentation-timer,
+.presentation-participants,
+.presentation-chart-indicator {
+  font-size: 24px;
+  font-weight: 600;
+  color: #2C3E50;
+  padding: 12px 24px;
+  background: rgba(138, 246, 255, 0.3);
+  border-radius: 25px;
+  border: 2px solid #8AFAFF;
+  text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.1);
+  animation: pulse 2s infinite;
+}
+
+@keyframes pulse {
+  0%, 100% { 
+    box-shadow: 0 0 0 0 rgba(138, 246, 255, 0.7);
+  }
+  50% { 
+    box-shadow: 0 0 0 10px rgba(138, 246, 255, 0);
+  }
+}
+
+.presentation-mode .dashboard-content {
+  height: 100vh;
+  padding-top: 140px;
+  padding-bottom: 20px;
+  padding-left: 20px;
+  padding-right: 20px;
+}
+
+.presentation-card {
+  height: calc(100vh - 160px) !important;
+  background: rgba(255, 255, 255, 0.95) !important;
+  backdrop-filter: blur(15px);
+  border: 3px solid #8AFAFF;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.2) !important;
+  border-radius: 30px !important;
+  padding: 40px !important;
+  animation: slideIn 1s ease-out;
+}
+
+@keyframes slideIn {
+  from {
+    opacity: 0;
+    transform: translateY(50px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.presentation-mode .chart-container {
+  height: calc(100% - 120px) !important;
+  background: rgba(248, 250, 252, 0.8) !important;
+  border: 2px solid #E5E7EB;
+  border-radius: 20px !important;
+  padding: 30px !important;
+  animation: chartGlow 3s ease-in-out infinite alternate;
+}
+
+@keyframes chartGlow {
+  from {
+    box-shadow: 0 0 20px rgba(138, 246, 255, 0.3);
+  }
+  to {
+    box-shadow: 0 0 40px rgba(138, 246, 255, 0.6);
+  }
+}
+
+.presentation-actions {
+  position: fixed;
+  top: 20px;
+  right: 20px;
+  z-index: 1000;
+}
+
+.exit-presentation-btn {
+  background: rgba(231, 76, 60, 0.9);
+  color: white;
+  border: none;
+  border-radius: 50px;
+  padding: 15px 30px;
+  font-size: 18px;
+  font-weight: 600;
+  cursor: pointer;
+  backdrop-filter: blur(10px);
+  box-shadow: 0 8px 25px rgba(231, 76, 60, 0.3);
+  transition: all 0.3s ease;
+  opacity: 0.7;
+}
+
+.exit-presentation-btn:hover {
+  opacity: 1;
+  transform: translateY(-2px);
+  box-shadow: 0 12px 35px rgba(231, 76, 60, 0.4);
+}
+
+.presentation-btn {
+  background: linear-gradient(45deg, #667eea, #764ba2) !important;
+  color: white !important;
+  border: 2px solid rgba(255, 255, 255, 0.3) !important;
+  box-shadow: 0 8px 25px rgba(102, 126, 234, 0.3) !important;
+}
+
+.presentation-btn:hover {
+  background: linear-gradient(45deg, #764ba2, #667eea) !important;
+  transform: translateY(-3px) !important;
+  box-shadow: 0 12px 35px rgba(102, 126, 234, 0.4) !important;
+}
+
+
+.presentation-mode .chart-container canvas {
+  animation: fadeInChart 2s ease-out;
+}
+
+@keyframes fadeInChart {
+  from {
+    opacity: 0;
+    transform: scale(0.8);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+
+@media (max-width: 1200px) {
+  .presentation-header {
+    flex-direction: column;
+    gap: 20px;
+    padding: 15px 20px;
+  }
+  
+  .presentation-info {
+    gap: 20px;
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+  
+  .presentation-timer,
+  .presentation-participants,
+  .presentation-chart-indicator {
+    font-size: 18px;
+    padding: 8px 16px;
+  }
+  
+  .presentation-title {
+    font-size: 28px;
+  }
+  
+  .presentation-mode .dashboard-content {
+    padding-top: 180px;
+  }
+}
+
+@media (max-width: 768px) {
+  .presentation-header {
+    padding: 10px;
+  }
+  
+  .presentation-title {
+    font-size: 20px;
+  }
+  
+  .presentation-timer,
+  .presentation-participants,
+  .presentation-chart-indicator {
+    font-size: 14px;
+    padding: 6px 12px;
+  }
+  
+  .exit-presentation-btn {
+    padding: 10px 20px;
+    font-size: 14px;
+  }
+}

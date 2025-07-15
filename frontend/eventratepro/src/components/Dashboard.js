@@ -39,10 +39,68 @@ function Dashboard() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [participantCount, setParticipantCount] = useState(0);
-  const [chartType, setChartType] = useState("bar"); // 'bar' or 'pie'
+  const [chartType, setChartType] = useState("bar");
+  const [presentationMode, setPresentationMode] = useState(false);
+  const [eventStartTime] = useState(new Date());
+  const [currentTime, setCurrentTime] = useState(new Date());
 
   const handleBackClick = () => {
     navigate("/account-overview");
+  };
+
+  const togglePresentationMode = () => {
+    setPresentationMode(!presentationMode);
+    if (!presentationMode) {
+      if (document.documentElement.requestFullscreen) {
+        document.documentElement.requestFullscreen();
+      }
+    } else {
+      if (document.exitFullscreen) {
+        document.exitFullscreen();
+      }
+    }
+  };
+
+  useEffect(() => {
+    if (presentationMode) {
+      const interval = setInterval(() => {
+        setChartType((prev) => (prev === "bar" ? "pie" : "bar"));
+      }, 10000);
+
+      return () => clearInterval(interval);
+    }
+  }, [presentationMode]);
+
+  useEffect(() => {
+    if (presentationMode) {
+      const interval = setInterval(() => {
+        setCurrentTime(new Date());
+      }, 1000);
+
+      return () => clearInterval(interval);
+    }
+  }, [presentationMode]);
+
+  useEffect(() => {
+    const handleFullscreenChange = () => {
+      if (!document.fullscreenElement) {
+        setPresentationMode(false);
+      }
+    };
+
+    document.addEventListener("fullscreenchange", handleFullscreenChange);
+    return () =>
+      document.removeEventListener("fullscreenchange", handleFullscreenChange);
+  }, []);
+
+  const formatElapsedTime = () => {
+    const elapsed = Math.floor((currentTime - eventStartTime) / 1000);
+    const hours = Math.floor(elapsed / 3600);
+    const minutes = Math.floor((elapsed % 3600) / 60);
+    const seconds = elapsed % 60;
+    return `${hours.toString().padStart(2, "0")}:${minutes
+      .toString()
+      .padStart(2, "0")}:${seconds.toString().padStart(2, "0")}`;
   };
 
   // Chart options configuration
@@ -60,9 +118,9 @@ function Dashboard() {
         labels: {
           usePointStyle: true,
           pointStyle: "rect",
-          padding: 30,
+          padding: presentationMode ? 50 : 30,
           font: {
-            size: 20,
+            size: presentationMode ? 32 : 20,
             weight: "600",
           },
           color: "#2C3E50",
@@ -104,7 +162,7 @@ function Dashboard() {
         },
         ticks: {
           font: {
-            size: 18,
+            size: presentationMode ? 24 : 18,
             weight: "500",
           },
           color: "#2C3E50",
@@ -116,7 +174,7 @@ function Dashboard() {
           display: true,
           text: "Evaluation Criteria",
           font: {
-            size: 22,
+            size: presentationMode ? 28 : 22,
             weight: "600",
           },
           color: "#2C3E50",
@@ -134,7 +192,7 @@ function Dashboard() {
         },
         ticks: {
           font: {
-            size: 16,
+            size: presentationMode ? 22 : 16,
             weight: "500",
           },
           color: "#2C3E50",
@@ -144,7 +202,7 @@ function Dashboard() {
           display: true,
           text: "Average Score (Points)",
           font: {
-            size: 22,
+            size: presentationMode ? 28 : 22,
             weight: "600",
           },
           color: "#2C3E50",
@@ -174,14 +232,14 @@ function Dashboard() {
     maintainAspectRatio: false,
     plugins: {
       legend: {
-        position: "right",
+        position: presentationMode ? "bottom" : "right",
         align: "center",
         labels: {
           usePointStyle: true,
           pointStyle: "circle",
-          padding: 20,
+          padding: presentationMode ? 30 : 20,
           font: {
-            size: 16,
+            size: presentationMode ? 24 : 16,
             weight: "600",
           },
           color: "#2C3E50",
@@ -231,7 +289,7 @@ function Dashboard() {
         display: true,
         color: "#fff",
         font: {
-          size: 14,
+          size: presentationMode ? 20 : 14,
           weight: "bold",
         },
         formatter: (value, context) => {
@@ -657,37 +715,82 @@ function Dashboard() {
   }
 
   return (
-    <div className="dashboard-page">
-      <div className="back-arrow" onClick={handleBackClick}>
-        ← Back
-      </div>
-
-      <div className="logo-header">
-        <img src={erpLogo} alt="ERP Logo" className="center-logo" />
-      </div>
-
-      <div className="dashboard-content">
-        <div className="dashboard-card">
-          <div className="participant-count">
-            <h2>NUMBER OF PARTICIPANTS: {participantCount}</h2>
+    <div
+      className={`dashboard-page ${
+        presentationMode ? "presentation-mode" : ""
+      }`}
+    >
+      {!presentationMode && (
+        <>
+          <div className="back-arrow" onClick={handleBackClick}>
+            ← Back
           </div>
+          <div className="logo-header">
+            <img src={erpLogo} alt="ERP Logo" className="center-logo" />
+          </div>
+        </>
+      )}
 
-          <div className="chart-controls">
-            <div className="chart-type-toggle">
-              <button
-                className={`toggle-btn ${chartType === "bar" ? "active" : ""}`}
-                onClick={() => setChartType("bar")}
-              >
-                📊 Bar Chart
-              </button>
-              <button
-                className={`toggle-btn ${chartType === "pie" ? "active" : ""}`}
-                onClick={() => setChartType("pie")}
-              >
-                🥧 Pie Chart
-              </button>
+      {presentationMode && (
+        <div className="presentation-header">
+          <div className="presentation-logo">
+            <img
+              src={erpLogo}
+              alt="ERP Logo"
+              className="presentation-logo-img"
+            />
+            <h1 className="presentation-title">
+              Event Dashboard - Live Results
+            </h1>
+          </div>
+          <div className="presentation-info">
+            <div className="presentation-timer">
+              ⏱️ Event Time: {formatElapsedTime()}
+            </div>
+            <div className="presentation-participants">
+              👥 Live Participants: {participantCount}
+            </div>
+            <div className="presentation-chart-indicator">
+              📊 {chartType === "bar" ? "Detailed Scores" : "Overall Rankings"}
             </div>
           </div>
+        </div>
+      )}
+
+      <div className="dashboard-content">
+        <div
+          className={`dashboard-card ${
+            presentationMode ? "presentation-card" : ""
+          }`}
+        >
+          {!presentationMode && (
+            <div className="participant-count">
+              <h2>NUMBER OF PARTICIPANTS: {participantCount}</h2>
+            </div>
+          )}
+
+          {!presentationMode && (
+            <div className="chart-controls">
+              <div className="chart-type-toggle">
+                <button
+                  className={`toggle-btn ${
+                    chartType === "bar" ? "active" : ""
+                  }`}
+                  onClick={() => setChartType("bar")}
+                >
+                  📊 Bar Chart
+                </button>
+                <button
+                  className={`toggle-btn ${
+                    chartType === "pie" ? "active" : ""
+                  }`}
+                  onClick={() => setChartType("pie")}
+                >
+                  🥧 Pie Chart
+                </button>
+              </div>
+            </div>
+          )}
 
           <div className="chart-container">
             {chartType === "bar" ? (
@@ -731,22 +834,41 @@ function Dashboard() {
             )}
           </div>
 
-          <div className="action-buttons">
-            {dashboardData?.event?.status === "pending" && (
-              <button className="action-btn begin-btn" onClick={handleBegin}>
-                Begin
+          {!presentationMode && (
+            <div className="action-buttons">
+              {dashboardData?.event?.status === "pending" && (
+                <button className="action-btn begin-btn" onClick={handleBegin}>
+                  Begin
+                </button>
+              )}
+              <button className="action-btn end-btn" onClick={handleEnd}>
+                End
               </button>
-            )}
-            <button className="action-btn end-btn" onClick={handleEnd}>
-              End
-            </button>
-            <button
-              className="action-btn excel-btn"
-              onClick={handleExcelExport}
-            >
-              Excel
-            </button>
-          </div>
+              <button
+                className="action-btn excel-btn"
+                onClick={handleExcelExport}
+              >
+                Excel
+              </button>
+              <button
+                className="action-btn presentation-btn"
+                onClick={togglePresentationMode}
+              >
+                🖥️ Presentation Mode
+              </button>
+            </div>
+          )}
+
+          {presentationMode && (
+            <div className="presentation-actions">
+              <button
+                className="exit-presentation-btn"
+                onClick={togglePresentationMode}
+              >
+                ✖️ Exit Presentation
+              </button>
+            </div>
+          )}
         </div>
       </div>
     </div>
