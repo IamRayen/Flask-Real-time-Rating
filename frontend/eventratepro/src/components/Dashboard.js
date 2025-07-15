@@ -15,6 +15,7 @@ import { Bar, Pie } from "react-chartjs-2";
 import "./Dashboard.css";
 import { useEffect, useState } from "react";
 import erpLogo from "../assets/erp.png";
+import { dashboardService } from "../services/dashboardService";
 
 ChartJS.register(
   CategoryScale,
@@ -38,7 +39,7 @@ function Dashboard() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [participantCount, setParticipantCount] = useState(0);
-  const [chartType, setChartType] = useState('bar'); // 'bar' or 'pie'
+  const [chartType, setChartType] = useState("bar"); // 'bar' or 'pie'
 
   const handleBackClick = () => {
     navigate("/account-overview");
@@ -50,7 +51,7 @@ function Dashboard() {
     maintainAspectRatio: false,
     interaction: {
       intersect: false,
-      mode: 'index',
+      mode: "index",
     },
     plugins: {
       legend: {
@@ -62,23 +63,25 @@ function Dashboard() {
           padding: 30,
           font: {
             size: 20,
-            weight: '600',
+            weight: "600",
           },
-          color: '#2C3E50',
+          color: "#2C3E50",
         },
       },
       tooltip: {
         enabled: true,
-        backgroundColor: 'rgba(44, 62, 80, 0.9)',
-        titleColor: '#fff',
-        bodyColor: '#fff',
-        borderColor: '#7FDBDA',
+        backgroundColor: "rgba(44, 62, 80, 0.9)",
+        titleColor: "#fff",
+        bodyColor: "#fff",
+        borderColor: "#7FDBDA",
         borderWidth: 2,
         cornerRadius: 10,
         displayColors: true,
         callbacks: {
           label: function (context) {
-            return `${context.dataset.label}: ${context.parsed.y.toFixed(1)} pts`;
+            return `${context.dataset.label}: ${context.parsed.y.toFixed(
+              1
+            )} pts`;
           },
         },
       },
@@ -102,21 +105,21 @@ function Dashboard() {
         ticks: {
           font: {
             size: 18,
-            weight: '500',
+            weight: "500",
           },
-          color: '#2C3E50',
+          color: "#2C3E50",
           padding: 15,
           maxRotation: 45,
           minRotation: 0,
         },
         title: {
           display: true,
-          text: 'Evaluation Criteria',
+          text: "Evaluation Criteria",
           font: {
             size: 22,
-            weight: '600',
+            weight: "600",
           },
-          color: '#2C3E50',
+          color: "#2C3E50",
           padding: 25,
         },
         categoryPercentage: 0.9,
@@ -132,19 +135,19 @@ function Dashboard() {
         ticks: {
           font: {
             size: 16,
-            weight: '500',
+            weight: "500",
           },
-          color: '#2C3E50',
+          color: "#2C3E50",
           padding: 12,
         },
         title: {
           display: true,
-          text: 'Average Score (Points)',
+          text: "Average Score (Points)",
           font: {
             size: 22,
-            weight: '600',
+            weight: "600",
           },
-          color: '#2C3E50',
+          color: "#2C3E50",
           padding: 25,
         },
       },
@@ -179,55 +182,57 @@ function Dashboard() {
           padding: 20,
           font: {
             size: 16,
-            weight: '600',
+            weight: "600",
           },
-          color: '#2C3E50',
-          generateLabels: function(chart) {
+          color: "#2C3E50",
+          generateLabels: function (chart) {
             const data = chart.data;
             if (data.labels.length && data.datasets.length) {
               return data.labels.map((label, i) => {
                 const dataset = data.datasets[0];
-                const backgroundColor = Array.isArray(dataset.backgroundColor) 
-                  ? dataset.backgroundColor[i] 
+                const backgroundColor = Array.isArray(dataset.backgroundColor)
+                  ? dataset.backgroundColor[i]
                   : dataset.backgroundColor;
-                
+
                 return {
                   text: label,
                   fillStyle: backgroundColor,
                   strokeStyle: backgroundColor,
                   lineWidth: 2,
-                  pointStyle: 'circle',
+                  pointStyle: "circle",
                   hidden: false,
-                  index: i
+                  index: i,
                 };
               });
             }
             return [];
-          }
+          },
         },
       },
       tooltip: {
         enabled: true,
-        backgroundColor: 'rgba(44, 62, 80, 0.9)',
-        titleColor: '#fff',
-        bodyColor: '#fff',
-        borderColor: '#7FDBDA',
+        backgroundColor: "rgba(44, 62, 80, 0.9)",
+        titleColor: "#fff",
+        bodyColor: "#fff",
+        borderColor: "#7FDBDA",
         borderWidth: 2,
         cornerRadius: 10,
         callbacks: {
           label: function (context) {
             const total = context.dataset.data.reduce((a, b) => a + b, 0);
             const percentage = ((context.parsed / total) * 100).toFixed(1);
-            return `${context.label}: ${context.parsed.toFixed(1)} pts (${percentage}%)`;
+            return `${context.label}: ${context.parsed.toFixed(
+              1
+            )} pts (${percentage}%)`;
           },
         },
       },
       datalabels: {
         display: true,
-        color: '#fff',
+        color: "#fff",
         font: {
           size: 14,
-          weight: 'bold',
+          weight: "bold",
         },
         formatter: (value, context) => {
           const total = context.dataset.data.reduce((a, b) => a + b, 0);
@@ -433,7 +438,7 @@ function Dashboard() {
     itemList.forEach((item, index) => {
       const itemKey = item.PosterID || item.posterID || index;
       const itemTitle = item.Title || item.title || `Poster ${index + 1}`;
-      
+
       const totalScore = totalScoresByItem[itemKey];
       const voteCount = voteCountsByItem[itemKey];
       const averageScore = voteCount > 0 ? totalScore / voteCount : 0;
@@ -458,53 +463,33 @@ function Dashboard() {
     };
   };
 
-  // Fetch dashboard data from API
-  const fetchDashboardData = async () => {
-    try {
-      setError(null);
-      const res = await fetch(
-        `https://eventrate-pro.de/dashboard/getDashboardData?eventID=${eventID}`,
-        {
-          method: "GET",
+  const processDashboardData = (data) => {
+    setDashboardData(data);
+
+    const processedChartData = processVoteData(data);
+    setChartData(processedChartData);
+
+    const processedPieChartData = processPieChartData(data);
+    setPieChartData(processedPieChartData);
+
+    const uniqueVoters = new Set();
+    if (data.votes) {
+      data.votes.forEach((vote) => {
+        if (vote.role === "referee" && vote.refereeEmail) {
+          uniqueVoters.add(vote.refereeEmail);
+        } else {
+          uniqueVoters.add(vote.voteID);
         }
-      );
-      const data = await res.json();
-
-      if (res.ok) {
-        console.log("Dashboard data fetched:", data);
-        setDashboardData(data);
-
-        // Process chart data
-        const processedChartData = processVoteData(data);
-        setChartData(processedChartData);
-
-        // Process pie chart data
-        const processedPieChartData = processPieChartData(data);
-        setPieChartData(processedPieChartData);
-
-        // Calculate participant count (unique voters)
-        const uniqueVoters = new Set();
-        if (data.votes) {
-          data.votes.forEach((vote) => {
-            if (vote.role === "referee" && vote.refereeEmail) {
-              uniqueVoters.add(vote.refereeEmail);
-            } else {
-              // For anonymous votes, count each vote as a unique participant
-              uniqueVoters.add(vote.voteID);
-            }
-          });
-        }
-        setParticipantCount(uniqueVoters.size);
-      } else {
-        setError("Failed to retrieve data: " + data.error);
-        console.error("API Error:", data.error);
-      }
-    } catch (err) {
-      console.error("Error fetching dashboard data:", err);
-      setError("An error occurred while fetching data.");
-    } finally {
-      setLoading(false);
+      });
     }
+    setParticipantCount(uniqueVoters.size);
+    setLoading(false);
+    setError(null);
+  };
+
+  const handleRealtimeError = (errorMessage) => {
+    setError(errorMessage);
+    setLoading(false);
   };
 
   // Handle event start
@@ -519,8 +504,6 @@ function Dashboard() {
       const data = await res.json();
       if (res.ok) {
         alert("Event started successfully!");
-        // Refresh data after starting event
-        fetchDashboardData();
       } else {
         alert("Failed to start event: " + data.error);
       }
@@ -542,8 +525,6 @@ function Dashboard() {
       const data = await res.json();
       if (res.ok) {
         alert("Event has ended successfully!");
-        // Refresh data after ending event
-        fetchDashboardData();
       } else {
         alert("Failed to end event: " + data.error);
       }
@@ -553,10 +534,10 @@ function Dashboard() {
     }
   };
 
-  // Handle manual refresh
   const handleRefresh = () => {
     setLoading(true);
-    fetchDashboardData();
+    setError(null);
+    setTimeout(() => setLoading(false), 1000);
   };
 
   // Handle Excel export
@@ -614,17 +595,18 @@ function Dashboard() {
     }
   };
 
-  // Load data on component mount and set up periodic refresh
   useEffect(() => {
-    fetchDashboardData();
+    if (!eventID) return;
 
-    // Set up periodic refresh every 5 seconds for real-time feel
-    const interval = setInterval(() => {
-      fetchDashboardData();
-    }, 500);
+    dashboardService.subscribeToEventData(
+      eventID,
+      processDashboardData,
+      handleRealtimeError
+    );
 
-    // Cleanup interval on component unmount
-    return () => clearInterval(interval);
+    return () => {
+      dashboardService.unsubscribe();
+    };
   }, [eventID]);
 
   // Render loading state
@@ -692,15 +674,15 @@ function Dashboard() {
 
           <div className="chart-controls">
             <div className="chart-type-toggle">
-              <button 
-                className={`toggle-btn ${chartType === 'bar' ? 'active' : ''}`}
-                onClick={() => setChartType('bar')}
+              <button
+                className={`toggle-btn ${chartType === "bar" ? "active" : ""}`}
+                onClick={() => setChartType("bar")}
               >
                 📊 Bar Chart
               </button>
-              <button 
-                className={`toggle-btn ${chartType === 'pie' ? 'active' : ''}`}
-                onClick={() => setChartType('pie')}
+              <button
+                className={`toggle-btn ${chartType === "pie" ? "active" : ""}`}
+                onClick={() => setChartType("pie")}
               >
                 🥧 Pie Chart
               </button>
@@ -708,7 +690,7 @@ function Dashboard() {
           </div>
 
           <div className="chart-container">
-            {chartType === 'bar' ? (
+            {chartType === "bar" ? (
               chartData ? (
                 <Bar data={chartData} options={chartOptions} />
               ) : (
@@ -728,26 +710,24 @@ function Dashboard() {
                     : "Loading chart data..."}
                 </div>
               )
+            ) : pieChartData ? (
+              <Pie data={pieChartData} options={pieChartOptions} />
             ) : (
-              pieChartData ? (
-                <Pie data={pieChartData} options={pieChartOptions} />
-              ) : (
-                <div
-                  style={{
-                    textAlign: "center",
-                    padding: "2rem",
-                    color: "#666",
-                    minHeight: "400px",
-                    display: "flex",
-                    alignItems: "center",
-                    justifyContent: "center",
-                  }}
-                >
-                  {dashboardData?.votes?.length === 0
-                    ? "No votes have been submitted yet."
-                    : "Loading pie chart data..."}
-                </div>
-              )
+              <div
+                style={{
+                  textAlign: "center",
+                  padding: "2rem",
+                  color: "#666",
+                  minHeight: "400px",
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                }}
+              >
+                {dashboardData?.votes?.length === 0
+                  ? "No votes have been submitted yet."
+                  : "Loading pie chart data..."}
+              </div>
             )}
           </div>
 
