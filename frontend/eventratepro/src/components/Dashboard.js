@@ -120,7 +120,7 @@ function Dashboard() {
             weight: "600",
           },
           color: "#2C3E50",
-          padding: 25,
+          padding: 0,
         },
         categoryPercentage: 0.9,
         barPercentage: 1.0,
