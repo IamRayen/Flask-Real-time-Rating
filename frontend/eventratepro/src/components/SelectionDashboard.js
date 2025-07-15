@@ -64,17 +64,60 @@ function SelectionDashboard() {
             </button>
           </div>
         ) : (
-          <ul className="event-list">
+          <div className="events-grid">
             {events.map((event) => (
-              <li key={event.eventID} className="event-card">
-                <h3>{event.eventName || "Untitled Event"}</h3>
-                <p>Status: {event.status}</p>
-                <button onClick={() => handleViewEvent(event.eventID)}>
-                  View Event
-                </button>
-              </li>
+              <div
+                key={event.eventID}
+                className="modern-event-card"
+                onClick={() => handleViewEvent(event.eventID)}
+              >
+                <div className="card-header">
+                  <div className="event-icon">
+                    {event.status === "running" ? "🚀" : "⏳"}
+                  </div>
+                  <div className={`status-badge ${event.status}`}>
+                    <span className="status-dot"></span>
+                    {event.status === "running" ? "Live" : "Pending"}
+                  </div>
+                </div>
+
+                <div className="card-content">
+                  <h3 className="event-title">
+                    {event.eventName || "Untitled Event"}
+                  </h3>
+                  <div className="event-meta">
+                    <div className="meta-item">
+                      <span className="meta-icon">📅</span>
+                      <span className="meta-text">
+                        Event ID: {event.eventID.slice(0, 8)}...
+                      </span>
+                    </div>
+                    <div className="meta-item">
+                      <span className="meta-icon">🎯</span>
+                      <span className="meta-text">
+                        {event.status === "running"
+                          ? "Active Voting"
+                          : "Awaiting Start"}
+                      </span>
+                    </div>
+                  </div>
+                </div>
+
+                <div className="card-footer">
+                  <button
+                    className="view-event-btn"
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      handleViewEvent(event.eventID);
+                    }}
+                  >
+                    <span>View Dashboard</span>
+                    <span className="btn-arrow">→</span>
+                  </button>
+                </div>
+              </div>
             ))}
-          </ul>
+          </div>
         )}
       </div>
     </div>
