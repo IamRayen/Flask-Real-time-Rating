@@ -36,6 +36,7 @@ function Dashboard() {
   const [dashboardData, setDashboardData] = useState(null);
   const [chartData, setChartData] = useState(null);
   const [pieChartData, setPieChartData] = useState(null);
+  const [leaderboardData, setLeaderboardData] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [participantCount, setParticipantCount] = useState(0);
@@ -64,7 +65,11 @@ function Dashboard() {
   useEffect(() => {
     if (presentationMode) {
       const interval = setInterval(() => {
-        setChartType((prev) => (prev === "bar" ? "pie" : "bar"));
+        setChartType((prev) => {
+          if (prev === "bar") return "pie";
+          if (prev === "pie") return "leaderboard";
+          return "bar";
+        });
       }, 10000);
 
       return () => clearInterval(interval);
@@ -521,6 +526,140 @@ function Dashboard() {
     };
   };
 
+  // Process vote data to create leaderboard data
+  const processLeaderboardData = (dashboardData) => {
+    if (
+      !dashboardData ||
+      !dashboardData.votes ||
+      !dashboardData.questionnaire
+    ) {
+      return null;
+    }
+
+    const { votes, event, questionnaire } = dashboardData;
+    const itemList = event.itemList || [];
+
+    if (itemList.length === 0) {
+      return null;
+    }
+
+    // Calculate maximum possible score with safety checks
+    const criteriaList = questionnaire.criteriaList || [];
+    let maxPossibleScore = 0;
+    criteriaList.forEach((criteria) => {
+      if (criteria.questionList && Array.isArray(criteria.questionList)) {
+        criteria.questionList.forEach((question) => {
+          if (
+            question.optionsList &&
+            Array.isArray(question.optionsList) &&
+            question.optionsList.length > 0
+          ) {
+            const maxPoints = Math.max(
+              ...question.optionsList.map((opt) => opt.points || 0)
+            );
+            maxPossibleScore += maxPoints;
+          }
+        });
+      }
+    });
+
+    // Fallback for maxPossibleScore if calculation fails
+    if (maxPossibleScore === 0 && votes.length > 0) {
+      // Estimate from actual vote data
+      const sampleVote = votes[0];
+      if (sampleVote && sampleVote.ticketOptionsList) {
+        maxPossibleScore = sampleVote.ticketOptionsList.length * 5; // Assume max 5 points per question as fallback
+      }
+    }
+
+    // Create a map to store total scores for each item
+    const posterStats = {};
+
+    // Initialize score tracking for each item
+    itemList.forEach((item, index) => {
+      const itemKey = item.PosterID || item.posterID || index;
+      posterStats[itemKey] = {
+        posterID: itemKey,
+        posterName: item.Title || item.title || `Poster ${index + 1}`,
+        totalScore: 0,
+        voteCount: 0,
+        averageScore: 0,
+        scorePercentage: 0,
+        rank: 0,
+      };
+    });
+
+    // Process each vote to calculate total scores per item
+    votes.forEach((vote) => {
+      const itemKey = vote.itemID;
+      if (!posterStats[itemKey]) return;
+
+      let voteTotal = 0;
+
+      // Sum all points from this vote
+      if (vote.ticketOptionsList && Array.isArray(vote.ticketOptionsList)) {
+        vote.ticketOptionsList.forEach((answer) => {
+          const points = answer.points || 0;
+          voteTotal += points;
+        });
+      }
+
+      posterStats[itemKey].totalScore += voteTotal;
+      posterStats[itemKey].voteCount++;
+    });
+
+    // Calculate averages and percentages
+    Object.values(posterStats).forEach((poster) => {
+      if (poster.voteCount > 0) {
+        poster.averageScore = poster.totalScore / poster.voteCount;
+        poster.scorePercentage =
+          maxPossibleScore > 0
+            ? (poster.averageScore / maxPossibleScore) * 100
+            : 0;
+      }
+    });
+
+    // Sort by average score and assign ranks
+    const sortedPosters = Object.values(posterStats)
+      .filter((poster) => poster.voteCount > 0)
+      .sort((a, b) => b.averageScore - a.averageScore)
+      .map((poster, index) => ({
+        ...poster,
+        rank: index + 1,
+      }));
+
+    return {
+      posters: sortedPosters,
+      maxPossibleScore,
+      totalParticipants: participantCount,
+    };
+  };
+
+  // Helper functions for leaderboard display
+  const getScoreColor = (percentage) => {
+    if (percentage >= 80) return "#2ECC71"; // Green
+    if (percentage >= 60) return "#F39C12"; // Orange
+    if (percentage >= 40) return "#E74C3C"; // Red
+    return "#95A5A6"; // Gray
+  };
+
+  const getMedalIcon = (rank) => {
+    switch (rank) {
+      case 1:
+        return "🥇";
+      case 2:
+        return "🥈";
+      case 3:
+        return "🥉";
+      default:
+        return `#${rank}`;
+    }
+  };
+
+  const formatScore = (score) => {
+    return score.toFixed(1);
+  };
+
   const processDashboardData = (data) => {
     setDashboardData(data);
 
@@ -529,6 +668,9 @@ function Dashboard() {
 
     const processedPieChartData = processPieChartData(data);
     setPieChartData(processedPieChartData);
+
+    const processedLeaderboardData = processLeaderboardData(data);
+    setLeaderboardData(processedLeaderboardData);
 
     const uniqueVoters = new Set();
     if (data.votes) {
@@ -751,7 +893,12 @@ function Dashboard() {
               👥 Live Participants: {participantCount}
             </div>
             <div className="presentation-chart-indicator">
-              📊 {chartType === "bar" ? "Detailed Scores" : "Overall Rankings"}
+              📊{" "}
+              {chartType === "bar"
+                ? "Detailed Scores"
+                : chartType === "pie"
+                ? "Overall Rankings"
+                : "Live Leaderboard"}
             </div>
           </div>
         </div>
@@ -799,6 +946,14 @@ function Dashboard() {
                 >
                   🥧 Pie Chart
                 </button>
+                <button
+                  className={`toggle-btn ${
+                    chartType === "leaderboard" ? "active" : ""
+                  }`}
+                  onClick={() => setChartType("leaderboard")}
+                >
+                  🏆 Leaderboard
+                </button>
               </div>
             </div>
           )}
@@ -824,25 +979,137 @@ function Dashboard() {
                     : "Loading chart data..."}
                 </div>
               )
-            ) : pieChartData ? (
-              <Pie data={pieChartData} options={pieChartOptions} />
-            ) : (
-              <div
-                style={{
-                  textAlign: "center",
-                  padding: "2rem",
-                  color: "#666",
-                  minHeight: "400px",
-                  display: "flex",
-                  alignItems: "center",
-                  justifyContent: "center",
-                }}
-              >
-                {dashboardData?.votes?.length === 0
-                  ? "No votes have been submitted yet."
-                  : "Loading pie chart data..."}
-              </div>
-            )}
+            ) : chartType === "pie" ? (
+              pieChartData ? (
+                <Pie data={pieChartData} options={pieChartOptions} />
+              ) : (
+                <div
+                  style={{
+                    textAlign: "center",
+                    padding: "2rem",
+                    color: "#666",
+                    minHeight: "400px",
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                  }}
+                >
+                  {dashboardData?.votes?.length === 0
+                    ? "No votes have been submitted yet."
+                    : "Loading pie chart data..."}
+                </div>
+              )
+            ) : chartType === "leaderboard" ? (
+              leaderboardData && leaderboardData.posters.length > 0 ? (
+                <div className="leaderboard-container">
+                  <div className="leaderboard-header">
+                    <h2
+                      className={`leaderboard-title ${
+                        presentationMode ? "presentation-title" : ""
+                      }`}
+                    >
+                      🏆 Live Leaderboard
+                    </h2>
+                    <div
+                      className={`leaderboard-stats ${
+                        presentationMode ? "presentation-stats" : ""
+                      }`}
+                    >
+                      <span className="stat-item">
+                        🗳️ {leaderboardData.totalParticipants} Participants
+                      </span>
+                      <span className="stat-item">
+                        📊 {leaderboardData.posters.length} Posters
+                      </span>
+                    </div>
+                  </div>
+
+                  <div className="leaderboard-list">
+                    {leaderboardData.posters
+                      .slice(0, presentationMode ? 8 : 10)
+                      .map((poster) => (
+                        <div
+                          key={poster.posterID}
+                          className={`leaderboard-item ${
+                            presentationMode ? "presentation-item" : ""
+                          } ${poster.rank <= 3 ? "top-three" : ""}`}
+                        >
+                          <div className="rank-badge">
+                            <span className="rank-icon">
+                              {getMedalIcon(poster.rank)}
+                            </span>
+                          </div>
+
+                          <div className="poster-info">
+                            <h3 className="poster-name">{poster.posterName}</h3>
+                            <div className="poster-details">
+                              <span className="vote-count">
+                                {poster.voteCount} votes
+                              </span>
+                              <span className="score-text">
+                                {formatScore(poster.averageScore)} /{" "}
+                                {formatScore(leaderboardData.maxPossibleScore)}{" "}
+                                pts
+                              </span>
+                            </div>
+                          </div>
+
+                          <div className="score-circle-container">
+                            <div
+                              className="score-circle"
+                              style={{
+                                background: `conic-gradient(${getScoreColor(
+                                  poster.scorePercentage
+                                )} ${
+                                  poster.scorePercentage * 3.6
+                                }deg, #e0e0e0 0deg)`,
+                              }}
+                            >
+                              <div className="score-inner">
+                                <span className="score-percentage">
+                                  {Math.round(poster.scorePercentage)}%
+                                </span>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      ))}
+                  </div>
+
+                  {leaderboardData.posters.length >
+                    (presentationMode ? 8 : 10) && (
+                    <div
+                      className={`leaderboard-footer ${
+                        presentationMode ? "presentation-footer" : ""
+                      }`}
+                    >
+                      <span>
+                        +
+                        {leaderboardData.posters.length -
+                          (presentationMode ? 8 : 10)}{" "}
+                        more posters
+                      </span>
+                    </div>
+                  )}
+                </div>
+              ) : (
+                <div
+                  style={{
+                    textAlign: "center",
+                    padding: "2rem",
+                    color: "#666",
+                    minHeight: "400px",
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                  }}
+                >
+                  {dashboardData?.votes?.length === 0
+                    ? "No votes have been submitted yet."
+                    : "Loading leaderboard data..."}
+                </div>
+              )
+            ) : null}
           </div>
 
           {!presentationMode && (

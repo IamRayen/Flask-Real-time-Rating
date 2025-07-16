@@ -519,3 +519,335 @@
     font-size: 16px;
   }
 }
+
+/* Leaderboard Styles */
+.leaderboard-container {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  padding: 20px;
+  overflow-y: auto;
+}
+
+.leaderboard-header {
+  text-align: center;
+  margin-bottom: 20px;
+  flex-shrink: 0;
+}
+
+.leaderboard-title {
+  font-size: 24px;
+  font-weight: 700;
+  color: #2C3E50;
+  margin: 0 0 10px 0;
+  font-family: 'Inter', sans-serif;
+}
+
+.leaderboard-title.presentation-title {
+  font-size: 36px;
+  margin-bottom: 15px;
+}
+
+.leaderboard-stats {
+  display: flex;
+  justify-content: center;
+  gap: 30px;
+  flex-wrap: wrap;
+}
+
+.leaderboard-stats.presentation-stats {
+  gap: 40px;
+}
+
+.leaderboard-stats .stat-item {
+  font-size: 14px;
+  font-weight: 600;
+  color: #666;
+  padding: 8px 16px;
+  background: rgba(138, 246, 255, 0.2);
+  border-radius: 20px;
+  border: 1px solid rgba(138, 246, 255, 0.5);
+}
+
+.leaderboard-stats.presentation-stats .stat-item {
+  font-size: 18px;
+  padding: 12px 24px;
+}
+
+.leaderboard-list {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  overflow-y: auto;
+  padding-right: 8px;
+}
+
+.leaderboard-item {
+  display: flex;
+  align-items: center;
+  background: white;
+  border-radius: 15px;
+  padding: 15px 20px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  border: 2px solid transparent;
+  transition: all 0.3s ease;
+  animation: slideInFromLeft 0.5s ease-out;
+}
+
+.leaderboard-item.presentation-item {
+  padding: 20px 30px;
+  border-radius: 20px;
+  margin-bottom: 8px;
+}
+
+.leaderboard-item.top-three {
+  border-color: rgba(255, 215, 0, 0.3);
+  background: linear-gradient(135deg, rgba(255, 215, 0, 0.1), rgba(255, 255, 255, 0.9));
+  box-shadow: 0 4px 15px rgba(255, 215, 0, 0.2);
+}
+
+.leaderboard-item:hover {
+  transform: translateX(5px);
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.15);
+}
+
+@keyframes slideInFromLeft {
+  from {
+    opacity: 0;
+    transform: translateX(-30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+.rank-badge {
+  flex-shrink: 0;
+  margin-right: 20px;
+}
+
+.rank-icon {
+  font-size: 24px;
+  font-weight: 700;
+  color: #2C3E50;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #f0f0f0, #e0e0e0);
+  border: 2px solid #ddd;
+}
+
+.presentation-item .rank-icon {
+  font-size: 32px;
+  width: 60px;
+  height: 60px;
+}
+
+.poster-info {
+  flex: 1;
+  margin-right: 20px;
+}
+
+.poster-name {
+  font-size: 18px;
+  font-weight: 600;
+  color: #2C3E50;
+  margin: 0 0 8px 0;
+  font-family: 'Inter', sans-serif;
+  line-height: 1.2;
+}
+
+.presentation-item .poster-name {
+  font-size: 24px;
+  margin-bottom: 12px;
+}
+
+.poster-details {
+  display: flex;
+  gap: 15px;
+  flex-wrap: wrap;
+}
+
+.vote-count,
+.score-text {
+  font-size: 12px;
+  font-weight: 500;
+  color: #666;
+  padding: 4px 8px;
+  background: #f8f9fa;
+  border-radius: 10px;
+}
+
+.presentation-item .vote-count,
+.presentation-item .score-text {
+  font-size: 16px;
+  padding: 6px 12px;
+}
+
+.score-circle-container {
+  flex-shrink: 0;
+}
+
+.score-circle {
+  width: 60px;
+  height: 60px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  transition: transform 0.3s ease;
+}
+
+.presentation-item .score-circle {
+  width: 80px;
+  height: 80px;
+}
+
+.score-circle:hover {
+  transform: scale(1.1);
+}
+
+.score-inner {
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  background: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.presentation-item .score-inner {
+  width: 65px;
+  height: 65px;
+}
+
+.score-percentage {
+  font-size: 12px;
+  font-weight: 700;
+  color: #2C3E50;
+  font-family: 'Inter', sans-serif;
+}
+
+.presentation-item .score-percentage {
+  font-size: 16px;
+}
+
+.leaderboard-footer {
+  text-align: center;
+  padding: 15px;
+  margin-top: 15px;
+  background: rgba(138, 246, 255, 0.1);
+  border-radius: 10px;
+  font-weight: 600;
+  color: #666;
+  font-size: 14px;
+}
+
+.leaderboard-footer.presentation-footer {
+  font-size: 18px;
+  padding: 20px;
+  margin-top: 20px;
+}
+
+/* Mobile responsive adjustments for leaderboard */
+@media (max-width: 768px) {
+  .leaderboard-container {
+    padding: 10px;
+  }
+  
+  .leaderboard-item {
+    padding: 12px 15px;
+  }
+  
+  .rank-badge {
+    margin-right: 15px;
+  }
+  
+  .rank-icon {
+    font-size: 20px;
+    width: 40px;
+    height: 40px;
+  }
+  
+  .poster-name {
+    font-size: 16px;
+  }
+  
+  .poster-details {
+    gap: 10px;
+  }
+  
+  .vote-count,
+  .score-text {
+    font-size: 11px;
+  }
+  
+  .score-circle {
+    width: 50px;
+    height: 50px;
+  }
+  
+  .score-inner {
+    width: 40px;
+    height: 40px;
+  }
+  
+  .score-percentage {
+    font-size: 10px;
+  }
+  
+  .leaderboard-stats {
+    gap: 15px;
+  }
+  
+  .leaderboard-stats .stat-item {
+    font-size: 12px;
+    padding: 6px 12px;
+  }
+}
+
+/* Presentation mode specific enhancements for leaderboard */
+.presentation-mode .leaderboard-container {
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 20px;
+  backdrop-filter: blur(10px);
+}
+
+.presentation-mode .leaderboard-item.top-three {
+  background: linear-gradient(135deg, rgba(255, 215, 0, 0.2), rgba(255, 255, 255, 0.95));
+  border-color: rgba(255, 215, 0, 0.5);
+  box-shadow: 0 8px 25px rgba(255, 215, 0, 0.3);
+}
+
+.presentation-mode .leaderboard-item {
+  background: rgba(255, 255, 255, 0.95);
+  backdrop-filter: blur(5px);
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15);
+}
+
+/* Scrollbar styling for leaderboard */
+.leaderboard-list::-webkit-scrollbar {
+  width: 6px;
+}
+
+.leaderboard-list::-webkit-scrollbar-track {
+  background: rgba(0, 0, 0, 0.1);
+  border-radius: 3px;
+}
+
+.leaderboard-list::-webkit-scrollbar-thumb {
+  background: rgba(138, 246, 255, 0.6);
+  border-radius: 3px;
+}
+
+.leaderboard-list::-webkit-scrollbar-thumb:hover {
+  background: rgba(138, 246, 255, 0.8);
+}
