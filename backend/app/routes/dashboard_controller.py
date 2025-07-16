@@ -330,6 +330,24 @@ def get_event_results():
 
         item_list = event_data.get('itemList', [])
         criteria_list = questionnaire_data.get('criteriaList', [])
+        
+        if not criteria_list:
+            criteria_ref = db.collection('questionnaires').document(questionnaire_id).collection('criteria')
+            for criteria_doc in criteria_ref.stream():
+                criteria_data = criteria_doc.to_dict()
+                criteria_data['criteriaID'] = criteria_doc.id
+                
+                # Get questions for this criteria
+                questions_ref = criteria_ref.document(criteria_doc.id).collection('questions')
+                question_list = []
+                for question_doc in questions_ref.stream():
+                    question_data = question_doc.to_dict()
+                    question_data['questionID'] = question_doc.id
+                    question_list.append(question_data)
+                
+                criteria_data['questionList'] = question_list
+                criteria_list.append(criteria_data)
+        
         results = {
             'event': event_data,
             'questionnaire': questionnaire_data,
@@ -372,6 +390,9 @@ def get_event_results():
                 criteria_id = criteria.get('criteriaID')
                 criteria_title = criteria.get('title', f'Criteria {criteria_id}')
                 question_list = criteria.get('questionList', [])
+                
+                if not question_list:
+                    question_list = criteria.get('question_list', [])
 
                 criteria_score = 0
                 criteria_max_score = 0
@@ -379,7 +400,13 @@ def get_event_results():
 
                 for question in question_list:
                     question_id = question.get('questionID')
-                    max_points = max([opt.get('points', 0) for opt in question.get('optionList', [])], default=0)
+                    question_title = question.get('title', f'Question {question_id}')
+                    
+                    option_list = question.get('optionList', [])
+                    if not option_list:
+                        option_list = question.get('option_list', [])
+                    
+                    max_points = max([opt.get('points', 0) for opt in option_list], default=0)
                     criteria_max_score += max_points
 
                     question_total = 0
@@ -388,16 +415,15 @@ def get_event_results():
                     for vote in poster_votes:
                         ticket_options = vote.get('ticketOptionsList', [])
                         for ticket in ticket_options:
-                            if (ticket.get('criteriaID') == criteria_id and 
-                                ticket.get('questionID') == question_id):
-                                question_total += ticket.get('selectedPoints', 0)
+                            if ticket.get('questionTitle') == question_title:
+                                question_total += ticket.get('points', 0)
                                 question_count += 1
 
                     avg_question_score = question_total / question_count if question_count > 0 else 0
                     criteria_score += avg_question_score
                     question_scores.append({
                         'questionID': question_id,
-                        'questionTitle': question.get('title', f'Question {question_id}'),
+                        'questionTitle': question_title,
                         'averageScore': round(avg_question_score, 2),
                         'maxScore': max_points,
                         'responses': question_count
