@@ -7,3 +7,4 @@ venv/                 # virtual environment folder
 .env.*                # other env files
 *.log                 # log files
 firebase-private-key.json  # Top Secret
+/firebase-private-key.json

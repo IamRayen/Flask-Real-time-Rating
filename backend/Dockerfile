@@ -5,6 +5,9 @@ FROM python:3.11-slim
 ENV PYTHONDONTWRITEBYTECODE 1
 ENV PYTHONUNBUFFERED 1
 
+#Copying Firebase private key file
+COPY firebase-private-key.json /firebase-private-key.json
+
 # Set working directory
 WORKDIR /app
 
