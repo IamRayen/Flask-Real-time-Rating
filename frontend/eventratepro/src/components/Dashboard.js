@@ -9,9 +9,13 @@ import {
   Tooltip,
   Legend,
   ArcElement,
+  RadialLinearScale,
+  PointElement,
+  LineElement,
+  Filler,
 } from "chart.js";
 import ChartDataLabels from "chartjs-plugin-datalabels";
-import { Bar, Pie } from "react-chartjs-2";
+import { Bar, Pie, Radar } from "react-chartjs-2";
 import "./Dashboard.css";
 import { useEffect, useState } from "react";
 import erpLogo from "../assets/erp.png";
@@ -25,6 +29,10 @@ ChartJS.register(
   Tooltip,
   Legend,
   ArcElement,
+  RadialLinearScale,
+  PointElement,
+  LineElement,
+  Filler,
   ChartDataLabels
 );
 
@@ -37,6 +45,8 @@ function Dashboard() {
   const [chartData, setChartData] = useState(null);
   const [pieChartData, setPieChartData] = useState(null);
   const [leaderboardData, setLeaderboardData] = useState(null);
+  const [criteriaAnalysisData, setCriteriaAnalysisData] = useState(null);
+  const [radarData, setRadarData] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [participantCount, setParticipantCount] = useState(0);
@@ -68,6 +78,8 @@ function Dashboard() {
         setChartType((prev) => {
           if (prev === "bar") return "pie";
           if (prev === "pie") return "leaderboard";
+          if (prev === "leaderboard") return "criteria";
+          if (prev === "criteria") return "radar";
           return "bar";
         });
       }, 10000);
@@ -302,6 +314,88 @@ function Dashboard() {
           const percentage = ((value / total) * 100).toFixed(1);
           return `${percentage}%`;
         },
+      },
+    },
+    layout: {
+      padding: {
+        top: 20,
+        bottom: 20,
+        left: 20,
+        right: 20,
+      },
+    },
+  };
+
+  const radarChartOptions = {
+    responsive: true,
+    maintainAspectRatio: false,
+    plugins: {
+      legend: {
+        position: presentationMode ? "bottom" : "top",
+        align: "center",
+        labels: {
+          usePointStyle: true,
+          pointStyle: "circle",
+          padding: presentationMode ? 25 : 15,
+          font: {
+            size: presentationMode ? 20 : 14,
+            weight: "600",
+          },
+          color: "#2C3E50",
+        },
+      },
+      tooltip: {
+        enabled: true,
+        backgroundColor: "rgba(44, 62, 80, 0.9)",
+        titleColor: "#fff",
+        bodyColor: "#fff",
+        borderColor: "#7FDBDA",
+        borderWidth: 2,
+        cornerRadius: 10,
+        callbacks: {
+          label: function (context) {
+            return `${context.dataset.label}: ${context.parsed.r.toFixed(
+              1
+            )} pts`;
+          },
+        },
+      },
+      datalabels: {
+        display: false,
+      },
+    },
+    scales: {
+      r: {
+        beginAtZero: true,
+        grid: {
+          color: "#E5E7EB",
+        },
+        angleLines: {
+          color: "#E5E7EB",
+        },
+        pointLabels: {
+          font: {
+            size: presentationMode ? 16 : 12,
+            weight: "500",
+          },
+          color: "#2C3E50",
+        },
+        ticks: {
+          font: {
+            size: presentationMode ? 14 : 10,
+          },
+          color: "#666",
+          backdropColor: "rgba(255, 255, 255, 0.8)",
+        },
+      },
+    },
+    elements: {
+      line: {
+        borderWidth: presentationMode ? 3 : 2,
+      },
+      point: {
+        radius: presentationMode ? 6 : 4,
+        hoverRadius: presentationMode ? 8 : 6,
       },
     },
     layout: {
@@ -635,6 +729,175 @@ function Dashboard() {
     };
   };
 
+  const processCriteriaAnalysisData = (dashboardData) => {
+    if (
+      !dashboardData ||
+      !dashboardData.votes ||
+      !dashboardData.questionnaire
+    ) {
+      return null;
+    }
+
+    const { votes, questionnaire } = dashboardData;
+    const criteriaList = questionnaire.criteriaList || [];
+
+    if (criteriaList.length === 0) {
+      return null;
+    }
+
+    const criteriaScores = {};
+    const criteriaVoteCounts = {};
+    const criteriaQuestionCounts = {};
+
+    criteriaList.forEach((criteria) => {
+      criteriaScores[criteria.title] = 0;
+      criteriaVoteCounts[criteria.title] = 0;
+      criteriaQuestionCounts[criteria.title] = criteria.questionList.length;
+    });
+
+    votes.forEach((vote) => {
+      vote.ticketOptionsList.forEach((answer) => {
+        const questionTitle = answer.questionTitle;
+        const points = answer.points || 0;
+
+        const matchingCriteria = criteriaList.find((criteria) =>
+          criteria.questionList.some((q) => q.title === questionTitle)
+        );
+
+        if (matchingCriteria) {
+          criteriaScores[matchingCriteria.title] += points;
+          criteriaVoteCounts[matchingCriteria.title]++;
+        }
+      });
+    });
+
+    const criteriaAnalysis = criteriaList.map((criteria) => {
+      const totalScore = criteriaScores[criteria.title];
+      const voteCount = criteriaVoteCounts[criteria.title];
+      const questionCount = criteriaQuestionCounts[criteria.title];
+      const averageScore = voteCount > 0 ? totalScore / voteCount : 0;
+
+      return {
+        name: criteria.title,
+        averageScore: averageScore,
+        totalVotes: voteCount,
+        questionCount: questionCount,
+        scorePerQuestion: questionCount > 0 ? averageScore / questionCount : 0,
+      };
+    });
+
+    criteriaAnalysis.sort((a, b) => b.averageScore - a.averageScore);
+
+    return {
+      criteriaData: criteriaAnalysis,
+      bestCriteria: criteriaAnalysis[0] || null,
+      worstCriteria: criteriaAnalysis[criteriaAnalysis.length - 1] || null,
+      totalCriteria: criteriaAnalysis.length,
+    };
+  };
+
+  const processRadarData = (dashboardData) => {
+    if (
+      !dashboardData ||
+      !dashboardData.votes ||
+      !dashboardData.questionnaire
+    ) {
+      return null;
+    }
+
+    const { votes, questionnaire, event } = dashboardData;
+    const criteriaList = questionnaire.criteriaList || [];
+    const itemList = event.itemList || [];
+
+    if (criteriaList.length === 0 || itemList.length === 0) {
+      return null;
+    }
+
+    const scoresByItem = {};
+    const voteCountsByItem = {};
+
+    itemList.forEach((item, index) => {
+      const itemKey = item.PosterID || item.posterID || index;
+      scoresByItem[itemKey] = {
+        name: item.Title || item.title || `Poster ${index + 1}`,
+        scores: {},
+      };
+      voteCountsByItem[itemKey] = {};
+
+      criteriaList.forEach((criteria) => {
+        scoresByItem[itemKey].scores[criteria.title] = 0;
+        voteCountsByItem[itemKey][criteria.title] = 0;
+      });
+    });
+
+    // Process votes
+    votes.forEach((vote) => {
+      const itemKey = vote.itemID;
+      if (!scoresByItem[itemKey]) return;
+
+      vote.ticketOptionsList.forEach((answer) => {
+        const criteriaTitle = answer.questionTitle;
+        const points = answer.points || 0;
+
+        const matchingCriteria = criteriaList.find((criteria) =>
+          criteria.questionList.some((q) => q.title === criteriaTitle)
+        );
+
+        if (matchingCriteria) {
+          scoresByItem[itemKey].scores[matchingCriteria.title] += points;
+          voteCountsByItem[itemKey][matchingCriteria.title]++;
+        }
+      });
+    });
+
+    const labels = criteriaList.map((c) => c.title);
+    const datasets = [];
+    const colors = [
+      "#4A90E2",
+      "#F39C12",
+      "#8E44AD",
+      "#E74C3C",
+      "#2ECC71",
+      "#16A085",
+      "#D35400",
+      "#C0392B",
+      "#7D3C98",
+      "#1ABC9C",
+    ];
+
+    itemList.forEach((item, index) => {
+      const itemKey = item.PosterID || item.posterID || index;
+      if (!scoresByItem[itemKey]) return;
+
+      const data = [];
+      criteriaList.forEach((criteria) => {
+        const totalScore = scoresByItem[itemKey].scores[criteria.title];
+        const voteCount = voteCountsByItem[itemKey][criteria.title];
+        const average = voteCount > 0 ? totalScore / voteCount : 0;
+        data.push(average);
+      });
+
+      if (data.some((score) => score > 0)) {
+        datasets.push({
+          label: scoresByItem[itemKey].name,
+          data: data,
+          borderColor: colors[index % colors.length],
+          backgroundColor: colors[index % colors.length] + "20",
+          borderWidth: presentationMode ? 3 : 2,
+          pointBackgroundColor: colors[index % colors.length],
+          pointBorderColor: "#fff",
+          pointBorderWidth: 2,
+          pointRadius: presentationMode ? 6 : 4,
+        });
+      }
+    });
+
+    return {
+      labels,
+      datasets,
+    };
+  };
+
   // Helper functions for leaderboard display
   const getScoreColor = (percentage) => {
     if (percentage >= 80) return "#2ECC71"; // Green
@@ -671,6 +934,12 @@ function Dashboard() {
 
     const processedLeaderboardData = processLeaderboardData(data);
     setLeaderboardData(processedLeaderboardData);
+
+    const processedCriteriaAnalysisData = processCriteriaAnalysisData(data);
+    setCriteriaAnalysisData(processedCriteriaAnalysisData);
+
+    const processedRadarData = processRadarData(data);
+    setRadarData(processedRadarData);
 
     const uniqueVoters = new Set();
     if (data.votes) {
@@ -898,7 +1167,11 @@ function Dashboard() {
                 ? "Detailed Scores"
                 : chartType === "pie"
                 ? "Overall Rankings"
-                : "Live Leaderboard"}
+                : chartType === "leaderboard"
+                ? "Live Leaderboard"
+                : chartType === "criteria"
+                ? "Criteria Analysis"
+                : "Multi-Criteria Analysis"}
             </div>
           </div>
         </div>
@@ -953,6 +1226,22 @@ function Dashboard() {
                   onClick={() => setChartType("leaderboard")}
                 >
                   🏆 Leaderboard
+                </button>
+                <button
+                  className={`toggle-btn ${
+                    chartType === "criteria" ? "active" : ""
+                  }`}
+                  onClick={() => setChartType("criteria")}
+                >
+                  📊 Criteria Analysis
+                </button>
+                <button
+                  className={`toggle-btn ${
+                    chartType === "radar" ? "active" : ""
+                  }`}
+                  onClick={() => setChartType("radar")}
+                >
+                  🎯 Radar Chart
                 </button>
               </div>
             </div>
@@ -1107,6 +1396,154 @@ function Dashboard() {
                   {dashboardData?.votes?.length === 0
                     ? "No votes have been submitted yet."
                     : "Loading leaderboard data..."}
+                </div>
+              )
+            ) : chartType === "criteria" ? (
+              criteriaAnalysisData &&
+              criteriaAnalysisData.criteriaData.length > 0 ? (
+                <div className="criteria-analysis-container">
+                  <div className="criteria-analysis-header">
+                    <h2
+                      className={`criteria-analysis-title ${
+                        presentationMode ? "presentation-title" : ""
+                      }`}
+                    >
+                      📊 Criteria Performance Analysis
+                    </h2>
+                    <div
+                      className={`criteria-analysis-summary ${
+                        presentationMode ? "presentation-summary" : ""
+                      }`}
+                    >
+                      <div className="summary-item best">
+                        <span className="summary-icon">🏆</span>
+                        <div className="summary-content">
+                          <div className="summary-label">Best Performing</div>
+                          <div className="summary-value">
+                            {criteriaAnalysisData.bestCriteria?.name}
+                          </div>
+                          <div className="summary-score">
+                            {criteriaAnalysisData.bestCriteria?.averageScore.toFixed(
+                              1
+                            )}{" "}
+                            avg
+                          </div>
+                        </div>
+                      </div>
+                      <div className="summary-item worst">
+                        <span className="summary-icon">📉</span>
+                        <div className="summary-content">
+                          <div className="summary-label">Needs Improvement</div>
+                          <div className="summary-value">
+                            {criteriaAnalysisData.worstCriteria?.name}
+                          </div>
+                          <div className="summary-score">
+                            {criteriaAnalysisData.worstCriteria?.averageScore.toFixed(
+                              1
+                            )}{" "}
+                            avg
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div className="criteria-chart-container">
+                    <div className="criteria-bars">
+                      {criteriaAnalysisData.criteriaData.map(
+                        (criteria, index) => {
+                          const maxScore = Math.max(
+                            ...criteriaAnalysisData.criteriaData.map(
+                              (c) => c.averageScore
+                            )
+                          );
+                          const percentage =
+                            maxScore > 0
+                              ? (criteria.averageScore / maxScore) * 100
+                              : 0;
+                          const isFirst = index === 0;
+                          const isLast =
+                            index ===
+                            criteriaAnalysisData.criteriaData.length - 1;
+
+                          return (
+                            <div
+                              key={index}
+                              className={`criteria-bar-item ${
+                                isFirst ? "best" : isLast ? "worst" : ""
+                              }`}
+                            >
+                              <div className="criteria-bar-header">
+                                <span className="criteria-name">
+                                  {criteria.name}
+                                </span>
+                                <span className="criteria-score">
+                                  {criteria.averageScore.toFixed(1)}
+                                </span>
+                              </div>
+                              <div className="criteria-bar-track">
+                                <div
+                                  className="criteria-bar-fill"
+                                  style={{
+                                    width: `${percentage}%`,
+                                    backgroundColor: isFirst
+                                      ? "#4CAF50"
+                                      : isLast
+                                      ? "#f44336"
+                                      : "#2196F3",
+                                  }}
+                                ></div>
+                              </div>
+                              <div className="criteria-details">
+                                <span className="vote-count">
+                                  {criteria.totalVotes} votes
+                                </span>
+                                <span className="question-count">
+                                  {criteria.questionCount} questions
+                                </span>
+                              </div>
+                            </div>
+                          );
+                        }
+                      )}
+                    </div>
+                  </div>
+                </div>
+              ) : (
+                <div
+                  style={{
+                    textAlign: "center",
+                    padding: "2rem",
+                    color: "#666",
+                    minHeight: "400px",
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                  }}
+                >
+                  {dashboardData?.votes?.length === 0
+                    ? "No votes have been submitted yet."
+                    : "Loading criteria analysis data..."}
+                </div>
+              )
+            ) : chartType === "radar" ? (
+              radarData && radarData.datasets.length > 0 ? (
+                <Radar data={radarData} options={radarChartOptions} />
+              ) : (
+                <div
+                  style={{
+                    textAlign: "center",
+                    padding: "2rem",
+                    color: "#666",
+                    minHeight: "400px",
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                  }}
+                >
+                  {dashboardData?.votes?.length === 0
+                    ? "No votes have been submitted yet."
+                    : "Loading radar chart data..."}
                 </div>
               )
             ) : null}
