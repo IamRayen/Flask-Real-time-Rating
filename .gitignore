@@ -23,4 +23,7 @@ Icon?
 .fseventsd
 .com.apple.timemachine.donotpresent
 
+*.json
+firebase-private-key.json
+
 
